@@ -1,0 +1,37 @@
+@startuml 称重流程时序图
+title 称重流程时序图
+
+actor 采摘人员 as staff
+participant 电子秤终端 as terminal
+participant 电子秤 as scale
+participant 后台服务 as server
+
+activate staff
+staff->terminal: 扫描员工卡
+activate terminal
+terminal->server: 发送确认员工信息请求
+activate server
+server->server: 确认员工信息
+server->terminal: 返回员工具体信息
+deactivate server
+terminal->terminal: 显示待采摘的果实列表
+staff->terminal: 选择果实种类
+terminal->terminal: 显示进入称重状态
+staff-->scale: 放置果实
+activate scale
+scale->scale: 完成称重
+terminal->scale: 读取称重重量
+deactivate scale
+terminal->terminal: 生成本次称重信息
+terminal->server: 发送新增称重信息请求
+activate server
+server->server: 处理并持久化称重信息
+server->terminal: 返回称重结果
+deactivate server
+terminal->staff: 显示称重结果
+staff->terminal: 退出系统
+terminal->terminal: 显示初始界面
+deactivate terminal
+staff->staff: 果实入库
+deactivate staff
+@enduml

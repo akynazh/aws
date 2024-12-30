@@ -1,0 +1,30 @@
+@startuml 终端激活流程时序图
+title 终端激活流程时序图
+
+actor 管理员 as admin
+participant 前端界面 as config
+participant 电子秤终端 as terminal
+participant 后台服务 as server
+
+activate admin
+activate config
+admin->config: 认证登录到农场
+config->config: 进入农场界面
+admin->config: 新增电子秤终端并完成配置
+deactivate admin
+activate server
+config->server: 提交电子秤终端配置信息
+server->server: 保存电子秤终端配置信息
+server->config: 返回配置结果
+deactivate config
+activate terminal
+activate admin
+admin->terminal: 刷管理员卡进行认证
+terminal->server: 发送管理员信息和电子秤密钥
+server->server: 验证管理员信息和电子秤密钥
+server->terminal: 认证成功并返回农场信息
+deactivate admin
+terminal->terminal: 显示农场信息
+terminal->terminal: 等待称重
+deactivate server
+deactivate terminal
