@@ -1,13 +1,54 @@
-@startchen
-
-entity Person {
+@startchen 数据库设计-ER
+' left to right direction
+entity "管理员" as admin {
+    编号
+    名称
 }
-entity Location {
+entity "员工" as employee {
+    编号
+    名称
 }
-relationship Birthplace {
+entity "农作物" as produce {
+    编号
+    名称
 }
-
-Person -N- Birthplace
-Birthplace -1- Location
-
+entity "电子秤" as scale {
+    编号
+    密钥
+}
+entity "采摘作业" as work {
+    编号
+    农作物编号
+    开始时间
+    结束时间
+    采摘结果
+}
+entity "称重记录" as record {
+    编号
+    采摘作业编号
+    员工编号
+    电子秤编号
+    称重时间
+    称重结果
+}
+relationship "采摘关系" as r0 {
+}
+r0 -N- work
+produce -1- r0
+relationship "作业分配关系" as r3 {
+}
+r3 -M- employee
+work -N- r3
+relationship "员工称重记录" as r2 {
+}
+r2 -N- record
+employee -1- r2
+relationship "作业完成记录" as r4 {
+}
+r4 -N- record
+work -1- r4
+relationship "电子秤称重记录" as r5 {
+}
+r5 -N- record
+scale -1- r5
 @endchen
