@@ -33,7 +33,7 @@ CREATE TABLE
 CREATE TABLE
     IF NOT EXISTS t_produce (
         id BIGINT PRIMARY KEY, -- 唯一编号，自动生成
-        name VARCHAR(255), -- 名称
+        name VARCHAR(255) UNIQUE, -- 名称
         type INT UNIQUE, -- 农作物类型
         create_time BIGINT, -- 创建时间，毫秒级时间戳
         update_time BIGINT, -- 更新时间，毫秒级时间戳
@@ -52,6 +52,8 @@ CREATE TABLE
         update_time BIGINT, -- 更新时间，毫秒级时间戳
         status INT -- 状态，0 为未开始，1 为进行中，2 为已结束，3 为已取消，4 为已删除
     );
+CREATE INDEX idx_t_work_produce ON t_work (produce_id);
+
 
 CREATE TABLE
     IF NOT EXISTS t_record (
@@ -64,6 +66,11 @@ CREATE TABLE
         data_unit INT, -- 称重单位，0 为 mg，1 为 g，2 为 kg，3 为 t，4 为 lb（磅），5 为 oz（盎司），6 为 ct（克拉）
         data_time BIGINT, -- 称重时间，毫秒级时间戳
     );
+CREATE INDEX idx_t_record_work ON t_record (work_id);
+CREATE INDEX idx_t_record_employee ON t_record (employee_id);
+CREATE INDEX idx_t_record_scale ON t_record (scale_id);
+CREATE INDEX idx_t_record_employee_work ON t_record (employee_id, work_id);
+
 
 -- 中间表
 CREATE TABLE
@@ -75,3 +82,6 @@ CREATE TABLE
         update_time BIGINT, -- 更新时间，毫秒级时间戳
         status INT -- 状态，0 为禁用，1 为启用，2 为已删除
     );
+CREATE INDEX idx_t_work_dis_work ON t_work_dis (work_id);
+CREATE INDEX idx_t_work_dis_employee ON t_work_dis (employee_id);
+CREATE INDEX idx_t_work_dis_employee_work ON t_work_dis (employee_id, work_id);
