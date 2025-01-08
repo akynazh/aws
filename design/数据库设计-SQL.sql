@@ -4,6 +4,7 @@ CREATE DATABASE IF NOT EXISTS aws;
 CREATE TABLE
     IF NOT EXISTS t_user (
         id BIGINT PRIMARY KEY, -- 唯一编号，自动生成
+        card_id VARCHAR(255), -- 员工卡 ID
         name VARCHAR(255), -- 名称
         email VARCHAR(255) UNIQUE, -- 邮箱
         password VARCHAR(255), -- 密码，需要加密
