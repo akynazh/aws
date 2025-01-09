@@ -4,9 +4,9 @@ CREATE DATABASE IF NOT EXISTS aws;
 CREATE TABLE
     IF NOT EXISTS t_user (
         id BIGINT PRIMARY KEY, -- 唯一编号，自动生成
-        card_id VARCHAR(255), -- 员工卡 ID
-        name VARCHAR(255), -- 名称
-        email VARCHAR(255) UNIQUE, -- 邮箱
+        uid VARCHAR(255) UNIQUE, -- 身份证号
+        cid VARCHAR(255) UNIQUE, -- 员工卡号，需要加密
+        name VARCHAR(255), -- 员工姓名
         password VARCHAR(255), -- 密码，需要加密
         roles VARCHAR(255), -- 角色，以逗号分隔
         create_time BIGINT, -- 创建时间，毫秒级时间戳
@@ -85,4 +85,3 @@ CREATE TABLE
     );
 CREATE INDEX idx_t_work_dis_work ON t_work_dis (work_id);
 CREATE INDEX idx_t_work_dis_employee ON t_work_dis (employee_id);
-CREATE INDEX idx_t_work_dis_employee_work ON t_work_dis (employee_id, work_id);
