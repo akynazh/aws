@@ -1,8 +1,10 @@
 package cn.edu.xidian.aws.repository;
 
-import cn.edu.xidian.aws.entity.User;
+import cn.edu.xidian.aws.pojo.po.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
+
+import java.util.Optional;
 
 /**
  * @author akynazh@gmail.com
@@ -11,4 +13,5 @@ import org.springframework.stereotype.Repository;
  */
 @Repository
 public interface UserRepository extends JpaRepository<User, Long> {
+    Optional<User> findByUid(String uid);
 }

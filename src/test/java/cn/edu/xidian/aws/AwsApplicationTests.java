@@ -1,6 +1,6 @@
 package cn.edu.xidian.aws;
 
-import cn.edu.xidian.aws.entity.User;
+import cn.edu.xidian.aws.pojo.po.User;
 import cn.edu.xidian.aws.repository.UserRepository;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;

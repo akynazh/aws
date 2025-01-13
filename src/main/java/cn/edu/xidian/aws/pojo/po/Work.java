@@ -1,4 +1,4 @@
-package cn.edu.xidian.aws.entity;
+package cn.edu.xidian.aws.pojo.po;
 
 import jakarta.persistence.*;
 

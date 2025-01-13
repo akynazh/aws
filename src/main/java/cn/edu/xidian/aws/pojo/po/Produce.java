@@ -1,41 +1,30 @@
-package cn.edu.xidian.aws.entity;
+package cn.edu.xidian.aws.pojo.po;
 
 import jakarta.persistence.*;
 
 /**
  * @author akynazh@gmail.com
  * @date 2025/1/10
- * @description 用户
+ * @description 农作物
  */
 @Entity
-@Table(name = "t_user")
-public class User {
+@Table(name = "t_produce")
+public class Produce {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
+
     /**
-     * 身份证号
+     * 农作物名称
      */
     @Column(unique = true)
-    private String uid;
-    /**
-     * 员工卡号，需要加密
-     */
-    @Column(unique = true)
-    private String cid;
-    /**
-     * 员工姓名
-     */
     private String name;
     /**
-     * 密码，需要加密
+     * 农作物类型
      */
-    private String password;
-    /**
-     * 角色，以英文逗号分隔，比如 ROLE_EMPLOYEE,ROLE_ADMIN
-     */
-    private String roles;
+    @Column(unique = true)
+    private int type;
     /**
      * 创建时间，毫秒级时间戳
      */
@@ -45,20 +34,17 @@ public class User {
      */
     private long updateTime;
     /**
-     * 状态，0 为禁用，1 为启用，2 为已删除
+     * 状态，0 为未种植，1 为在种植，2 为已删除
      */
     private int status;
 
-    public User() {
+    public Produce() {
     }
 
-    public User(long id, String uid, String cid, String name, String password, String roles, long createTime, long updateTime, int status) {
+    public Produce(long id, String name, int type, long createTime, long updateTime, int status) {
         this.id = id;
-        this.uid = uid;
-        this.cid = cid;
         this.name = name;
-        this.password = password;
-        this.roles = roles;
+        this.type = type;
         this.createTime = createTime;
         this.updateTime = updateTime;
         this.status = status;
@@ -72,22 +58,6 @@ public class User {
         this.id = id;
     }
 
-    public String getUid() {
-        return uid;
-    }
-
-    public void setUid(String uid) {
-        this.uid = uid;
-    }
-
-    public String getCid() {
-        return cid;
-    }
-
-    public void setCid(String cid) {
-        this.cid = cid;
-    }
-
     public String getName() {
         return name;
     }
@@ -96,20 +66,12 @@ public class User {
         this.name = name;
     }
 
-    public String getPassword() {
-        return password;
+    public int getType() {
+        return type;
     }
 
-    public void setPassword(String password) {
-        this.password = password;
-    }
-
-    public String getRoles() {
-        return roles;
-    }
-
-    public void setRoles(String roles) {
-        this.roles = roles;
+    public void setType(int type) {
+        this.type = type;
     }
 
     public long getCreateTime() {
@@ -138,13 +100,10 @@ public class User {
 
     @Override
     public String toString() {
-        return "User{" +
+        return "Produce{" +
                 "id=" + id +
-                ", uid='" + uid + '\'' +
-                ", cid='" + cid + '\'' +
                 ", name='" + name + '\'' +
-                ", password='" + password + '\'' +
-                ", roles='" + roles + '\'' +
+                ", type=" + type +
                 ", createTime=" + createTime +
                 ", updateTime=" + updateTime +
                 ", status=" + status +
