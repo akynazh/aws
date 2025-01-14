@@ -1,6 +1,9 @@
 package cn.edu.xidian.aws.pojo.po;
 
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.math.BigDecimal;
 
@@ -16,6 +19,9 @@ import java.math.BigDecimal;
         @Index(columnList = "scaleId"),
         @Index(columnList = "employeeId, workId")
 })
+@NoArgsConstructor
+@AllArgsConstructor
+@Data
 public class Record {
 
     @Id
@@ -52,96 +58,4 @@ public class Record {
      * 称重时间，毫秒级时间戳
      */
     private long dataTime;
-
-    public Record() {
-    }
-
-    public Record(long id, long workId, long employeeId, long scaleId, BigDecimal dataValue, BigDecimal dataErrorMargin, int unit, long dataTime) {
-        this.id = id;
-        this.workId = workId;
-        this.employeeId = employeeId;
-        this.scaleId = scaleId;
-        this.dataValue = dataValue;
-        this.dataErrorMargin = dataErrorMargin;
-        this.unit = unit;
-        this.dataTime = dataTime;
-    }
-
-    public long getId() {
-        return id;
-    }
-
-    public void setId(long id) {
-        this.id = id;
-    }
-
-    public long getWorkId() {
-        return workId;
-    }
-
-    public void setWorkId(long workId) {
-        this.workId = workId;
-    }
-
-    public long getEmployeeId() {
-        return employeeId;
-    }
-
-    public void setEmployeeId(long employeeId) {
-        this.employeeId = employeeId;
-    }
-
-    public long getScaleId() {
-        return scaleId;
-    }
-
-    public void setScaleId(long scaleId) {
-        this.scaleId = scaleId;
-    }
-
-    public BigDecimal getDataValue() {
-        return dataValue;
-    }
-
-    public void setDataValue(BigDecimal dataValue) {
-        this.dataValue = dataValue;
-    }
-
-    public BigDecimal getDataErrorMargin() {
-        return dataErrorMargin;
-    }
-
-    public void setDataErrorMargin(BigDecimal dataErrorMargin) {
-        this.dataErrorMargin = dataErrorMargin;
-    }
-
-    public int getUnit() {
-        return unit;
-    }
-
-    public void setUnit(int unit) {
-        this.unit = unit;
-    }
-
-    public long getDataTime() {
-        return dataTime;
-    }
-
-    public void setDataTime(long dataTime) {
-        this.dataTime = dataTime;
-    }
-
-    @Override
-    public String toString() {
-        return "Record{" +
-                "id=" + id +
-                ", workId=" + workId +
-                ", employeeId=" + employeeId +
-                ", scaleId=" + scaleId +
-                ", dataValue=" + dataValue +
-                ", dataErrorMargin=" + dataErrorMargin +
-                ", unit=" + unit +
-                ", dataTime=" + dataTime +
-                '}';
-    }
 }

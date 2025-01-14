@@ -1,6 +1,9 @@
 package cn.edu.xidian.aws.pojo.po;
 
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.math.BigDecimal;
 
@@ -13,6 +16,9 @@ import java.math.BigDecimal;
 @Table(name = "t_work", indexes = {
         @Index(columnList = "produceId")
 })
+@NoArgsConstructor
+@AllArgsConstructor
+@Data
 public class Work {
 
     @Id
@@ -52,106 +58,4 @@ public class Work {
      * 状态，0 为未开始，1 为进行中，2 为已结束，3 为已取消，4 为已删除
      */
     private int status;
-
-    public Work() {
-    }
-
-    public Work(long id, long produceId, long startTime, long endTime, BigDecimal dataValue, int unit, long createTime, long updateTime, int status) {
-        this.id = id;
-        this.produceId = produceId;
-        this.startTime = startTime;
-        this.endTime = endTime;
-        this.dataValue = dataValue;
-        this.unit = unit;
-        this.createTime = createTime;
-        this.updateTime = updateTime;
-        this.status = status;
-    }
-
-    public long getId() {
-        return id;
-    }
-
-    public void setId(long id) {
-        this.id = id;
-    }
-
-    public long getProduceId() {
-        return produceId;
-    }
-
-    public void setProduceId(long produceId) {
-        this.produceId = produceId;
-    }
-
-    public long getStartTime() {
-        return startTime;
-    }
-
-    public void setStartTime(long startTime) {
-        this.startTime = startTime;
-    }
-
-    public long getEndTime() {
-        return endTime;
-    }
-
-    public void setEndTime(long endTime) {
-        this.endTime = endTime;
-    }
-
-    public BigDecimal getDataValue() {
-        return dataValue;
-    }
-
-    public void setDataValue(BigDecimal dataValue) {
-        this.dataValue = dataValue;
-    }
-
-    public int getUnit() {
-        return unit;
-    }
-
-    public void setUnit(int unit) {
-        this.unit = unit;
-    }
-
-    public long getCreateTime() {
-        return createTime;
-    }
-
-    public void setCreateTime(long createTime) {
-        this.createTime = createTime;
-    }
-
-    public long getUpdateTime() {
-        return updateTime;
-    }
-
-    public void setUpdateTime(long updateTime) {
-        this.updateTime = updateTime;
-    }
-
-    public int getStatus() {
-        return status;
-    }
-
-    public void setStatus(int status) {
-        this.status = status;
-    }
-
-    @Override
-    public String toString() {
-        return "Work{" +
-                "id=" + id +
-                ", produceId=" + produceId +
-                ", startTime=" + startTime +
-                ", endTime=" + endTime +
-                ", dataValue=" + dataValue +
-                ", unit=" + unit +
-                ", createTime=" + createTime +
-                ", updateTime=" + updateTime +
-                ", status=" + status +
-                '}';
-    }
 }

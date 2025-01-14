@@ -1,6 +1,9 @@
 package cn.edu.xidian.aws.pojo.po;
 
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 /**
  * @author akynazh@gmail.com
@@ -12,6 +15,9 @@ import jakarta.persistence.*;
         @Index(columnList = "workId"),
         @Index(columnList = "employeeId")
 })
+@NoArgsConstructor
+@AllArgsConstructor
+@Data
 public class Assignment {
 
     @Id
@@ -38,76 +44,4 @@ public class Assignment {
      * 状态，0 为禁用，1 为启用，2 为已删除
      */
     private int status;
-
-    public Assignment() {
-    }
-
-    public Assignment(long id, long workId, long employeeId, long createTime, long updateTime, int status) {
-        this.id = id;
-        this.workId = workId;
-        this.employeeId = employeeId;
-        this.createTime = createTime;
-        this.updateTime = updateTime;
-        this.status = status;
-    }
-
-    public long getId() {
-        return id;
-    }
-
-    public void setId(long id) {
-        this.id = id;
-    }
-
-    public long getWorkId() {
-        return workId;
-    }
-
-    public void setWorkId(long workId) {
-        this.workId = workId;
-    }
-
-    public long getEmployeeId() {
-        return employeeId;
-    }
-
-    public void setEmployeeId(long employeeId) {
-        this.employeeId = employeeId;
-    }
-
-    public long getCreateTime() {
-        return createTime;
-    }
-
-    public void setCreateTime(long createTime) {
-        this.createTime = createTime;
-    }
-
-    public long getUpdateTime() {
-        return updateTime;
-    }
-
-    public void setUpdateTime(long updateTime) {
-        this.updateTime = updateTime;
-    }
-
-    public int getStatus() {
-        return status;
-    }
-
-    public void setStatus(int status) {
-        this.status = status;
-    }
-
-    @Override
-    public String toString() {
-        return "Assignment{" +
-                "id=" + id +
-                ", workId=" + workId +
-                ", employeeId=" + employeeId +
-                ", createTime=" + createTime +
-                ", updateTime=" + updateTime +
-                ", status=" + status +
-                '}';
-    }
 }

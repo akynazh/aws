@@ -1,6 +1,8 @@
 package cn.edu.xidian.aws.service;
 
 import cn.edu.xidian.aws.pojo.po.User;
+import cn.edu.xidian.aws.pojo.vo.UserUpdateMeVO;
+import cn.edu.xidian.aws.pojo.vo.UserUpdateVO;
 import cn.edu.xidian.aws.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Primary;
@@ -9,7 +11,9 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 
+import java.util.Objects;
 import java.util.Optional;
 
 /**
@@ -31,9 +35,40 @@ public class UserService implements UserDetailsService {
         return user.map(cn.edu.xidian.aws.pojo.bo.UserDetails::new).orElseThrow(() -> new UsernameNotFoundException("User not found: " + username));
     }
 
-    public void save(User user) {
+    public void addUser(User user) {
         user.setPassword(encoder.encode(user.getPassword()));
         userRepository.save(user);
+    }
+
+    public void updateMe(UserUpdateMeVO vo, User originUser) {
+        if (StringUtils.hasText(vo.getName())) {
+            originUser.setName(vo.getName());
+        }
+        if (StringUtils.hasText(vo.getPassword())) {
+            originUser.setPassword(encoder.encode(vo.getPassword()));
+        }
+        originUser.setUpdateTime(System.currentTimeMillis());
+        userRepository.save(originUser);
+    }
+
+    public void updateUser(UserUpdateVO vo, User originUser) {
+        if (StringUtils.hasText(vo.getUid())) {
+            originUser.setUid(vo.getUid());
+        }
+        if (StringUtils.hasText(vo.getCid())) {
+            originUser.setCid(vo.getCid());
+        }
+        if (StringUtils.hasText(vo.getName())) {
+            originUser.setName(vo.getName());
+        }
+        if (StringUtils.hasText(vo.getPassword())) {
+            originUser.setPassword(encoder.encode(vo.getPassword()));
+        }
+        if (vo.getStatus() != -1) {
+            originUser.setStatus(vo.getStatus());
+        }
+        originUser.setUpdateTime(System.currentTimeMillis());
+        userRepository.save(originUser);
     }
 
     public User getUser(String uid) {

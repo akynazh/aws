@@ -6,13 +6,13 @@ import lombok.NoArgsConstructor;
 
 /**
  * @author akynazh@gmail.com
- * @date 2025/1/13
+ * @date 2025/1/14
  * @description
  */
 @NoArgsConstructor
 @AllArgsConstructor
 @Data
-public class UserLoginVO {
-    private String uid;
+public class UserUpdateMeVO {
+    private String name;
     private String password;
 }

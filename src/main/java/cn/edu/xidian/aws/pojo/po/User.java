@@ -1,6 +1,9 @@
 package cn.edu.xidian.aws.pojo.po;
 
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 /**
  * @author akynazh@gmail.com
@@ -9,6 +12,9 @@ import jakarta.persistence.*;
  */
 @Entity
 @Table(name = "t_user")
+@NoArgsConstructor
+@AllArgsConstructor
+@Data
 public class User {
 
     @Id
@@ -47,107 +53,5 @@ public class User {
     /**
      * 状态，0 为禁用，1 为启用，2 为已删除
      */
-    private int status;
-
-    public User() {
-    }
-
-    public User(long id, String uid, String cid, String name, String password, String roles, long createTime, long updateTime, int status) {
-        this.id = id;
-        this.uid = uid;
-        this.cid = cid;
-        this.name = name;
-        this.password = password;
-        this.roles = roles;
-        this.createTime = createTime;
-        this.updateTime = updateTime;
-        this.status = status;
-    }
-
-    public long getId() {
-        return id;
-    }
-
-    public void setId(long id) {
-        this.id = id;
-    }
-
-    public String getUid() {
-        return uid;
-    }
-
-    public void setUid(String uid) {
-        this.uid = uid;
-    }
-
-    public String getCid() {
-        return cid;
-    }
-
-    public void setCid(String cid) {
-        this.cid = cid;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public String getPassword() {
-        return password;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
-    }
-
-    public String getRoles() {
-        return roles;
-    }
-
-    public void setRoles(String roles) {
-        this.roles = roles;
-    }
-
-    public long getCreateTime() {
-        return createTime;
-    }
-
-    public void setCreateTime(long createTime) {
-        this.createTime = createTime;
-    }
-
-    public long getUpdateTime() {
-        return updateTime;
-    }
-
-    public void setUpdateTime(long updateTime) {
-        this.updateTime = updateTime;
-    }
-
-    public int getStatus() {
-        return status;
-    }
-
-    public void setStatus(int status) {
-        this.status = status;
-    }
-
-    @Override
-    public String toString() {
-        return "User{" +
-                "id=" + id +
-                ", uid='" + uid + '\'' +
-                ", cid='" + cid + '\'' +
-                ", name='" + name + '\'' +
-                ", password='" + password + '\'' +
-                ", roles='" + roles + '\'' +
-                ", createTime=" + createTime +
-                ", updateTime=" + updateTime +
-                ", status=" + status +
-                '}';
-    }
+    private int status = -1;
 }
