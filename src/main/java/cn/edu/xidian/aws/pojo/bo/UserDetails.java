@@ -22,7 +22,7 @@ public class UserDetails implements org.springframework.security.core.userdetail
     private String cid;
 
     public UserDetails(User user) {
-        this.uid = user.getUid(); // Assuming 'name' is used as 'username'
+        this.uid = user.getUid();
         this.password = user.getPassword();
         this.authorities = Stream.of(user.getRoles().split(","))
                 .map(SimpleGrantedAuthority::new)

@@ -15,5 +15,4 @@ import lombok.NoArgsConstructor;
 public class UserRegisterVO {
     private String uid;
     private String name;
-    private String cid;
 }

@@ -1,5 +1,6 @@
 package cn.edu.xidian.aws.pojo.po;
 
+import cn.edu.xidian.aws.pojo.vo.UserVO;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -26,11 +27,6 @@ public class User {
     @Column(unique = true)
     private String uid;
     /**
-     * 员工卡号，需要加密
-     */
-    @Column(unique = true)
-    private String cid;
-    /**
      * 员工姓名
      */
     private String name;
@@ -54,4 +50,19 @@ public class User {
      * 状态，0 为禁用，1 为启用，2 为已删除
      */
     private int status = -1;
+
+    public static UserVO toUserVO(User user) {
+        if (user == null) {
+            return null;
+        }
+        UserVO userVO = new UserVO();
+        userVO.setId(user.getId());
+        userVO.setUid(user.getUid());
+        userVO.setName(user.getName());
+        userVO.setCreateTime(user.getCreateTime());
+        userVO.setUpdateTime(user.getUpdateTime());
+        userVO.setStatus(user.getStatus());
+        userVO.setRoles(user.getRoles());
+        return userVO;
+    }
 }
