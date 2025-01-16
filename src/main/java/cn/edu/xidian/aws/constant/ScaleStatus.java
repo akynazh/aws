@@ -1,4 +1,4 @@
-package cn.edu.xidian.aws.constants;
+package cn.edu.xidian.aws.constant;
 
 import lombok.Getter;
 

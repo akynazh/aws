@@ -1,6 +1,8 @@
-package cn.edu.xidian.aws.constants;
+package cn.edu.xidian.aws.constant;
 
 import lombok.Getter;
+
+import java.util.Arrays;
 
 /**
  * @author akynazh@gmail.com
@@ -8,7 +10,7 @@ import lombok.Getter;
  * @description
  */
 @Getter
-public enum AssignmentStatus {
+public enum UserStatus {
     DISABLED(0, "禁用"),
     ENABLE(1, "启用"),
     DELETED(2, "已删除");
@@ -16,8 +18,12 @@ public enum AssignmentStatus {
     private final int code;
     private final String message;
 
-    AssignmentStatus(int code, String message) {
+    UserStatus(int code, String message) {
         this.code = code;
         this.message = message;
+    }
+
+    public static boolean codeExists(int code) {
+        return Arrays.stream(UserStatus.values()).anyMatch(userStatus -> userStatus.getCode() == code);
     }
 }

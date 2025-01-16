@@ -1,6 +1,7 @@
 package cn.edu.xidian.aws.exception;
 
 import cn.edu.xidian.aws.pojo.vo.RestResponse;
+import org.hibernate.JDBCException;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authorization.AuthorizationDeniedException;
@@ -33,5 +34,10 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(AuthorizationDeniedException.class)
     public RestResponse<String> authorizationDeniedException() {
         return new RestResponse<>(HttpStatus.FORBIDDEN);
+    }
+
+    @ExceptionHandler(JDBCException.class)
+    public RestResponse<String> jdbcException() {
+        return new RestResponse<>(HttpStatus.INTERNAL_SERVER_ERROR);
     }
 }

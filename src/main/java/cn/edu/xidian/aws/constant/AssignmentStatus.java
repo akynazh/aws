@@ -1,4 +1,4 @@
-package cn.edu.xidian.aws.constants;
+package cn.edu.xidian.aws.constant;
 
 import lombok.Getter;
 
@@ -8,19 +8,15 @@ import lombok.Getter;
  * @description
  */
 @Getter
-public enum ScaleUnit {
-    MG(0, "mg"),
-    G(1, "g"),
-    KG(2, "kg"),
-    T(3, "t"),
-    LB(4, "lb"),
-    OZ(5, "oz"),
-    CT(6, "ct");
+public enum AssignmentStatus {
+    DISABLED(0, "禁用"),
+    ENABLE(1, "启用"),
+    DELETED(2, "已删除");
 
     private final int code;
     private final String message;
 
-    ScaleUnit(int code, String message) {
+    AssignmentStatus(int code, String message) {
         this.code = code;
         this.message = message;
     }

@@ -1,5 +1,6 @@
 package cn.edu.xidian.aws.controller;
 
+import cn.edu.xidian.aws.constant.Constants;
 import cn.edu.xidian.aws.pojo.po.User;
 import cn.edu.xidian.aws.pojo.vo.*;
 import cn.edu.xidian.aws.service.JwtService;
@@ -35,14 +36,14 @@ public class UserController {
     private AuthenticationManager authenticationManager;
 
     @PostMapping
-    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
+    @PreAuthorize(Constants.PRE_AUTHORIZE_ADMIN)
     public RestResponse<UserVO> addEmployee(@RequestBody UserRegisterVO vo) {
         User user = userService.addEmployee(vo);
         return new RestResponse<>(HttpStatus.OK, User.toUserVO(user));
     }
 
     @PutMapping("/me")
-    @PreAuthorize("hasAuthority('ROLE_EMPLOYEE')")
+    @PreAuthorize(Constants.PRE_AUTHORIZE_EMPLOYEE)
     public RestResponse<UserVO> updateMe(@RequestBody UserUpdateMeVO vo, HttpServletRequest request) {
         User user = userService.getUserByUid(jwtService.extractUsername(jwtService.extractToken(request)));
         User updatedUser = userService.updateMe(vo, user);
@@ -50,7 +51,7 @@ public class UserController {
     }
 
     @PutMapping
-    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
+    @PreAuthorize(Constants.PRE_AUTHORIZE_ADMIN)
     public RestResponse<UserVO> updateUser(@RequestBody UserUpdateVO vo) {
         User user = userService.getUserByUid(vo.getUid());
         User updatedUser = userService.updateUser(vo, user);
@@ -58,21 +59,21 @@ public class UserController {
     }
 
     @GetMapping
-    @PreAuthorize("hasAuthority('ROLE_EMPLOYEE')")
+    @PreAuthorize(Constants.PRE_AUTHORIZE_EMPLOYEE)
     public RestResponse<UserVO> getMe(HttpServletRequest request) {
         User user = userService.getUserByUid(jwtService.extractUsername(jwtService.extractToken(request)));
         return new RestResponse<>(HttpStatus.OK, User.toUserVO(user));
     }
 
     @GetMapping("/{uid}")
-    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
+    @PreAuthorize(Constants.PRE_AUTHORIZE_ADMIN)
     public RestResponse<UserVO> getEmployee(@PathVariable String uid) {
         User user = userService.getUserByUid(uid);
         return new RestResponse<>(HttpStatus.OK, User.toUserVO(user));
     }
 
     @GetMapping("/list")
-    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
+    @PreAuthorize(Constants.PRE_AUTHORIZE_ADMIN)
     public RestResponse<List<UserVO>> getEmployeeList(@RequestParam(defaultValue = "0") int page) {
         Page<User> usersPage = userService.getUsers(page, 10);
         List<User> users = usersPage.getContent();

@@ -1,5 +1,6 @@
 package cn.edu.xidian.aws.controller;
 
+import cn.edu.xidian.aws.constant.Constants;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -13,6 +14,6 @@ import org.springframework.web.bind.annotation.RestController;
 public class CommonController {
     @GetMapping({"/", "/index"})
     public ResponseEntity<String> index() {
-        return ResponseEntity.ok("Agricultural Weighing System");
+        return ResponseEntity.ok(Constants.AWS_NAME);
     }
 }

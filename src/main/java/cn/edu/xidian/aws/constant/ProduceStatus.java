@@ -1,4 +1,4 @@
-package cn.edu.xidian.aws.constants;
+package cn.edu.xidian.aws.constant;
 
 import lombok.Getter;
 
@@ -8,15 +8,15 @@ import lombok.Getter;
  * @description
  */
 @Getter
-public enum UserStatus {
-    DISABLED(0, "禁用"),
-    ENABLE(1, "启用"),
+public enum ProduceStatus {
+    DISABLED(0, "未种植"),
+    ENABLE(1, "在种植"),
     DELETED(2, "已删除");
 
     private final int code;
     private final String message;
 
-    UserStatus(int code, String message) {
+    ProduceStatus(int code, String message) {
         this.code = code;
         this.message = message;
     }

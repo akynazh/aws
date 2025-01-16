@@ -1,5 +1,6 @@
 package cn.edu.xidian.aws.config;
 
+import cn.edu.xidian.aws.constant.Constants;
 import cn.edu.xidian.aws.filter.JwtAuthFilter;
 import cn.edu.xidian.aws.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -60,9 +61,8 @@ public class SecurityConfig {
         http
                 .csrf(AbstractHttpConfigurer::disable) // Disable CSRF for stateless APIs
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/", "/index").permitAll()
-                        .requestMatchers("/user/login", "/user/logout").permitAll()
-                        .requestMatchers("/admin/**").hasAuthority("ROLE_ADMIN")
+                        .requestMatchers(Constants.ROUTE_PERMIT).permitAll()
+                        .requestMatchers(Constants.ROUTE_ADMIN).hasAuthority(Constants.USER_ROLE_ADMIN)
                         .anyRequest().authenticated() // Protect all other endpoints
                 )
                 .sessionManagement(sess -> sess

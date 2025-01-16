@@ -1,6 +1,7 @@
 package cn.edu.xidian.aws.service;
 
 
+import cn.edu.xidian.aws.constant.Constants;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
@@ -26,16 +27,16 @@ import java.util.function.Function;
 public class JwtService {
 
     // Replace this with a secure key in a real application, ideally fetched from environment variables
-    public static final String SECRET = "5367566B59703373367639792F423F4528482B4D6251655468576D5A71347437";
+    public static final String SECRET = Constants.USER_PASSWORD_SECRET;
 
     public String extractToken(HttpServletRequest request) {
         // Retrieve the Authorization header
-        String authHeader = request.getHeader("Authorization");
+        String authHeader = request.getHeader(Constants.TOKEN_HEADER);
         String token = null;
 
         // Check if the header starts with "Bearer "
-        if (authHeader != null && authHeader.startsWith("Bearer ")) {
-            token = authHeader.substring(7);
+        if (authHeader != null && authHeader.startsWith(Constants.TOKEN_PREFIX)) {
+            token = authHeader.substring(Constants.TOKEN_PREFIX.length());
         }
         return token;
     }
@@ -52,7 +53,7 @@ public class JwtService {
                 .setClaims(claims)
                 .setSubject(userName)
                 .setIssuedAt(new Date())
-                .setExpiration(new Date(System.currentTimeMillis() + 1000 * 60 * 30)) // Token valid for 30 minutes
+                .setExpiration(new Date(System.currentTimeMillis() + Constants.TOKEN_VALID_TIME_MS))
                 .signWith(getSignKey(), SignatureAlgorithm.HS256)
                 .compact();
     }

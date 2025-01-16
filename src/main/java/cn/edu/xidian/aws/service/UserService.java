@@ -1,5 +1,8 @@
 package cn.edu.xidian.aws.service;
 
+import cn.edu.xidian.aws.constant.Constants;
+import cn.edu.xidian.aws.constant.UserStatus;
+import cn.edu.xidian.aws.exception.AwsUsernameNotFoundException;
 import cn.edu.xidian.aws.pojo.po.User;
 import cn.edu.xidian.aws.pojo.vo.UserRegisterVO;
 import cn.edu.xidian.aws.pojo.vo.UserUpdateMeVO;
@@ -9,7 +12,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Primary;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -35,18 +37,18 @@ public class UserService implements UserDetailsService {
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         Optional<User> user = userRepository.findByUid(username);
-        return user.map(cn.edu.xidian.aws.pojo.bo.UserDetails::new).orElseThrow(() -> new UsernameNotFoundException("User not found: " + username));
+        return user.map(cn.edu.xidian.aws.pojo.bo.UserDetails::new).orElseThrow(AwsUsernameNotFoundException::new);
     }
 
     public User addEmployee(UserRegisterVO vo) {
         User user = new User();
         user.setUid(vo.getUid());
         user.setName(vo.getName());
-        user.setPassword(encoder.encode("123456"));
+        user.setPassword(encoder.encode(Constants.USER_PASSWORD_DEFAULT));
         user.setCreateTime(System.currentTimeMillis());
         user.setUpdateTime(System.currentTimeMillis());
-        user.setStatus(1);
-        user.setRoles("ROLE_EMPLOYEE");
+        user.setStatus(UserStatus.ENABLE.getCode());
+        user.setRoles(Constants.USER_ROLE_EMPLOYEE);
         return userRepository.save(user);
     }
 
@@ -63,7 +65,7 @@ public class UserService implements UserDetailsService {
 
     public User updateUser(UserUpdateVO vo, User originUser) {
         if (vo == null || originUser == null) {
-            throw new UsernameNotFoundException("User not found");
+            throw new AwsUsernameNotFoundException();
         }
         if (StringUtils.hasText(vo.getUid())) {
             originUser.setUid(vo.getUid());
@@ -74,7 +76,7 @@ public class UserService implements UserDetailsService {
         if (StringUtils.hasText(vo.getPassword())) {
             originUser.setPassword(encoder.encode(vo.getPassword()));
         }
-        if (vo.getStatus() != -1) {
+        if (vo.getStatus() != -1 && UserStatus.codeExists(vo.getStatus())) {
             originUser.setStatus(vo.getStatus());
         }
         originUser.setUpdateTime(System.currentTimeMillis());
@@ -95,10 +97,10 @@ public class UserService implements UserDetailsService {
         user.setUid(uid);
         user.setName("admin" + uid);
         user.setPassword(encoder.encode(password));
-        user.setRoles("ROLE_ADMIN,ROLE_EMPLOYEE");
+        user.setRoles(Constants.USER_ROLE_ADMIN + "," + Constants.USER_ROLE_EMPLOYEE);
         user.setCreateTime(System.currentTimeMillis());
         user.setUpdateTime(System.currentTimeMillis());
-        user.setStatus(1);
+        user.setStatus(UserStatus.ENABLE.getCode());
         if (userRepository.findByUid(uid).isPresent()) {
             return;
         }
