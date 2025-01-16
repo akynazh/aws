@@ -1,4 +1,4 @@
-package cn.edu.xidian.aws.pojo.vo;
+package cn.edu.xidian.aws.pojo.vo.user;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -16,5 +16,5 @@ public class UserUpdateVO {
     private String uid;
     private String name;
     private String password;
-    private int status;
+    private int status = -1;
 }

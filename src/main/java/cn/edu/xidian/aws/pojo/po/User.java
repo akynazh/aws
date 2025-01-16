@@ -1,10 +1,11 @@
 package cn.edu.xidian.aws.pojo.po;
 
-import cn.edu.xidian.aws.pojo.vo.UserVO;
+import cn.edu.xidian.aws.pojo.vo.user.UserVO;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.springframework.beans.BeanUtils;
 
 /**
  * @author akynazh@gmail.com
@@ -49,20 +50,14 @@ public class User {
     /**
      * 状态，0 为禁用，1 为启用，2 为已删除
      */
-    private int status = -1;
+    private int status;
 
     public static UserVO toUserVO(User user) {
         if (user == null) {
             return null;
         }
         UserVO userVO = new UserVO();
-        userVO.setId(user.getId());
-        userVO.setUid(user.getUid());
-        userVO.setName(user.getName());
-        userVO.setCreateTime(user.getCreateTime());
-        userVO.setUpdateTime(user.getUpdateTime());
-        userVO.setStatus(user.getStatus());
-        userVO.setRoles(user.getRoles());
+        BeanUtils.copyProperties(user, userVO);
         return userVO;
     }
 }

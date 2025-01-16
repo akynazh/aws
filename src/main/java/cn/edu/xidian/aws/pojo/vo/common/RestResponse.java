@@ -1,6 +1,5 @@
-package cn.edu.xidian.aws.pojo.vo;
+package cn.edu.xidian.aws.pojo.vo.common;
 
-import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.http.HttpStatus;

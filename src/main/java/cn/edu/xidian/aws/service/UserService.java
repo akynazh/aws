@@ -2,13 +2,15 @@ package cn.edu.xidian.aws.service;
 
 import cn.edu.xidian.aws.constant.Constants;
 import cn.edu.xidian.aws.constant.UserStatus;
-import cn.edu.xidian.aws.exception.AwsUsernameNotFoundException;
+import cn.edu.xidian.aws.exception.AwsArgumentException;
+import cn.edu.xidian.aws.exception.AwsNotFoundException;
 import cn.edu.xidian.aws.pojo.po.User;
-import cn.edu.xidian.aws.pojo.vo.UserRegisterVO;
-import cn.edu.xidian.aws.pojo.vo.UserUpdateMeVO;
-import cn.edu.xidian.aws.pojo.vo.UserUpdateVO;
+import cn.edu.xidian.aws.pojo.vo.user.UserRegisterVO;
+import cn.edu.xidian.aws.pojo.vo.user.UserUpdateMeVO;
+import cn.edu.xidian.aws.pojo.vo.user.UserUpdateVO;
 import cn.edu.xidian.aws.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Primary;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -33,14 +35,21 @@ public class UserService implements UserDetailsService {
     private UserRepository userRepository;
     @Autowired
     private PasswordEncoder encoder;
+    @Value("${aws.admin.uid}")
+    private String adminUID;
+    @Value("${aws.admin.password}")
+    private String adminPassword;
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         Optional<User> user = userRepository.findByUid(username);
-        return user.map(cn.edu.xidian.aws.pojo.bo.UserDetails::new).orElseThrow(AwsUsernameNotFoundException::new);
+        return user.map(cn.edu.xidian.aws.pojo.bo.UserDetails::new).orElseThrow(() -> new UsernameNotFoundException(username));
     }
 
-    public User addEmployee(UserRegisterVO vo) {
+    public User addUser(UserRegisterVO vo) {
+        if (vo == null) {
+            throw new AwsArgumentException();
+        }
         User user = new User();
         user.setUid(vo.getUid());
         user.setName(vo.getName());
@@ -48,24 +57,16 @@ public class UserService implements UserDetailsService {
         user.setCreateTime(System.currentTimeMillis());
         user.setUpdateTime(System.currentTimeMillis());
         user.setStatus(UserStatus.ENABLE.getCode());
-        user.setRoles(Constants.USER_ROLE_EMPLOYEE);
+        user.setRoles(vo.getRoles());
         return userRepository.save(user);
     }
 
-    public User updateMe(UserUpdateMeVO vo, User originUser) {
-        if (StringUtils.hasText(vo.getName())) {
-            originUser.setName(vo.getName());
-        }
-        if (StringUtils.hasText(vo.getPassword())) {
-            originUser.setPassword(encoder.encode(vo.getPassword()));
-        }
-        originUser.setUpdateTime(System.currentTimeMillis());
-        return userRepository.save(originUser);
-    }
-
     public User updateUser(UserUpdateVO vo, User originUser) {
-        if (vo == null || originUser == null) {
-            throw new AwsUsernameNotFoundException();
+        if (vo == null) {
+            throw new AwsArgumentException();
+        }
+        if (originUser == null) {
+            throw new AwsNotFoundException();
         }
         if (StringUtils.hasText(vo.getUid())) {
             originUser.setUid(vo.getUid());
@@ -83,8 +84,25 @@ public class UserService implements UserDetailsService {
         return userRepository.save(originUser);
     }
 
-    public User getUserByUid(String uid) {
-        return userRepository.findByUid(uid).orElse(null);
+    public User updateMe(UserUpdateMeVO vo, User originUser) {
+        if (vo == null) {
+            throw new AwsArgumentException();
+        }
+        if (originUser == null) {
+            throw new AwsNotFoundException();
+        }
+        if (StringUtils.hasText(vo.getName())) {
+            originUser.setName(vo.getName());
+        }
+        if (StringUtils.hasText(vo.getPassword())) {
+            originUser.setPassword(encoder.encode(vo.getPassword()));
+        }
+        originUser.setUpdateTime(System.currentTimeMillis());
+        return userRepository.save(originUser);
+    }
+
+    public User getUser(String uid) {
+        return userRepository.findByUid(uid).orElseThrow(AwsNotFoundException::new);
     }
 
     public Page<User> getUsers(int page, int size) {
@@ -92,16 +110,16 @@ public class UserService implements UserDetailsService {
         return userRepository.findAll(pr);
     }
 
-    public void initAdmin(String uid, String password) {
+    public void initAdmin() {
         User user = new User();
-        user.setUid(uid);
-        user.setName("admin" + uid);
-        user.setPassword(encoder.encode(password));
+        user.setUid(adminUID);
+        user.setName(adminUID);
+        user.setPassword(encoder.encode(adminPassword));
         user.setRoles(Constants.USER_ROLE_ADMIN + "," + Constants.USER_ROLE_EMPLOYEE);
         user.setCreateTime(System.currentTimeMillis());
         user.setUpdateTime(System.currentTimeMillis());
         user.setStatus(UserStatus.ENABLE.getCode());
-        if (userRepository.findByUid(uid).isPresent()) {
+        if (userRepository.findByUid(adminUID).isPresent()) {
             return;
         }
         userRepository.save(user);

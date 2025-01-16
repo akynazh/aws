@@ -8,6 +8,7 @@ import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
 import jakarta.servlet.http.HttpServletRequest;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
@@ -25,9 +26,10 @@ import java.util.function.Function;
  */
 @Service
 public class JwtService {
-
-    // Replace this with a secure key in a real application, ideally fetched from environment variables
-    public static final String SECRET = Constants.USER_PASSWORD_SECRET;
+    @Value("${aws.jwt.secret}")
+    private String jwtSecret;
+    @Value("${aws.jwt.validTime}")
+    private long jwtValidTime;
 
     public String extractToken(HttpServletRequest request) {
         // Retrieve the Authorization header
@@ -53,14 +55,14 @@ public class JwtService {
                 .setClaims(claims)
                 .setSubject(userName)
                 .setIssuedAt(new Date())
-                .setExpiration(new Date(System.currentTimeMillis() + Constants.TOKEN_VALID_TIME_MS))
+                .setExpiration(new Date(System.currentTimeMillis() + jwtValidTime * 3600 * 1000))
                 .signWith(getSignKey(), SignatureAlgorithm.HS256)
                 .compact();
     }
 
     // Get the signing key for JWT token
     private Key getSignKey() {
-        byte[] keyBytes = Decoders.BASE64.decode(SECRET);
+        byte[] keyBytes = Decoders.BASE64.decode(jwtSecret);
         return Keys.hmacShaKeyFor(keyBytes);
     }
 

@@ -2,6 +2,8 @@ package cn.edu.xidian.aws.constant;
 
 import lombok.Getter;
 
+import java.util.Arrays;
+
 /**
  * @author akynazh@gmail.com
  * @date 2025/1/15
@@ -19,5 +21,9 @@ public enum ScaleStatus {
     ScaleStatus(int code, String message) {
         this.code = code;
         this.message = message;
+    }
+
+    public static boolean codeExists(int code) {
+        return Arrays.stream(UserStatus.values()).anyMatch(userStatus -> userStatus.getCode() == code);
     }
 }
