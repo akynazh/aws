@@ -62,4 +62,12 @@ public class WorkController {
         return new RestResponse<>(HttpStatus.OK, workVOS);
     }
 
+    @GetMapping("/produce/{id}")
+    @PreAuthorize(Constants.PRE_AUTHORIZE_ADMIN)
+    public RestResponse<List<WorkVO>> getProduceWorks(@PathVariable long id) {
+        List<Work> produceWorks = workService.getProduceWorks(id);
+        List<WorkVO> workVOS = produceWorks.stream().map(Work::toWorkVO).collect(Collectors.toList());
+        return new RestResponse<>(HttpStatus.OK, workVOS);
+    }
+
 }

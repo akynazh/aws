@@ -14,6 +14,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
+import java.util.List;
 
 /**
  * @author akynazh@gmail.com
@@ -77,5 +78,9 @@ public class WorkService {
     public Page<Work> getWorks(int page, int size) {
         PageRequest pr = PageRequest.of(page, size);
         return workRepository.findAll(pr);
+    }
+
+    public List<Work> getProduceWorks(Long id) {
+        return workRepository.findByProduceId(id);
     }
 }
