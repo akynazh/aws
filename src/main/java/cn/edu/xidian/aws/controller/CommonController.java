@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.RestController;
 /**
  * @author akynazh@gmail.com
  * @date 2025/1/13
- * @description
+ * @description 公共模块
  */
 @RestController
 @Slf4j

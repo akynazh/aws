@@ -3,13 +3,16 @@ package cn.edu.xidian.aws.controller;
 import cn.edu.xidian.aws.constant.Constants;
 import cn.edu.xidian.aws.pojo.po.User;
 import cn.edu.xidian.aws.pojo.po.Work;
+import cn.edu.xidian.aws.pojo.vo.assignment.*;
 import cn.edu.xidian.aws.pojo.vo.common.RestResponse;
-import cn.edu.xidian.aws.pojo.vo.user.UserRegisterVO;
-import cn.edu.xidian.aws.pojo.vo.user.UserVO;
 import cn.edu.xidian.aws.pojo.vo.work.WorkAddVO;
 import cn.edu.xidian.aws.pojo.vo.work.WorkUpdateVO;
 import cn.edu.xidian.aws.pojo.vo.work.WorkVO;
+import cn.edu.xidian.aws.service.AssignmentService;
+import cn.edu.xidian.aws.service.JwtService;
+import cn.edu.xidian.aws.service.UserService;
 import cn.edu.xidian.aws.service.WorkService;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -23,14 +26,20 @@ import java.util.stream.Collectors;
 /**
  * @author akynazh@gmail.com
  * @date 2025/1/16
- * @description
+ * @description 工作服务模块
  */
 @RestController
-@Slf4j
 @RequestMapping("/work")
+@Slf4j
 public class WorkController {
     @Autowired
     private WorkService workService;
+    @Autowired
+    private AssignmentService assignmentService;
+    @Autowired
+    private UserService userService;
+    @Autowired
+    private JwtService jwtService;
 
     @PostMapping
     @PreAuthorize(Constants.PRE_AUTHORIZE_ADMIN)
@@ -70,4 +79,28 @@ public class WorkController {
         return new RestResponse<>(HttpStatus.OK, workVOS);
     }
 
+    @PreAuthorize(Constants.PRE_AUTHORIZE_ADMIN)
+    @PostMapping("/assign")
+    public RestResponse<WorkAssignmentsVO> assignWork(@RequestBody WorkAssignVO vo) {
+        return new RestResponse<>(HttpStatus.OK, assignmentService.assignWork(vo));
+    }
+
+    @PreAuthorize(Constants.PRE_AUTHORIZE_ADMIN)
+    @PutMapping("/assign")
+    public RestResponse<WorkAssignmentsVO> reassignWork(@RequestBody WorkReassignVO vo) {
+        return new RestResponse<>(HttpStatus.OK, assignmentService.reassignWork(vo));
+    }
+
+    @PreAuthorize(Constants.PRE_AUTHORIZE_EMPLOYEE)
+    @GetMapping("/assignments/me")
+    public RestResponse<MyAssignmentsVO> getMyAssignments(HttpServletRequest request) {
+        User user = userService.getUser(jwtService.extractUsername(jwtService.extractToken(request)));
+        return new RestResponse<>(HttpStatus.OK, assignmentService.getMyAssignments(user));
+    }
+
+    @PreAuthorize(Constants.PRE_AUTHORIZE_ADMIN)
+    @GetMapping("/{id}/assignments")
+    public RestResponse<WorkAssignmentsVO> getWorkAssignments(@PathVariable Long id) {
+        return new RestResponse<>(HttpStatus.OK, assignmentService.getWorkAssignments(id));
+    }
 }

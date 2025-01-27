@@ -1,11 +1,10 @@
 package cn.edu.xidian.aws.pojo.vo.assignment;
 
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+
+import java.util.List;
 
 /**
  * @author akynazh@gmail.com
@@ -15,10 +14,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Data
-public class AssignmentUpdateVO {
-
-    private long id;
-
+public class WorkReassignVO {
     /**
      * 采摘作业编号
      */
@@ -26,9 +22,5 @@ public class AssignmentUpdateVO {
     /**
      * 员工编号
      */
-    private long employeeId;
-    /**
-     * 状态，0 为禁用，1 为启用，2 为已删除
-     */
-    private int status;
+    private List<Long> employeeIdList;
 }

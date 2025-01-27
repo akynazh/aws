@@ -21,7 +21,7 @@ import java.util.stream.Collectors;
 /**
  * @author akynazh@gmail.com
  * @date 2025/1/16
- * @description
+ * @description 农作物模块
  */
 @RestController
 @RequestMapping("/produce")

@@ -25,7 +25,7 @@ import java.util.stream.Collectors;
 /**
  * @author akynazh@gmail.com
  * @date 2025/1/13
- * @description
+ * @description 用户服务模块
  */
 @RestController
 @Slf4j
