@@ -1,9 +1,11 @@
 package cn.edu.xidian.aws.pojo.po;
 
+import cn.edu.xidian.aws.pojo.vo.scale.ScaleVO;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.springframework.beans.BeanUtils;
 
 import java.math.BigDecimal;
 
@@ -73,4 +75,10 @@ public class Scale {
      * 状态，0 为禁用，1 为启用，2 为已删除
      */
     private int status;
+
+    public static ScaleVO toScaleVO(Scale scale) {
+        ScaleVO vo = new ScaleVO();
+        BeanUtils.copyProperties(scale, vo);
+        return vo;
+    }
 }

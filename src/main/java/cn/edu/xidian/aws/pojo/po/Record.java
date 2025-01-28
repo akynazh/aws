@@ -1,9 +1,11 @@
 package cn.edu.xidian.aws.pojo.po;
 
+import cn.edu.xidian.aws.pojo.vo.record.RecordVO;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.springframework.beans.BeanUtils;
 
 import java.math.BigDecimal;
 
@@ -58,4 +60,10 @@ public class Record {
      * 称重时间，毫秒级时间戳
      */
     private long dataTime;
+
+    public static RecordVO toRecordVO(Record record) {
+        RecordVO vo = new RecordVO();
+        BeanUtils.copyProperties(record, vo);
+        return vo;
+    }
 }

@@ -21,42 +21,6 @@ import java.math.BigDecimal;
 public class ScaleUpdateVO {
     private long id;
     /**
-     * 电子秤密钥
-     */
-    private String skey;
-    /**
-     * 型号
-     */
-    private String model;
-    /**
-     * 最大量程
-     */
-    private BigDecimal maxCapacity;
-    /**
-     * 最小量程
-     */
-    private BigDecimal minCapacity;
-    /**
-     * 量程单位，0 为 mg，1 为 g，2 为 kg，3 为 t，4 为 lb（磅），5 为 oz（盎司），6 为 ct（克拉）
-     */
-    private int unit;
-    /**
-     * 检定分度值
-     */
-    private int verificationInterval;
-    /**
-     * 显示分度值
-     */
-    private int displayInterval;
-    /**
-     * 分度值单位，0 为 mg，1 为 g，2 为 kg，3 为 t，4 为 lb（磅），5 为 oz（盎司），6 为 ct（克拉）
-     */
-    private int unitDv;
-    /**
-     * 通信协议，0 为 MQTT，1 为 HTTP
-     */
-    private int protocol;
-    /**
      * 状态，0 为禁用，1 为启用，2 为已删除
      */
     private int status;
