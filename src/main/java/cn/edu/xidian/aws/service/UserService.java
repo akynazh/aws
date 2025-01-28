@@ -21,6 +21,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
+import java.util.List;
 import java.util.Optional;
 
 /**
@@ -105,9 +106,9 @@ public class UserService implements UserDetailsService {
         return userRepository.findByUid(uid).orElseThrow(AwsNotFoundException::new);
     }
 
-    public Page<User> getUsers(int page, int size) {
+    public List<User> getUsers(int page, int size) {
         PageRequest pr = PageRequest.of(page, size);
-        return userRepository.findAll(pr);
+        return userRepository.findAll(pr).getContent();
     }
 
     public void initAdmin() {

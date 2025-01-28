@@ -77,9 +77,8 @@ public class UserController {
 
     @GetMapping("/list")
     @PreAuthorize(Constants.PRE_AUTHORIZE_ADMIN)
-    public RestResponse<List<UserVO>> getUsers(@RequestParam(defaultValue = "0") int page) {
-        Page<User> usersPage = userService.getUsers(page, 10);
-        List<User> users = usersPage.getContent();
+    public RestResponse<List<UserVO>> getUsers(@RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "10") int size) {
+        List<User> users = userService.getUsers(page, size);
         List<UserVO> userVOS = users.stream().map(User::toUserVO).collect(Collectors.toList());
         return new RestResponse<>(HttpStatus.OK, userVOS);
     }

@@ -62,6 +62,9 @@ public class Work {
     private int status;
 
     public static WorkVO toWorkVO(Work work) {
+        if (work == null) {
+            return null;
+        }
         WorkVO workVO = new WorkVO();
         BeanUtils.copyProperties(work, workVO);
         return workVO;

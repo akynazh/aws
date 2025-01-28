@@ -13,6 +13,8 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
+import java.util.List;
+
 /**
  * @author akynazh@gmail.com
  * @date 2025/1/16
@@ -54,9 +56,9 @@ public class ProduceService {
         return produceRepository.findById(id).orElseThrow(AwsNotFoundException::new);
     }
 
-    public Page<Produce> getProduces(int page, int size) {
+    public List<Produce> getProduces(int page, int size) {
         PageRequest pr = PageRequest.of(page, size);
-        return produceRepository.findAll(pr);
+        return produceRepository.findAll(pr).getContent();
     }
 
 }

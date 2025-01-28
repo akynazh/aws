@@ -17,6 +17,8 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
+import java.util.List;
+
 /**
  * @author akynazh@gmail.com
  * @date 2025/1/16
@@ -54,8 +56,8 @@ public class ScaleService {
         return scaleRepository.findById(id).orElseThrow(AwsNotFoundException::new);
     }
 
-    public Page<Scale> getScales(int page, int size) {
+    public List<Scale> getScales(int page, int size) {
         PageRequest pr = PageRequest.of(page, size);
-        return scaleRepository.findAll(pr);
+        return scaleRepository.findAll(pr).getContent();
     }
 }

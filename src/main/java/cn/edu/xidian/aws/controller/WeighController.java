@@ -50,13 +50,12 @@ public class WeighController {
 
     @GetMapping("/record/list")
     @PreAuthorize(Constants.PRE_AUTHORIZE_EMPLOYEE)
-    public ResponseEntity<List<RecordVO>> getRecordList(@RequestBody RecordsGetVO vo) {
-        Page<Record> recordsPage = recordService.getRecords(vo);
-        List<Record> records = recordsPage.getContent();
+    public ResponseEntity<List<RecordVO>> getRecords(@RequestBody RecordsGetVO vo) {
+        List<Record> records = recordService.getRecords(vo);
         List<RecordVO> vos = records.stream().map(Record::toRecordVO).collect(Collectors.toList());
         return ResponseEntity.ok(vos);
     }
-    
+
     @PostMapping("/scale")
     @PreAuthorize(Constants.PRE_AUTHORIZE_ADMIN)
     public ResponseEntity<ScaleVO> addScale(@RequestBody ScaleAddVO vo) {
@@ -73,9 +72,8 @@ public class WeighController {
 
     @GetMapping("/scale/list")
     @PreAuthorize(Constants.PRE_AUTHORIZE_EMPLOYEE)
-    public RestResponse<List<ScaleVO>> getScaleList(@RequestParam(defaultValue = "0") int page) {
-        Page<Scale> scalesPage = scaleService.getScales(page, 10);
-        List<Scale> scales = scalesPage.getContent();
+    public RestResponse<List<ScaleVO>> getScales(@RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "10") int size) {
+        List<Scale> scales = scaleService.getScales(page, size);
         List<ScaleVO> vos = scales.stream().map(Scale::toScaleVO).collect(Collectors.toList());
         return new RestResponse<>(HttpStatus.OK, vos);
     }

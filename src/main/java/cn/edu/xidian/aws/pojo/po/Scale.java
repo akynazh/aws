@@ -77,6 +77,9 @@ public class Scale {
     private int status;
 
     public static ScaleVO toScaleVO(Scale scale) {
+        if (scale == null) {
+            return null;
+        }
         ScaleVO vo = new ScaleVO();
         BeanUtils.copyProperties(scale, vo);
         return vo;

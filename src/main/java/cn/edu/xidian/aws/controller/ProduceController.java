@@ -46,9 +46,8 @@ public class ProduceController {
 
     @GetMapping("/list")
     @PreAuthorize(Constants.PRE_AUTHORIZE_EMPLOYEE)
-    public RestResponse<List<ProduceVO>> getProduceList(@RequestParam(defaultValue = "0") int page) {
-        Page<Produce> producesPage = produceService.getProduces(page, 10);
-        List<Produce> produces = producesPage.getContent();
+    public RestResponse<List<ProduceVO>> getProduces(@RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "10") int size) {
+        List<Produce> produces = produceService.getProduces(page, size);
         List<ProduceVO> produceVOS = produces.stream().map(Produce::toProduceVO).collect(Collectors.toList());
         return new RestResponse<>(HttpStatus.OK, produceVOS);
     }

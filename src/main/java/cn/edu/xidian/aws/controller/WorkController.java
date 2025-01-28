@@ -64,9 +64,8 @@ public class WorkController {
 
     @GetMapping("/list")
     @PreAuthorize(Constants.PRE_AUTHORIZE_ADMIN)
-    public RestResponse<List<WorkVO>> getWorks(@RequestParam(defaultValue = "0") int page) {
-        Page<Work> worksPage = workService.getWorks(page, 10);
-        List<Work> works = worksPage.getContent();
+    public RestResponse<List<WorkVO>> getWorks(@RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "10") int size) {
+        List<Work> works = workService.getWorks(page, size);
         List<WorkVO> workVOS = works.stream().map(Work::toWorkVO).collect(Collectors.toList());
         return new RestResponse<>(HttpStatus.OK, workVOS);
     }

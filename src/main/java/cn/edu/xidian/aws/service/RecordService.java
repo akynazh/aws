@@ -18,6 +18,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 /**
  * @author akynazh@gmail.com
  * @date 2025/1/16
@@ -40,7 +42,7 @@ public class RecordService {
         return recordRepository.findById(id).orElseThrow(AwsNotFoundException::new);
     }
 
-    public Page<Record> getRecords(RecordsGetVO vo) {
+    public List<Record> getRecords(RecordsGetVO vo) {
         PageRequest pr = PageRequest.of(vo.getPage(), vo.getSize());
 
         // Create a probe Record object for filtering
@@ -54,6 +56,6 @@ public class RecordService {
 
         Example<Record> example = Example.of(probe, matcher);
 
-        return recordRepository.findAll(example, pr);
+        return recordRepository.findAll(example, pr).getContent();
     }
 }

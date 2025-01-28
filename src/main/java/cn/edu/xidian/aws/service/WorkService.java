@@ -75,9 +75,9 @@ public class WorkService {
         return workRepository.findById(id).orElseThrow(AwsNotFoundException::new);
     }
 
-    public Page<Work> getWorks(int page, int size) {
+    public List<Work> getWorks(int page, int size) {
         PageRequest pr = PageRequest.of(page, size);
-        return workRepository.findAll(pr);
+        return workRepository.findAll(pr).getContent();
     }
 
     public List<Work> getProduceWorks(Long id) {

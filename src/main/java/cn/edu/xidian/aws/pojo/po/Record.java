@@ -62,6 +62,9 @@ public class Record {
     private long dataTime;
 
     public static RecordVO toRecordVO(Record record) {
+        if (record == null) {
+            return null;
+        }
         RecordVO vo = new RecordVO();
         BeanUtils.copyProperties(record, vo);
         return vo;
