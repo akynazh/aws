@@ -12,6 +12,7 @@ import cn.edu.xidian.aws.pojo.vo.scale.ScaleUpdateVO;
 import cn.edu.xidian.aws.repository.RecordRepository;
 import cn.edu.xidian.aws.repository.ScaleRepository;
 import org.springframework.beans.BeanUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Example;
 import org.springframework.data.domain.ExampleMatcher;
 import org.springframework.data.domain.Page;
@@ -27,6 +28,7 @@ import java.util.List;
  */
 @Service
 public class RecordService {
+    @Autowired
     private RecordRepository recordRepository;
 
     public Record addRecord(RecordAddVO vo) {

@@ -12,6 +12,7 @@ import cn.edu.xidian.aws.pojo.vo.scale.ScaleAddVO;
 import cn.edu.xidian.aws.pojo.vo.scale.ScaleUpdateVO;
 import cn.edu.xidian.aws.repository.ScaleRepository;
 import org.springframework.beans.BeanUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
@@ -26,6 +27,7 @@ import java.util.List;
  */
 @Service
 public class ScaleService {
+    @Autowired
     private ScaleRepository scaleRepository;
 
     public Scale addScale(ScaleAddVO vo) {

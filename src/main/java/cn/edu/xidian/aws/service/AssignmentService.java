@@ -9,6 +9,7 @@ import cn.edu.xidian.aws.pojo.vo.assignment.WorkAssignmentsVO;
 import cn.edu.xidian.aws.pojo.vo.assignment.WorkReassignVO;
 import cn.edu.xidian.aws.repository.AssignmentRepository;
 import com.google.common.collect.Sets;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
@@ -21,6 +22,7 @@ import java.util.stream.Collectors;
  */
 @Service
 public class AssignmentService {
+    @Autowired
     private AssignmentRepository assignmentRepository;
 
     public WorkAssignmentsVO assignWork(WorkAssignVO vo) {
