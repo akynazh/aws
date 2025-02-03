@@ -1,0 +1,23 @@
+{
+    "files.exclude": {
+        "xduts/build": true,
+        "xduts/*.aux": true,
+        "xduts/*.log": true,
+        "xduts/*.bcf": true,
+        "xduts/*.out": true,
+        "xduts/*.run.xml": true,
+        "xduts/*.toc": true,
+        "target": true,
+        ".venv": true,
+        ".idea": true,
+
+        "xduts/xdufont.sty": true,
+        "xduts/xduts.dtx": true,
+        "xduts/xduts.ins": true,
+        "xduts/xdulogo.pdf": true,
+        "xduts/xdupgthesis.cls": true,
+        "xduts/xduugtp.cls": true,
+        "xduts/README.md": true,
+        "xduts/build.lua": true,
+    }
+}
