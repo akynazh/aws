@@ -1,0 +1,35 @@
+<template>
+  <div>
+    <svg :style="{ width: width, height: height }">
+      <use :xlink:href="prefix + name" :fill="color"></use>
+    </svg>
+  </div>
+</template>
+
+<script setup lang="ts">
+defineProps({
+  // xlink:href 属性值的前缀
+  prefix: {
+    type: String,
+    default: "#icon-",
+  },
+  // svg 矢量图的名字
+  name: String,
+  // svg 图标的颜色
+  color: {
+    type: String,
+    default: "",
+  },
+  // svg 宽度
+  width: {
+    type: String,
+    default: "16px",
+  },
+  // svg 高度
+  height: {
+    type: String,
+    default: "16px",
+  },
+});
+</script>
+<style scoped></style>
