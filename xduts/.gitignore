@@ -2,7 +2,7 @@
 *.aux
 *.bat
 *.bcf
-*.cls
+# *.cls
 *.glo
 *.gls
 *.gz
@@ -13,12 +13,12 @@
 *.log
 *.out
 *.rar
-*.sty
+# *.sty
 *.sublime-project
 *.sublime-workspace
 *.synctex
 *.synctex(busy)
-*.tex
+# *.tex
 *.toc
 *.txt
 *.xml
@@ -26,4 +26,4 @@
 .DS_Store
 build
 test
-xduts.pdf
+# xduts.pdf
