@@ -1,13 +1,14 @@
-//统一管理项目用户相关的接口
-import request from '@/utils/request'
-import type { LoginParams, LoginResultModel, UserInfoModel } from './type'
-//统一管理接口
+import request from "@/utils/request";
+import type { LoginParams, LoginResultModel, UserInfoModel } from "./type";
+
 enum API {
-    LOGIN_URL = '/user/login',//登录接口
-    USERINFO_URL = '/user/info',//获取用户信息接口
+  LOGIN_URL = "/user/login",
+  LOGOUT_URL = "/user/logout",
+  USER_INFO_URL = "/user",
 }
-// 对外暴露请求函数
-// 登录接口方法
-export const reqLogin = (data: LoginParams) => request.post<any, LoginResultModel>(API.LOGIN_URL, data)
-// 获取用户信息接口方法
-export const reqUserInfo = () => request.get<any, UserInfoModel>(API.USERINFO_URL)
+
+export const reqLogin = (data: LoginParams) =>
+  request.post<any, LoginResultModel>(API.LOGIN_URL, data);
+export const reqLogout = () => request.post<any, any>(API.LOGOUT_URL);
+export const reqUserInfo = () =>
+  request.get<any, UserInfoModel>(API.USER_INFO_URL);

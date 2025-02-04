@@ -1,9 +1,9 @@
-//封装本地存储的读取与存储方法
-//本地存储存储TOKEN
 export const SET_TOKEN = (token: string) => {
-    localStorage.setItem('TOKEN', token)
-}
-//本地存储读取TOKEN
+  localStorage.setItem("TOKEN", token);
+};
 export const GET_TOKEN = () => {
-    return localStorage.getItem("TOKEN")
-}
+  return localStorage.getItem("TOKEN");
+};
+export const REMOVE_TOKEN = () => {
+  localStorage.removeItem("TOKEN");
+};

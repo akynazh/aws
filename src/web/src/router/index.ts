@@ -1,5 +1,6 @@
 import { createRouter, createWebHashHistory } from "vue-router";
 import { constantRoutes } from "./routers";
+import { GET_TOKEN } from "@/utils/storage";
 
 let router = createRouter({
   history: createWebHashHistory(),
@@ -7,12 +8,12 @@ let router = createRouter({
 });
 
 router.beforeEach((to, from, next) => {
-    const isAuthenticated = localStorage.getItem("token");
-    if (to.path !== "/login" && !isAuthenticated) {
-      next("/login"); // 未登录，跳转到登录页
-    } else {
-      next(); // 放行
-    }
-  });
+  const isAuthenticated = GET_TOKEN()
+  if (to.path !== "/login" && !isAuthenticated) {
+    next("/login"); // 未登录，跳转到登录页
+  } else {
+    next(); // 放行
+  }
+});
 
-  export default router;
+export default router;

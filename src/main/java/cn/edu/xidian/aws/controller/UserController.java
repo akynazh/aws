@@ -6,6 +6,9 @@ import cn.edu.xidian.aws.pojo.vo.common.RestResponse;
 import cn.edu.xidian.aws.pojo.vo.user.*;
 import cn.edu.xidian.aws.service.JwtService;
 import cn.edu.xidian.aws.service.UserService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
@@ -30,6 +33,7 @@ import java.util.stream.Collectors;
 @RestController
 @Slf4j
 @RequestMapping("/user")
+@Tag(name = "用户管理模块")
 public class UserController {
     @Autowired
     private UserService userService;
@@ -38,6 +42,7 @@ public class UserController {
     @Autowired
     private AuthenticationManager authenticationManager;
 
+    @Operation(summary = "管理员添加用户", security = @SecurityRequirement(name = "s1"))
     @PostMapping
     @PreAuthorize(Constants.PRE_AUTHORIZE_ADMIN)
     public RestResponse<UserVO> addUser(@RequestBody UserRegisterVO vo) {
@@ -45,6 +50,7 @@ public class UserController {
         return new RestResponse<>(HttpStatus.OK, User.toUserVO(user));
     }
 
+    @Operation(summary = "管理员更新用户", security = @SecurityRequirement(name = "s1"))
     @PutMapping
     @PreAuthorize(Constants.PRE_AUTHORIZE_ADMIN)
     public RestResponse<UserVO> updateUser(@RequestBody UserUpdateVO vo) {
@@ -53,6 +59,7 @@ public class UserController {
         return new RestResponse<>(HttpStatus.OK, User.toUserVO(updatedUser));
     }
 
+    @Operation(summary = "用户更新个人信息", security = @SecurityRequirement(name = "s1"))
     @PutMapping("/me")
     @PreAuthorize(Constants.PRE_AUTHORIZE_EMPLOYEE)
     public RestResponse<UserVO> updateMe(@RequestBody UserUpdateMeVO vo, HttpServletRequest request) {
@@ -61,6 +68,7 @@ public class UserController {
         return new RestResponse<>(HttpStatus.OK, User.toUserVO(updatedUser));
     }
 
+    @Operation(summary = "用户获取个人信息", security = @SecurityRequirement(name = "s1"))
     @GetMapping
     @PreAuthorize(Constants.PRE_AUTHORIZE_EMPLOYEE)
     public RestResponse<UserVO> getMe(HttpServletRequest request) {
@@ -68,6 +76,7 @@ public class UserController {
         return new RestResponse<>(HttpStatus.OK, User.toUserVO(user));
     }
 
+    @Operation(summary = "管理员获取用户信息", security = @SecurityRequirement(name = "s1"))
     @GetMapping("/{uid}")
     @PreAuthorize(Constants.PRE_AUTHORIZE_ADMIN)
     public RestResponse<UserVO> getEmployee(@PathVariable String uid) {
@@ -75,6 +84,7 @@ public class UserController {
         return new RestResponse<>(HttpStatus.OK, User.toUserVO(user));
     }
 
+    @Operation(summary = "管理员获取用户列表", security = @SecurityRequirement(name = "s1"))
     @GetMapping("/list")
     @PreAuthorize(Constants.PRE_AUTHORIZE_ADMIN)
     public RestResponse<List<UserVO>> getUsers(@RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "10") int size) {
@@ -83,6 +93,7 @@ public class UserController {
         return new RestResponse<>(HttpStatus.OK, userVOS);
     }
 
+    @Operation(summary = "用户登录")
     @PostMapping("/login")
     public RestResponse<String> login(@RequestBody UserLoginVO vo) {
         Authentication auth = authenticationManager.authenticate(
@@ -94,6 +105,7 @@ public class UserController {
         return new RestResponse<>(HttpStatus.NOT_FOUND);
     }
 
+    @Operation(summary = "用户退出登录")
     @PostMapping("/logout")
     public void logout(HttpServletResponse response) throws IOException {
         response.sendRedirect("/index");

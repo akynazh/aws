@@ -1,38 +1,48 @@
-//登录接口需要携带参数ts类型
 export interface LoginParams {
-    username: string,
-    password: string
+  uid: string;
+  password: string;
 }
 
-interface dataType {
-    token?: string
-    message?: string
-}
-
-//登录接口返回数据类型
 export interface LoginResultModel {
-    code: number,
-    data: dataType
+  code: number;
+  msg: string;
+  data: string;
 }
 
-interface userInfo {
-    userId: number,
-    avatar: string,
-    username: string,
-    password: string,
-    desc: string,
-    roles: string[],
-    buttons: string[], 
-    routes: string[],
-    token: string
+interface UserInfo {
+    /**
+     * 创建时间，毫秒级时间戳
+     */
+    createTime?: number;
+    /**
+     * 用户 ID
+     */
+    id?: number;
+    /**
+     * 员工姓名
+     */
+    name?: string;
+    /**
+     * 角色，以英文逗号分隔，比如 ROLE_EMPLOYEE,ROLE_ADMIN
+     */
+    roles?: string;
+    /**
+     * 状态，0 为禁用，1 为启用，2 为已删除
+     */
+    status?: number;
+    /**
+     * 用户身份证
+     */
+    uid?: string;
+    /**
+     * 更新时间，毫秒级时间戳
+     */
+    updateTime?: number;
+    [property: string]: any;
 }
 
-interface user{
-    checkUser: userInfo
-}
-
-//定义服务器返回用户信息的数据类型
 export interface UserInfoModel {
-    code: number,
-    data: user
+  code: number;
+  msg: string;
+  data: UserInfo;
 }

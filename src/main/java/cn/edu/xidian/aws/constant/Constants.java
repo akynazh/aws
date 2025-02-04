@@ -22,6 +22,10 @@ public interface Constants {
     String PRE_AUTHORIZE_ADMIN = "hasAuthority('" + USER_ROLE_ADMIN + "')";
     String PRE_AUTHORIZE_EMPLOYEE = "hasAuthority('" + USER_ROLE_EMPLOYEE + "')";
 
-    String[] ROUTE_PERMIT = {"/", "/index", "/user/login", "/user/logout"};
+    String[] ROUTE_PERMIT = {"/", "/index",
+            "/user/login", "/user/logout",
+            "/docs", "/docs/**",
+//            "/swagger-ui.html", "/swagger-ui/**",
+    };
     String[] ROUTE_ADMIN = {"/admin/**"};
 }
