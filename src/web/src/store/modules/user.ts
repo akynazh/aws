@@ -4,7 +4,7 @@ import { defineStore } from "pinia";
 import { reqLogin } from "@/api/user";
 //引入数据类型
 import type { LoginParams, LoginResultModel } from "@/api/user/type";
-import type { UserState } from "./types/type";
+import type { UserState } from "./types";
 //引入操作本地存储的工具方法
 import { SET_TOKEN, GET_TOKEN } from "@/utils/storage";
 //创建用户小仓库

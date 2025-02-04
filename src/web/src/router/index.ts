@@ -1,18 +1,18 @@
-//通过vue-router插件实现模板路由配置
-import { createRouter, createWebHashHistory } from 'vue-router'
-import { constantRoutes } from './routers'
-//创建路由器
-let router = createRouter({
-    //路由模式hash
-    history: createWebHashHistory(),
-    routes: constantRoutes,
-    //滚动行为
-    scrollBehavior() {
-        return {
-            left: 0,
-            top: 0
-        }
-    }
-})
+import { createRouter, createWebHashHistory } from "vue-router";
+import { constantRoutes } from "./routers";
 
-export default router
+let router = createRouter({
+  history: createWebHashHistory(),
+  routes: constantRoutes,
+});
+
+router.beforeEach((to, from, next) => {
+    const isAuthenticated = localStorage.getItem("token");
+    if (to.path !== "/login" && !isAuthenticated) {
+      next("/login"); // 未登录，跳转到登录页
+    } else {
+      next(); // 放行
+    }
+  });
+
+  export default router;
