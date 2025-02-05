@@ -5,6 +5,8 @@ import lombok.Getter;
 import lombok.Setter;
 import org.springframework.http.HttpStatus;
 
+import java.util.Objects;
+
 /**
  * @author akynazh@gmail.com
  * @date 2025/1/15
@@ -12,7 +14,7 @@ import org.springframework.http.HttpStatus;
  */
 @Setter
 @Getter
-@Schema(name = "RestResponse<T>", description = "REST 结果")
+//@Schema(name = "RestResponse", description = "REST 结果")
 public class RestResponse<T> {
     @Schema(description = "状态码")
     private int code;

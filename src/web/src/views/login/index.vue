@@ -25,10 +25,10 @@ import { User, Lock } from "@element-plus/icons-vue";
 import { reactive, ref } from "vue";
 import { useRouter } from "vue-router";
 import { ElNotification } from "element-plus";
-import useUserStore from "@/store/modules/user";
+import userStore from "@/store/modules/user";
 import { getTime } from "@/utils/time";
 
-let userStore = useUserStore();
+let store = userStore();
 let router = useRouter();
 let loading = ref(false);
 let loginFrom = reactive({
@@ -38,12 +38,11 @@ let loginFrom = reactive({
 let loginForms = ref();
 const login = async () => {
   await loginForms.value.validate();
-  // 按钮加载效果: 开始加载
   loading.value = true;
   // 通知仓库发送登录请求
   try {
     // 请求成功->进入首页展示数据
-    await userStore.login(loginFrom);
+    await store.login(loginFrom);
     // 编程式导航跳转到展示数据首页
     router.push("/");
     // 登录成功的提示信息
@@ -97,18 +96,19 @@ const rules = {
 .login_container {
   width: 100%;
   height: 100vh;
-  // background: url("@/assets/images/background.jpg") no-repeat;
+  background: url("@/assets/images/farm.png") no-repeat;
   background-color: aquamarine;
   background-size: cover;
 }
 
 .login_form {
   position: relative;
-  width: 80%;
-  top: 30vh;
-  // background: url("@/assets/images/login_form.png") no-repeat;
+  width: 70%;
+  top: 20vh;
+  background: url("@/assets/images/farm1.jpeg") no-repeat;
   background-color: aquamarine;
   background-size: cover;
+  border-radius: 15px;
   padding: 40px;
 
   h1 {

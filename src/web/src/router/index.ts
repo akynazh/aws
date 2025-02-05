@@ -10,9 +10,9 @@ let router = createRouter({
 router.beforeEach((to, from, next) => {
   const isAuthenticated = GET_TOKEN()
   if (to.path !== "/login" && !isAuthenticated) {
-    next("/login"); // 未登录，跳转到登录页
+    next("/login");
   } else {
-    next(); // 放行
+    next();
   }
 });
 

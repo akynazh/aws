@@ -1,1 +1,8 @@
-@import "modern-css-reset";
+@use "modern-css-reset";
+
+body {
+    width: 100%;
+    height: 100vh;
+    // background: url("@/assets/images/farm.png") no-repeat;
+    background-size: cover;
+}

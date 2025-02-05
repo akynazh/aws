@@ -111,6 +111,10 @@ public class UserService implements UserDetailsService {
         return userRepository.findAll(pr).getContent();
     }
 
+    public long getUserCount() {
+        return userRepository.count();
+    }
+
     public void initAdmin() {
         User user = new User();
         user.setUid(adminUID);

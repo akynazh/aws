@@ -10,10 +10,31 @@ export const constantRoutes = [
     name: "home",
   },
   {
+    path: "/user",
+    component: () => import("@/views/user/index.vue"),
+    name: "user",
+  },
+  {
+    path: "/produce",
+    component: () => import("@/views/produce/index.vue"),
+    name: "produce",
+  },
+  {
+    path: "/work",
+    component: () => import("@/views/work/index.vue"),
+    name: "work",
+  },
+  {
+    path: "/weigh",
+    component: () => import("@/views/weigh/index.vue"),
+    name: "weigh",
+  },
+  {
     path: "/404",
     component: () => import("@/views/404/index.vue"),
     name: "404",
   },
+
   {
     path: "/:pathMatch(.*)*",
     redirect: "/404",

@@ -87,10 +87,14 @@ public class UserController {
     @Operation(summary = "管理员获取用户列表")
     @GetMapping("/list")
     @PreAuthorize(Constants.PRE_AUTHORIZE_ADMIN)
-    public RestResponse<List<UserVO>> getUsers(@RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "10") int size) {
+    public RestResponse<UserListVO> getUsers(@RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "10") int size) {
         List<User> users = userService.getUsers(page, size);
+        long userCount = userService.getUserCount();
         List<UserVO> userVOS = users.stream().map(User::toUserVO).collect(Collectors.toList());
-        return new RestResponse<>(HttpStatus.OK, userVOS);
+        UserListVO vo = new UserListVO();
+        vo.setUserList(userVOS);
+        vo.setCount(userCount);
+        return new RestResponse<>(HttpStatus.OK, vo);
     }
 
     @Operation(summary = "用户登录")
