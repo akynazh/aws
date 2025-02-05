@@ -12,6 +12,8 @@ import cn.edu.xidian.aws.service.AssignmentService;
 import cn.edu.xidian.aws.service.JwtService;
 import cn.edu.xidian.aws.service.UserService;
 import cn.edu.xidian.aws.service.WorkService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,6 +33,7 @@ import java.util.stream.Collectors;
 @RestController
 @RequestMapping("/work")
 @Slf4j
+@Tag(name = "工作服务模块")
 public class WorkController {
     @Autowired
     private WorkService workService;
@@ -41,6 +44,7 @@ public class WorkController {
     @Autowired
     private JwtService jwtService;
 
+    @Operation(summary = "添加采摘工作")
     @PostMapping
     @PreAuthorize(Constants.PRE_AUTHORIZE_ADMIN)
     public RestResponse<WorkVO> addWork(@RequestBody WorkAddVO vo) {
@@ -48,6 +52,7 @@ public class WorkController {
         return new RestResponse<>(HttpStatus.OK, Work.toWorkVO(work));
     }
 
+    @Operation(summary = "更新采摘工作")
     @PutMapping
     @PreAuthorize(Constants.PRE_AUTHORIZE_ADMIN)
     public RestResponse<WorkVO> updateWork(@RequestBody WorkUpdateVO vo) {
@@ -55,6 +60,7 @@ public class WorkController {
         return new RestResponse<>(HttpStatus.OK, Work.toWorkVO(work));
     }
 
+    @Operation(summary = "获取采摘工作")
     @GetMapping("/{id}")
     @PreAuthorize(Constants.PRE_AUTHORIZE_ADMIN)
     public RestResponse<WorkVO> getWork(@PathVariable long id) {
@@ -62,6 +68,7 @@ public class WorkController {
         return new RestResponse<>(HttpStatus.OK, Work.toWorkVO(work));
     }
 
+    @Operation(summary = "获取采摘工作列表")
     @GetMapping("/list")
     @PreAuthorize(Constants.PRE_AUTHORIZE_ADMIN)
     public RestResponse<List<WorkVO>> getWorks(@RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "10") int size) {
@@ -70,6 +77,7 @@ public class WorkController {
         return new RestResponse<>(HttpStatus.OK, workVOS);
     }
 
+    @Operation(summary = "获取农作物的采摘工作列表")
     @GetMapping("/produce/{id}")
     @PreAuthorize(Constants.PRE_AUTHORIZE_ADMIN)
     public RestResponse<List<WorkVO>> getProduceWorks(@PathVariable long id) {
@@ -78,18 +86,21 @@ public class WorkController {
         return new RestResponse<>(HttpStatus.OK, workVOS);
     }
 
+    @Operation(summary = "分配工作")
     @PreAuthorize(Constants.PRE_AUTHORIZE_ADMIN)
     @PostMapping("/assign")
     public RestResponse<WorkAssignmentsVO> assignWork(@RequestBody WorkAssignVO vo) {
         return new RestResponse<>(HttpStatus.OK, assignmentService.assignWork(vo));
     }
 
+    @Operation(summary = "重新分配工作")
     @PreAuthorize(Constants.PRE_AUTHORIZE_ADMIN)
     @PutMapping("/assign")
     public RestResponse<WorkAssignmentsVO> reassignWork(@RequestBody WorkReassignVO vo) {
         return new RestResponse<>(HttpStatus.OK, assignmentService.reassignWork(vo));
     }
 
+    @Operation(summary = "获取我被分配的工作")
     @PreAuthorize(Constants.PRE_AUTHORIZE_EMPLOYEE)
     @GetMapping("/assignments/me")
     public RestResponse<MyAssignmentsVO> getMyAssignments(HttpServletRequest request) {
@@ -97,6 +108,7 @@ public class WorkController {
         return new RestResponse<>(HttpStatus.OK, assignmentService.getMyAssignments(user));
     }
 
+    @Operation(summary = "获取采摘作业的分配情况")
     @PreAuthorize(Constants.PRE_AUTHORIZE_ADMIN)
     @GetMapping("/{id}/assignments")
     public RestResponse<WorkAssignmentsVO> getWorkAssignments(@PathVariable Long id) {

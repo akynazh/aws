@@ -7,6 +7,8 @@ import cn.edu.xidian.aws.pojo.vo.produce.ProduceAddVO;
 import cn.edu.xidian.aws.pojo.vo.produce.ProduceUpdateVO;
 import cn.edu.xidian.aws.pojo.vo.produce.ProduceVO;
 import cn.edu.xidian.aws.service.ProduceService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -26,10 +28,12 @@ import java.util.stream.Collectors;
 @RestController
 @RequestMapping("/produce")
 @Slf4j
+@Tag(name = "农作物模块")
 public class ProduceController {
     @Autowired
     private ProduceService produceService;
 
+    @Operation(summary = "添加农作物")
     @PostMapping
     @PreAuthorize(Constants.PRE_AUTHORIZE_ADMIN)
     public ResponseEntity<ProduceVO> addProduce(@RequestBody ProduceAddVO vo) {
@@ -37,6 +41,7 @@ public class ProduceController {
         return ResponseEntity.ok(Produce.toProduceVO(produce));
     }
 
+    @Operation(summary = "更新农作物")
     @PutMapping
     @PreAuthorize(Constants.PRE_AUTHORIZE_ADMIN)
     public ResponseEntity<ProduceVO> updateProduce(@RequestBody ProduceUpdateVO vo) {
@@ -44,6 +49,7 @@ public class ProduceController {
         return ResponseEntity.ok(Produce.toProduceVO(produce));
     }
 
+    @Operation(summary = "获取农作物列表")
     @GetMapping("/list")
     @PreAuthorize(Constants.PRE_AUTHORIZE_EMPLOYEE)
     public RestResponse<List<ProduceVO>> getProduces(@RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "10") int size) {
@@ -52,6 +58,7 @@ public class ProduceController {
         return new RestResponse<>(HttpStatus.OK, produceVOS);
     }
 
+    @Operation(summary = "获取农作物")
     @GetMapping("/{id}")
     @PreAuthorize(Constants.PRE_AUTHORIZE_EMPLOYEE)
     public RestResponse<ProduceVO> getProduce(@PathVariable Long id) {

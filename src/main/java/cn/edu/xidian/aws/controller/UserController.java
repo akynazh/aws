@@ -42,7 +42,7 @@ public class UserController {
     @Autowired
     private AuthenticationManager authenticationManager;
 
-    @Operation(summary = "管理员添加用户", security = @SecurityRequirement(name = "s1"))
+    @Operation(summary = "管理员添加用户")
     @PostMapping
     @PreAuthorize(Constants.PRE_AUTHORIZE_ADMIN)
     public RestResponse<UserVO> addUser(@RequestBody UserRegisterVO vo) {
@@ -50,7 +50,7 @@ public class UserController {
         return new RestResponse<>(HttpStatus.OK, User.toUserVO(user));
     }
 
-    @Operation(summary = "管理员更新用户", security = @SecurityRequirement(name = "s1"))
+    @Operation(summary = "管理员更新用户")
     @PutMapping
     @PreAuthorize(Constants.PRE_AUTHORIZE_ADMIN)
     public RestResponse<UserVO> updateUser(@RequestBody UserUpdateVO vo) {
@@ -59,7 +59,7 @@ public class UserController {
         return new RestResponse<>(HttpStatus.OK, User.toUserVO(updatedUser));
     }
 
-    @Operation(summary = "用户更新个人信息", security = @SecurityRequirement(name = "s1"))
+    @Operation(summary = "用户更新个人信息")
     @PutMapping("/me")
     @PreAuthorize(Constants.PRE_AUTHORIZE_EMPLOYEE)
     public RestResponse<UserVO> updateMe(@RequestBody UserUpdateMeVO vo, HttpServletRequest request) {
@@ -68,7 +68,7 @@ public class UserController {
         return new RestResponse<>(HttpStatus.OK, User.toUserVO(updatedUser));
     }
 
-    @Operation(summary = "用户获取个人信息", security = @SecurityRequirement(name = "s1"))
+    @Operation(summary = "用户获取个人信息")
     @GetMapping
     @PreAuthorize(Constants.PRE_AUTHORIZE_EMPLOYEE)
     public RestResponse<UserVO> getMe(HttpServletRequest request) {
@@ -76,7 +76,7 @@ public class UserController {
         return new RestResponse<>(HttpStatus.OK, User.toUserVO(user));
     }
 
-    @Operation(summary = "管理员获取用户信息", security = @SecurityRequirement(name = "s1"))
+    @Operation(summary = "管理员获取用户信息")
     @GetMapping("/{uid}")
     @PreAuthorize(Constants.PRE_AUTHORIZE_ADMIN)
     public RestResponse<UserVO> getEmployee(@PathVariable String uid) {
@@ -84,7 +84,7 @@ public class UserController {
         return new RestResponse<>(HttpStatus.OK, User.toUserVO(user));
     }
 
-    @Operation(summary = "管理员获取用户列表", security = @SecurityRequirement(name = "s1"))
+    @Operation(summary = "管理员获取用户列表")
     @GetMapping("/list")
     @PreAuthorize(Constants.PRE_AUTHORIZE_ADMIN)
     public RestResponse<List<UserVO>> getUsers(@RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "10") int size) {

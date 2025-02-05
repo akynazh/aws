@@ -16,6 +16,8 @@ import cn.edu.xidian.aws.pojo.vo.scale.ScaleUpdateVO;
 import cn.edu.xidian.aws.pojo.vo.scale.ScaleVO;
 import cn.edu.xidian.aws.service.RecordService;
 import cn.edu.xidian.aws.service.ScaleService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -35,12 +37,14 @@ import java.util.stream.Collectors;
 @RestController
 @RequestMapping("/weigh")
 @Slf4j
+@Tag(name = "称重服务模块")
 public class WeighController {
     @Autowired
     private ScaleService scaleService;
     @Autowired
     private RecordService recordService;
 
+    @Operation(summary = "添加称重记录")
     @PostMapping("/record")
     @PreAuthorize(Constants.PRE_AUTHORIZE_ADMIN)
     public ResponseEntity<RecordVO> addRecord(@RequestBody RecordAddVO vo) {
@@ -48,6 +52,7 @@ public class WeighController {
         return ResponseEntity.ok(Record.toRecordVO(record));
     }
 
+    @Operation(summary = "获取称重记录")
     @GetMapping("/record/list")
     @PreAuthorize(Constants.PRE_AUTHORIZE_EMPLOYEE)
     public ResponseEntity<List<RecordVO>> getRecords(@RequestBody RecordsGetVO vo) {
@@ -56,6 +61,7 @@ public class WeighController {
         return ResponseEntity.ok(vos);
     }
 
+    @Operation(summary = "添加电子秤")
     @PostMapping("/scale")
     @PreAuthorize(Constants.PRE_AUTHORIZE_ADMIN)
     public ResponseEntity<ScaleVO> addScale(@RequestBody ScaleAddVO vo) {
@@ -63,6 +69,7 @@ public class WeighController {
         return ResponseEntity.ok(Scale.toScaleVO(scale));
     }
 
+    @Operation(summary = "更新电子秤信息")
     @PutMapping("/scale")
     @PreAuthorize(Constants.PRE_AUTHORIZE_ADMIN)
     public ResponseEntity<ScaleVO> updateScale(@RequestBody ScaleUpdateVO vo) {
@@ -70,6 +77,7 @@ public class WeighController {
         return ResponseEntity.ok(Scale.toScaleVO(scale));
     }
 
+    @Operation(summary = "获取电子秤列表")
     @GetMapping("/scale/list")
     @PreAuthorize(Constants.PRE_AUTHORIZE_EMPLOYEE)
     public RestResponse<List<ScaleVO>> getScales(@RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "10") int size) {
@@ -78,6 +86,7 @@ public class WeighController {
         return new RestResponse<>(HttpStatus.OK, vos);
     }
 
+    @Operation(summary = "获取电子秤")
     @GetMapping("/scale/{id}")
     @PreAuthorize(Constants.PRE_AUTHORIZE_EMPLOYEE)
     public RestResponse<ScaleVO> getScale(@PathVariable Long id) {

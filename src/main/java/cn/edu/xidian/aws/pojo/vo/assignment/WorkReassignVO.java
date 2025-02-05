@@ -1,5 +1,6 @@
 package cn.edu.xidian.aws.pojo.vo.assignment;
 
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -14,13 +15,16 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @Data
+@Schema(name = "WorkReassignVO", description = "作业重新分配表单")
 public class WorkReassignVO {
     /**
      * 采摘作业编号
      */
+    @Schema(description = "采摘作业编号")
     private long workId;
     /**
-     * 员工编号
+     * 员工编号列表
      */
+    @Schema(description = "员工编号列表")
     private List<Long> employeeIdList;
 }

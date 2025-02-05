@@ -1,5 +1,6 @@
 package cn.edu.xidian.aws.pojo.vo.produce;
 
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -12,6 +13,8 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Data
+@Schema(name = "ProduceAddVO", description = "新增农产品表单")
 public class ProduceAddVO {
+    @Schema(description = "农产品名称")
     private String name;
 }

@@ -15,7 +15,7 @@ import lombok.NoArgsConstructor;
 @Data
 @Schema(name = "UserVO", description = "用户信息")
 public class UserVO {
-    @Schema(description = "用户 ID")
+    @Schema(description = "用户编号")
     private long id;
     @Schema(description = "用户身份证")
     private String uid;

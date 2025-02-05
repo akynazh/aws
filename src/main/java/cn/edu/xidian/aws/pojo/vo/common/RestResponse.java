@@ -1,5 +1,6 @@
 package cn.edu.xidian.aws.pojo.vo.common;
 
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.http.HttpStatus;
@@ -11,9 +12,13 @@ import org.springframework.http.HttpStatus;
  */
 @Setter
 @Getter
+@Schema(name = "RestResponse<T>", description = "REST 结果")
 public class RestResponse<T> {
+    @Schema(description = "状态码")
     private int code;
+    @Schema(description = "信息")
     private String msg;
+    @Schema(description = "数据")
     private T data;
 
     public RestResponse() {
