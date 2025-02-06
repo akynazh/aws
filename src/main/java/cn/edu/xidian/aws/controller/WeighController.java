@@ -1,17 +1,14 @@
 package cn.edu.xidian.aws.controller;
 
 import cn.edu.xidian.aws.constant.Constants;
-import cn.edu.xidian.aws.pojo.po.Produce;
 import cn.edu.xidian.aws.pojo.po.Record;
 import cn.edu.xidian.aws.pojo.po.Scale;
-import cn.edu.xidian.aws.pojo.vo.common.RestResponse;
-import cn.edu.xidian.aws.pojo.vo.produce.ProduceAddVO;
-import cn.edu.xidian.aws.pojo.vo.produce.ProduceUpdateVO;
-import cn.edu.xidian.aws.pojo.vo.produce.ProduceVO;
 import cn.edu.xidian.aws.pojo.vo.record.RecordAddVO;
+import cn.edu.xidian.aws.pojo.vo.record.RecordListVO;
 import cn.edu.xidian.aws.pojo.vo.record.RecordVO;
 import cn.edu.xidian.aws.pojo.vo.record.RecordsGetVO;
 import cn.edu.xidian.aws.pojo.vo.scale.ScaleAddVO;
+import cn.edu.xidian.aws.pojo.vo.scale.ScaleListVO;
 import cn.edu.xidian.aws.pojo.vo.scale.ScaleUpdateVO;
 import cn.edu.xidian.aws.pojo.vo.scale.ScaleVO;
 import cn.edu.xidian.aws.service.RecordService;
@@ -20,7 +17,6 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -55,10 +51,14 @@ public class WeighController {
     @Operation(summary = "获取称重记录")
     @GetMapping("/record/list")
     @PreAuthorize(Constants.PRE_AUTHORIZE_EMPLOYEE)
-    public ResponseEntity<List<RecordVO>> getRecords(@RequestBody RecordsGetVO vo) {
+    public ResponseEntity<RecordListVO> getRecords(@RequestBody RecordsGetVO vo) {
         List<Record> records = recordService.getRecords(vo);
         List<RecordVO> vos = records.stream().map(Record::toRecordVO).collect(Collectors.toList());
-        return ResponseEntity.ok(vos);
+        long recordCount = recordService.getRecordCount(vo);
+        RecordListVO recordListVO = new RecordListVO();
+        recordListVO.setCount(recordCount);
+        recordListVO.setRecordList(vos);
+        return ResponseEntity.ok(recordListVO);
     }
 
     @Operation(summary = "添加电子秤")
@@ -80,18 +80,21 @@ public class WeighController {
     @Operation(summary = "获取电子秤列表")
     @GetMapping("/scale/list")
     @PreAuthorize(Constants.PRE_AUTHORIZE_EMPLOYEE)
-    public RestResponse<List<ScaleVO>> getScales(@RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "10") int size) {
+    public ResponseEntity<ScaleListVO> getScales(@RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "10") int size) {
         List<Scale> scales = scaleService.getScales(page, size);
         List<ScaleVO> vos = scales.stream().map(Scale::toScaleVO).collect(Collectors.toList());
-        return new RestResponse<>(HttpStatus.OK, vos);
+        long scaleCount = scaleService.getScaleCount();
+        ScaleListVO scaleListVO = new ScaleListVO();
+        scaleListVO.setCount(scaleCount);
+        scaleListVO.setScaleList(vos);
+        return ResponseEntity.ok(scaleListVO);
     }
 
     @Operation(summary = "获取电子秤")
     @GetMapping("/scale/{id}")
     @PreAuthorize(Constants.PRE_AUTHORIZE_EMPLOYEE)
-    public RestResponse<ScaleVO> getScale(@PathVariable Long id) {
+    public ResponseEntity<ScaleVO> getScale(@PathVariable Long id) {
         Scale scale = scaleService.getScale(id);
-        return new RestResponse<>(HttpStatus.OK, Scale.toScaleVO(scale));
+        return ResponseEntity.ok(Scale.toScaleVO(scale));
     }
-
 }

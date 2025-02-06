@@ -1,5 +1,5 @@
 import axios from "axios";
-import ElMessage from "element-plus";
+import { ElMessage } from "element-plus";
 import { GET_TOKEN } from "./storage";
 
 let request = axios.create({
@@ -19,29 +19,10 @@ request.interceptors.response.use(
     return response.data;
   },
   (error) => {
-    let message = error.response.message;
     let statusCode = error.response.status;
-    switch (statusCode) {
-      case 401:
-        message = "令牌过期";
-        break;
-      case 403:
-        message = "无权访问";
-        break;
-      case 404:
-        message = "请求资源不存在";
-        break;
-      case 500:
-        message = "服务器内部错误";
-        break;
-      default:
-        message = "网络错误";
-        break;
-    }
-    ElMessage({
-      type: "error",
-      message,
-    });
+    let message = error.response.data || `ERROR: ${statusCode}`;
+    console.log(message);
+    ElMessage.error(message);
     return Promise.reject(error);
   }
 );

@@ -1,28 +1,10 @@
 import request from "@/utils/request";
-import type {
-  UserLoginVo,
-  RestResponse,
-  UserRegisterVo,
-  UserUpdateVo,
-  UserVo,
-  UserListVo,
-} from "@/api/models";
+import type { UserVO, UserUpdateVO, UserRegisterVO, UserUpdateMeVO, UserLoginVO, UserListVO } from "@/api/models";
 
-export const reqGetUserInfo = () =>
-  request.get<any, RestResponse<UserVo>>("/user");
-export const reqUpdateUserInfo = (data: UserUpdateVo) =>
-  request.put<any, RestResponse<UserVo>>("/user", data);
-export const reqAddUser = (data: UserRegisterVo) =>
-  request.post<any, RestResponse<UserVo>>("/user", data);
-export const reqUpdateMe = (data: UserUpdateVo) =>
-  request.put<any, RestResponse<UserVo>>("/user/me", data);
-export const reqLogout = () =>
-  request.post<any, RestResponse<String>>("/user/logout");
-export const reqLogin = (data: UserLoginVo) =>
-  request.post<any, RestResponse<String>>("/user/login", data);
-export const reqGetUserById = (uid: number) =>
-  request.get<any, RestResponse<UserVo>>(`/user/${uid}`);
-export const reqGetUserList = (page: number, size: number) =>
-  request.get<any, RestResponse<UserListVo>>(
-    `/user/list?page=${page}&size=${size}`
-  );
+export const reqGetUserInfo = () => request.get<any, UserVO>("/user");
+export const reqUpdateUser = (data: UserUpdateVO) => request.put<any, UserVO>("/user", data);
+export const reqAddUser = (data: UserRegisterVO) => request.post<any, UserVO>("/user", data);
+export const reqUpdateMe = (data: UserUpdateMeVO) => request.put<any, UserVO>("/user/me", data);
+export const reqLogin = (data: UserLoginVO) => request.post<any, string>("/user/login", data);
+export const reqGetEmployee = (uid: string) => request.get<any, UserVO>(`/user/${uid}`);
+export const reqGetUsers = (page: number = 0, size: number = 10) => request.get<any, UserListVO>("/user/list", { params: { page, size } });

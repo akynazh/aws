@@ -1,27 +1,23 @@
 package cn.edu.xidian.aws.controller;
 
 import cn.edu.xidian.aws.constant.Constants;
+import cn.edu.xidian.aws.exception.AwsNotFoundException;
 import cn.edu.xidian.aws.pojo.po.User;
-import cn.edu.xidian.aws.pojo.vo.common.RestResponse;
 import cn.edu.xidian.aws.pojo.vo.user.*;
 import cn.edu.xidian.aws.service.JwtService;
 import cn.edu.xidian.aws.service.UserService;
 import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
-import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
-import java.io.IOException;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -45,73 +41,67 @@ public class UserController {
     @Operation(summary = "管理员添加用户")
     @PostMapping
     @PreAuthorize(Constants.PRE_AUTHORIZE_ADMIN)
-    public RestResponse<UserVO> addUser(@RequestBody UserRegisterVO vo) {
+    public ResponseEntity<UserVO> addUser(@RequestBody UserRegisterVO vo) {
         User user = userService.addUser(vo);
-        return new RestResponse<>(HttpStatus.OK, User.toUserVO(user));
+        return ResponseEntity.ok(User.toUserVO(user));
     }
 
     @Operation(summary = "管理员更新用户")
     @PutMapping
     @PreAuthorize(Constants.PRE_AUTHORIZE_ADMIN)
-    public RestResponse<UserVO> updateUser(@RequestBody UserUpdateVO vo) {
+    public ResponseEntity<UserVO> updateUser(@RequestBody UserUpdateVO vo) {
         User user = userService.getUser(vo.getUid());
         User updatedUser = userService.updateUser(vo, user);
-        return new RestResponse<>(HttpStatus.OK, User.toUserVO(updatedUser));
+        return ResponseEntity.ok(User.toUserVO(updatedUser));
     }
 
     @Operation(summary = "用户更新个人信息")
     @PutMapping("/me")
     @PreAuthorize(Constants.PRE_AUTHORIZE_EMPLOYEE)
-    public RestResponse<UserVO> updateMe(@RequestBody UserUpdateMeVO vo, HttpServletRequest request) {
+    public ResponseEntity<UserVO> updateMe(@RequestBody UserUpdateMeVO vo, HttpServletRequest request) {
         User user = userService.getUser(jwtService.extractUsername(jwtService.extractToken(request)));
         User updatedUser = userService.updateMe(vo, user);
-        return new RestResponse<>(HttpStatus.OK, User.toUserVO(updatedUser));
+        return ResponseEntity.ok(User.toUserVO(updatedUser));
     }
 
     @Operation(summary = "用户获取个人信息")
     @GetMapping
     @PreAuthorize(Constants.PRE_AUTHORIZE_EMPLOYEE)
-    public RestResponse<UserVO> getMe(HttpServletRequest request) {
+    public ResponseEntity<UserVO> getMe(HttpServletRequest request) {
         User user = userService.getUser(jwtService.extractUsername(jwtService.extractToken(request)));
-        return new RestResponse<>(HttpStatus.OK, User.toUserVO(user));
+        return ResponseEntity.ok(User.toUserVO(user));
     }
 
     @Operation(summary = "管理员获取用户信息")
     @GetMapping("/{uid}")
     @PreAuthorize(Constants.PRE_AUTHORIZE_ADMIN)
-    public RestResponse<UserVO> getEmployee(@PathVariable String uid) {
+    public ResponseEntity<UserVO> getEmployee(@PathVariable String uid) {
         User user = userService.getUser(uid);
-        return new RestResponse<>(HttpStatus.OK, User.toUserVO(user));
+        return ResponseEntity.ok(User.toUserVO(user));
     }
 
     @Operation(summary = "管理员获取用户列表")
     @GetMapping("/list")
     @PreAuthorize(Constants.PRE_AUTHORIZE_ADMIN)
-    public RestResponse<UserListVO> getUsers(@RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "10") int size) {
+    public ResponseEntity<UserListVO> getUsers(@RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "10") int size) {
         List<User> users = userService.getUsers(page, size);
         long userCount = userService.getUserCount();
         List<UserVO> userVOS = users.stream().map(User::toUserVO).collect(Collectors.toList());
         UserListVO vo = new UserListVO();
         vo.setUserList(userVOS);
         vo.setCount(userCount);
-        return new RestResponse<>(HttpStatus.OK, vo);
+        return ResponseEntity.ok(vo);
     }
 
     @Operation(summary = "用户登录")
     @PostMapping("/login")
-    public RestResponse<String> login(@RequestBody UserLoginVO vo) {
+    public ResponseEntity<String> login(@RequestBody UserLoginVO vo) {
         Authentication auth = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(vo.getUid(), vo.getPassword())
         );
         if (auth.isAuthenticated()) {
-            return new RestResponse<>(HttpStatus.OK, jwtService.generateToken(vo.getUid()));
+            return ResponseEntity.ok(jwtService.generateToken(vo.getUid()));
         }
-        return new RestResponse<>(HttpStatus.NOT_FOUND);
-    }
-
-    @Operation(summary = "用户退出登录")
-    @PostMapping("/logout")
-    public void logout(HttpServletResponse response) throws IOException {
-        response.sendRedirect("/index");
+        throw new AwsNotFoundException();
     }
 }

@@ -62,4 +62,8 @@ public class ScaleService {
         PageRequest pr = PageRequest.of(page, size);
         return scaleRepository.findAll(pr).getContent();
     }
+
+    public long getScaleCount() {
+        return scaleRepository.count();
+    }
 }

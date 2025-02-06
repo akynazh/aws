@@ -5,14 +5,38 @@
       <el-col :span="12">
         <el-form class="login_form" :model="loginFrom" :rules="rules" ref="loginForms">
           <h1>农业果实称重云端软件</h1>
-          <el-form-item>
-            <el-input :prefix-icon="User" v-model="loginFrom.uid"></el-input>
+          <el-form-item prop="uid">
+            <el-input
+              :prefix-icon="User"
+              v-model="loginFrom.uid"
+              placeholder="请输入账号"
+              clearable
+              @keyup.enter="login">
+            </el-input>
+          </el-form-item>
+          <el-form-item prop="password">
+            <el-input
+              type="password"
+              :prefix-icon="Lock"
+              v-model="loginFrom.password"
+              placeholder="请输入密码"
+              show-password
+              clearable
+              @keyup.enter="login">
+            </el-input>
           </el-form-item>
           <el-form-item>
-            <el-input type="password" :prefix-icon="Lock" v-model="loginFrom.password" show-password></el-input>
+            <el-checkbox v-model="loginFrom.remember">记住密码</el-checkbox>
           </el-form-item>
           <el-form-item>
-            <el-button :loading="loading" class="login_btn" type="primary" size="default" @click="login">登录</el-button>
+            <el-button
+              :loading="loading"
+              class="login_btn"
+              type="primary"
+              size="large"
+              @click="login">
+              {{ loading ? '登录中...' : '登录' }}
+            </el-button>
           </el-form-item>
         </el-form>
       </el-col>
@@ -22,36 +46,43 @@
 
 <script setup lang="ts">
 import { User, Lock } from "@element-plus/icons-vue";
-import { reactive, ref } from "vue";
+import { reactive, ref, onMounted } from "vue";
 import { useRouter } from "vue-router";
 import { ElNotification } from "element-plus";
-import userStore from "@/store/modules/user";
+import useUserStore from "@/store/modules/user";
 import { getTime } from "@/utils/time";
 
-let store = userStore();
+let store = useUserStore();
 let router = useRouter();
 let loading = ref(false);
 let loginFrom = reactive({
   uid: "659811",
   password: "123456",
+  remember: false
 });
 let loginForms = ref();
 const login = async () => {
   await loginForms.value.validate();
   loading.value = true;
-  // 通知仓库发送登录请求
   try {
-    // 请求成功->进入首页展示数据
     await store.login(loginFrom);
-    // 编程式导航跳转到展示数据首页
+    // 如果记住密码，保存到本地存储
+    if (loginFrom.remember) {
+      localStorage.setItem('userCredentials', JSON.stringify({
+        uid: loginFrom.uid,
+        password: loginFrom.password
+      }));
+    } else {
+      localStorage.removeItem('userCredentials');
+    }
     router.push("/");
-    // 登录成功的提示信息
+    await store.getUserInfo()
     ElNotification({
       type: "success",
-      title: `嗨,${getTime()}好`,
-      message: "欢迎回来",
+      title: `${getTime()}好`,
+      message: `${store.name}，欢迎回来`,
+      duration: 1000
     });
-    // 登录成功后，按钮加载效果:结束加载
     loading.value = false;
   } catch (error) {
     loading.value = false;
@@ -59,9 +90,11 @@ const login = async () => {
       type: "error",
       title: "登录失败" + (error as Error).message,
       message: (error as Error).message,
+      duration: 2000
     });
   }
 };
+
 // 自定义校验规则需要的函数
 const validatorUID = (rule: any, value: any, callback: any) => {
   if (/^\d{5,10}$/.test(value)) {
@@ -90,6 +123,17 @@ const rules = {
     },
   ],
 };
+
+// 页面加载时检查是否有保存的登录信息
+onMounted(() => {
+  const savedCredentials = localStorage.getItem('userCredentials');
+  if (savedCredentials) {
+    const { uid, password } = JSON.parse(savedCredentials);
+    loginFrom.uid = uid;
+    loginFrom.password = password;
+    loginFrom.remember = true;
+  }
+});
 </script>
 
 <style scoped lang="scss">
@@ -103,27 +147,66 @@ const rules = {
 
 .login_form {
   position: relative;
-  width: 70%;
+  width: 80%;
+  max-width: 450px;
   top: 20vh;
-  background: url("@/assets/images/farm1.jpeg") no-repeat;
-  background-color: aquamarine;
-  background-size: cover;
-  border-radius: 15px;
+  background: rgba(255, 255, 255, 0.95);
+  border-radius: 20px;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
   padding: 40px;
+  transition: all 0.3s ease;
 
-  h1 {
-    color: white;
-    font-size: 40px;
+  &:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 12px 25px rgba(0, 0, 0, 0.15);
   }
 
-  h2 {
-    color: white;
-    font-size: 20px;
-    margin: 20px 0;
+  h1 {
+    color: #2c3e50;
+    font-size: 32px;
+    margin-bottom: 30px;
+    text-align: center;
+    font-weight: 600;
+  }
+
+  .el-form-item {
+    margin-bottom: 25px;
+  }
+
+  .el-input {
+    --el-input-hover-border: #409EFF;
+    --el-input-focus-border: #409EFF;
   }
 
   .login_btn {
     width: 100%;
+    height: 45px;
+    font-size: 16px;
+    font-weight: 500;
+    letter-spacing: 1px;
+    background: linear-gradient(135deg, #409EFF 0%, #36cfc9 100%);
+    border: none;
+    transition: all 0.3s ease;
+
+    &:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 5px 15px rgba(64, 158, 255, 0.3);
+    }
+
+    &:active {
+      transform: translateY(0);
+    }
+  }
+}
+
+@media (max-width: 768px) {
+  .login_form {
+    width: 90%;
+    padding: 30px;
+    
+    h1 {
+      font-size: 24px;
+    }
   }
 }
 </style>

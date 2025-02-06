@@ -1,65 +1,224 @@
 <template>
-    <Header/>
-
+    <Header />
     <div>
         <el-row justify="center">
             <el-col :span="30">
-        <!-- 用户表格 -->
-        <el-table :data="tableData" border style="width: 100%">
-            <el-table-column prop="id" label="ID" width="100" />
-            <el-table-column prop="uid" label="用户身份证" width="180" />
-            <el-table-column prop="name" label="姓名" width="180" />
-            <el-table-column prop="roles" label="角色" width="250" />
-            <el-table-column prop="status" label="状态" width="120">
-                <template #default="{ row }">
-                    <el-tag :type="statusTag(row.status)">
-                        {{ statusText(row.status) }}
-                    </el-tag>
-                </template>
-            </el-table-column>
-            <el-table-column prop="createTime" label="创建时间" width="180">
-                <template #default="{ row }">
-                    {{ formatDate(row.createTime) }}
-                </template>
-            </el-table-column>
-        
-        </el-table>
+                <!-- 操作面板 -->
+                <div class="operation-wrapper">
+                    <el-card class="operation-panel">
+                        <div class="panel-header">
+                            <span class="panel-title">用户管理</span>
+                            <div class="panel-buttons">
+                                <el-button 
+                                    type="primary" 
+                                    :icon="Plus"
+                                    @click="handleAdd"
+                                >
+                                    添加用户
+                                </el-button>
+                                <!-- 这里可以添加更多按钮 -->
+                            </div>
+                        </div>
+                    </el-card>
+                </div>
+
+                <!-- 用户表格 -->
+                <el-table :data="tableData" border style="width: 100%">
+                    <el-table-column prop="id" label="ID" width="100" />
+                    <el-table-column prop="uid" label="用户身份证" width="180" />
+                    <el-table-column prop="name" label="姓名" width="180" />
+                    <el-table-column prop="roles" label="角色" width="250">
+                        <template #default="{ row }">
+                            <span>{{ formatRoles(row.roles) }}</span>
+                        </template>
+                    </el-table-column>
+                    <el-table-column prop="status" label="状态" width="120">
+                        <template #default="{ row }">
+                            <el-tag :type="statusTag(row.status)">
+                                {{ statusText(row.status) }}
+                            </el-tag>
+                        </template>
+                    </el-table-column>
+                    <el-table-column prop="createTime" label="创建时间" width="180">
+                        <template #default="{ row }">
+                            {{ formatDate(row.createTime) }}
+                        </template>
+                    </el-table-column>
+                    <el-table-column label="操作" width="120" fixed="right">
+                        <template #default="{ row }">
+                            <el-button type="primary" link @click="handleEdit(row)">编辑</el-button>
+                        </template>
+                    </el-table-column>
+                </el-table>
 
                 <!-- 分页 -->
-                <el-pagination
-            v-model:current-page="currentPage"
-            v-model:page-size="pageSize"
-            :total="total"
-            :page-sizes="[10, 20, 50, 100]"
-            layout="total, sizes, prev, pager, next, jumper"
-            @size-change="fetchUserList"
-            @current-change="fetchUserList"
-            style="margin-top: 20px; text-align: right;"
-        />
-    </el-col>
-    </el-row>
+                <Pagination 
+                    v-model:current-page="currentPage" 
+                    v-model:page-size="pageSize" 
+                    :total="total"
+                    @size-change="fetchUserList" 
+                    @current-change="fetchUserList"
+                />
+            </el-col>
+        </el-row>
 
-
+        <!-- 用户表单对话框 -->
+        <el-dialog 
+            :title="isEdit ? '编辑用户' : '添加用户'" 
+            v-model="dialogVisible" 
+            width="500px"
+        >
+            <el-form 
+                ref="formRef"
+                :model="form"
+                :rules="rules"
+                label-width="100px"
+            >
+                <el-form-item label="身份证号" prop="uid">
+                    <el-input v-model="form.uid" placeholder="请输入身份证号" />
+                </el-form-item>
+                <el-form-item label="姓名" prop="name">
+                    <el-input v-model="form.name" placeholder="请输入姓名" />
+                </el-form-item>
+                <el-form-item label="角色" prop="roles">
+                    <el-select 
+                        v-model="selectedRoles" 
+                        multiple 
+                        placeholder="请选择角色（至少选择一个）"
+                        @change="handleRolesChange"
+                        :min="1"
+                    >
+                        <el-option 
+                            :label="UserRoleMap[UserRole.ADMIN]" 
+                            :value="UserRole.ADMIN" 
+                        />
+                        <el-option 
+                            :label="UserRoleMap[UserRole.EMPLOYEE]" 
+                            :value="UserRole.EMPLOYEE" 
+                        />
+                    </el-select>
+                </el-form-item>
+                <el-form-item label="状态" prop="status">
+                    <el-select v-model="form.status" placeholder="请选择状态">
+                        <el-option 
+                            :label="UserStatusMap[UserStatus.ENABLE]" 
+                            :value="UserStatus.ENABLE" 
+                        />
+                        <el-option 
+                            :label="UserStatusMap[UserStatus.DISABLED]" 
+                            :value="UserStatus.DISABLED" 
+                        />
+                        <el-option 
+                            :label="UserStatusMap[UserStatus.DELETED]" 
+                            :value="UserStatus.DELETED" 
+                        />
+                    </el-select>
+                </el-form-item>
+            </el-form>
+            <template #footer>
+                <el-button @click="dialogVisible = false">取消</el-button>
+                <el-button type="primary" @click="handleSubmit">确定</el-button>
+            </template>
+        </el-dialog>
     </div>
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted } from "vue";
-import type { UserVo } from "@/api/models";
-import { reqGetUserList } from "@/api/user";
+import { ref, reactive, onMounted } from "vue";
+import type { UserVO } from "@/api/models";
+import { reqGetUsers, reqAddUser, reqUpdateUser } from "@/api/user";
+import { ElMessage } from 'element-plus';
+import { Plus } from '@element-plus/icons-vue';
+import { UserStatus, UserStatusMap, UserRole, UserRoleMap } from '@/constants/user';
+
 import dayjs from "dayjs";
 
-const tableData = ref<UserVo[]>([]);
+const tableData = ref<UserVO[]>([]);
 const currentPage = ref(1); // 当前页码
 const pageSize = ref(10); // 每页条数
 const total = ref(0); // 总条数
 
+const dialogVisible = ref(false);
+const isEdit = ref(false);
+const formRef = ref();
+const form = reactive<UserVO>({
+    uid: '',
+    name: '',
+    roles: '',
+    status: UserStatus.ENABLE  // 默认启用
+});
+
+const selectedRoles = ref<string[]>([]);
+
+const rules = {
+    uid: [{ required: true, message: '请输入身份证号', trigger: 'blur' }],
+    name: [{ required: true, message: '请输入姓名', trigger: 'blur' }],
+    roles: [{ 
+        required: true, 
+        message: '请至少选择一个角色', 
+        trigger: 'change',
+        validator: (rule: any, value: string) => {
+            if (!value || value.split(',').filter(Boolean).length === 0) {
+                return Promise.reject('请至少选择一个角色');
+            }
+            return Promise.resolve();
+        }
+    }],
+    status: [{ required: true, message: '请选择状态', trigger: 'change' }]
+};
+
+const resetForm = () => {
+    if (formRef.value) {
+        formRef.value.resetFields();
+    }
+    form.uid = '';
+    form.name = '';
+    form.roles = '';
+    form.status = UserStatus.ENABLE;
+    selectedRoles.value = [];
+};
+
+const handleAdd = () => {
+    isEdit.value = false;
+    resetForm();
+    dialogVisible.value = true;
+};
+
+const handleEdit = (row: UserVO) => {
+    isEdit.value = true;
+    Object.assign(form, row);
+    selectedRoles.value = row.roles.split(',').filter(Boolean);
+    dialogVisible.value = true;
+};
+
+const handleSubmit = async () => {
+    if (!formRef.value) return;
+    await formRef.value.validate(async (valid: boolean) => {
+        if (valid) {
+            try {
+                if (isEdit.value) {
+                    await reqUpdateUser(form);
+                    ElMessage.success('更新成功');
+                } else {
+                    await reqAddUser(form);
+                    ElMessage.success('添加成功');
+                }
+                dialogVisible.value = false;
+                fetchUserList();
+            } catch (error) {
+                console.error('操作失败', error);
+                ElMessage.error('操作失败');
+            }
+        }
+    });
+};
+
 // 获取用户列表
 const fetchUserList = async () => {
     try {
-        const result = await reqGetUserList(currentPage.value - 1, pageSize.value);
-        tableData.value = result.data?.userList || [];
-        total.value = result.data?.count || 0;
+        const result = await reqGetUsers(currentPage.value - 1, pageSize.value);
+        tableData.value = result?.userList || [];
+        total.value = result?.count || 0;
     } catch (error) {
         console.error("获取用户列表失败", error);
     }
@@ -75,13 +234,70 @@ const formatDate = (timestamp?: number): string => {
     return timestamp ? dayjs(timestamp).format("YYYY-MM-DD HH:mm:ss") : "N/A";
 };
 
+// 角色文本映射
+const roleText = (role: string): string => {
+    return role in UserRoleMap ? UserRoleMap[role as keyof typeof UserRoleMap] : role;
+};
+
 // 显示状态文本
 const statusText = (status?: number): string => {
-    return status === 0 ? "禁用" : status === 1 ? "启用" : "已删除";
+    return status !== undefined ? (UserStatusMap[status as keyof typeof UserStatusMap] || "未知") : "未知";
 };
 
 // 显示状态颜色
 const statusTag = (status?: number): string => {
-    return status === 0 ? "danger" : status === 1 ? "success" : "info";
+    if (status === undefined) return 'info';
+    const tagMap = {
+        [UserStatus.DISABLED]: 'warning',
+        [UserStatus.ENABLE]: 'success',
+        [UserStatus.DELETED]: 'danger'
+    };
+    return tagMap[status] || 'info';
+};
+
+const handleRolesChange = (values: string[]) => {
+    if (values.length === 0) {
+        ElMessage.warning('请至少选择一个角色');
+    }
+    form.roles = values.join(',');
+};
+
+const formatRoles = (roles: string): string => {
+    return roles.split(',')
+        .map(role => roleText(role))
+        .filter(Boolean)
+        .join('、');
 };
 </script>
+
+<style scoped>
+.operation-wrapper {
+    margin-top: 20px;
+    margin-bottom: 20px;
+    display: flex;
+    justify-content: center;
+}
+
+.operation-panel {
+    min-width: 300px;
+    max-width: 100%;
+    flex-grow: 0;
+}
+
+.panel-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 32px;
+}
+
+.panel-buttons {
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+}
+
+.el-table {
+    margin-top: 20px;
+}
+</style>

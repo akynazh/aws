@@ -23,4 +23,6 @@ public class UserUpdateVO {
     private String password;
     @Schema(description = "状态，0 为禁用，1 为启用，2 为已删除")
     private int status = -1;
+    @Schema(description = "角色")
+    private String roles;
 }

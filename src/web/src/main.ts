@@ -8,6 +8,9 @@ import "@/styles/index.scss";
 import router from "./router";
 import pinia from "./store";
 
+// 引入自定义主题
+import './styles/element/index.scss'
+
 const app = createApp(App);
 app.use(router);
 app.use(pinia);

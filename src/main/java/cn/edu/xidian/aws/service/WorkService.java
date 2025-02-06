@@ -15,6 +15,8 @@ import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 /**
  * @author akynazh@gmail.com
@@ -80,7 +82,11 @@ public class WorkService {
         return workRepository.findAll(pr).getContent();
     }
 
+    public long getWorkCount() {
+        return workRepository.count();
+    }
+
     public List<Work> getProduceWorks(Long id) {
-        return workRepository.findByProduceId(id);
+        return workRepository.findAllByProduceId(id);
     }
 }

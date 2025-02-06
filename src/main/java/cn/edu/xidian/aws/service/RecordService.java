@@ -46,18 +46,21 @@ public class RecordService {
 
     public List<Record> getRecords(RecordsGetVO vo) {
         PageRequest pr = PageRequest.of(vo.getPage(), vo.getSize());
+        Example<Record> example = getRecordExample(vo);
+        return recordRepository.findAll(example, pr).getContent();
+    }
 
-        // Create a probe Record object for filtering
+    public long getRecordCount(RecordsGetVO vo) {
+        return recordRepository.count(getRecordExample(vo));
+    }
+
+    private Example<Record> getRecordExample(RecordsGetVO vo) {
         Record probe = new Record();
         if (vo.getWorkId() > 0) probe.setWorkId(vo.getWorkId());
         if (vo.getEmployeeId() > 0) probe.setEmployeeId(vo.getEmployeeId());
         if (vo.getScaleId() > 0) probe.setScaleId(vo.getScaleId());
-
         ExampleMatcher matcher = ExampleMatcher.matching()
-                .withIgnoreNullValues(); // Ignore null fields
-
-        Example<Record> example = Example.of(probe, matcher);
-
-        return recordRepository.findAll(example, pr).getContent();
+                .withIgnoreNullValues();
+        return Example.of(probe, matcher);
     }
 }

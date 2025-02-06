@@ -1,6 +1,6 @@
 package cn.edu.xidian.aws.pojo.vo.user;
 
-import cn.edu.xidian.aws.constant.Constants;
+import cn.edu.xidian.aws.constant.UserRole;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -21,5 +21,5 @@ public class UserRegisterVO {
     @Schema(description = "员工姓名")
     private String name;
     @Schema(description = "角色，以英文逗号分隔，比如 ROLE_EMPLOYEE,ROLE_ADMIN")
-    private String roles = Constants.USER_ROLE_EMPLOYEE;
+    private String roles = UserRole.EMPLOYEE.getCode();
 }

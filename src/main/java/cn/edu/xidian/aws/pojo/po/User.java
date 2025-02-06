@@ -1,11 +1,16 @@
 package cn.edu.xidian.aws.pojo.po;
 
+import cn.edu.xidian.aws.constant.UserRole;
 import cn.edu.xidian.aws.pojo.vo.user.UserVO;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.beans.BeanUtils;
+import org.springframework.util.StringUtils;
+
+import java.util.Set;
+import java.util.stream.Collectors;
 
 /**
  * @author akynazh@gmail.com
@@ -58,6 +63,9 @@ public class User {
         }
         UserVO userVO = new UserVO();
         BeanUtils.copyProperties(user, userVO);
+//        Set<String> roles = UserRole.getRolesFromCodesString(user.getRoles()).stream()
+//                .map(UserRole::getName).collect(Collectors.toSet());
+//        userVO.setRoles(StringUtils.collectionToCommaDelimitedString(roles));
         return userVO;
     }
 }

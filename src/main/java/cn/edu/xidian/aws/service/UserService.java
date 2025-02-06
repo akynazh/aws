@@ -1,6 +1,7 @@
 package cn.edu.xidian.aws.service;
 
 import cn.edu.xidian.aws.constant.Constants;
+import cn.edu.xidian.aws.constant.UserRole;
 import cn.edu.xidian.aws.constant.UserStatus;
 import cn.edu.xidian.aws.exception.AwsArgumentException;
 import cn.edu.xidian.aws.exception.AwsNotFoundException;
@@ -12,7 +13,6 @@ import cn.edu.xidian.aws.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Primary;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -22,7 +22,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 /**
  * @author akynazh@gmail.com
@@ -81,6 +83,9 @@ public class UserService implements UserDetailsService {
         if (vo.getStatus() != -1 && UserStatus.codeExists(vo.getStatus())) {
             originUser.setStatus(vo.getStatus());
         }
+        if (StringUtils.hasText(vo.getRoles())) {
+            originUser.setRoles(vo.getRoles());
+        }
         originUser.setUpdateTime(System.currentTimeMillis());
         return userRepository.save(originUser);
     }
@@ -120,7 +125,7 @@ public class UserService implements UserDetailsService {
         user.setUid(adminUID);
         user.setName(adminUID);
         user.setPassword(encoder.encode(adminPassword));
-        user.setRoles(Constants.USER_ROLE_ADMIN + "," + Constants.USER_ROLE_EMPLOYEE);
+        user.setRoles(UserRole.ADMIN.getCode() + "," + UserRole.EMPLOYEE.getCode());
         user.setCreateTime(System.currentTimeMillis());
         user.setUpdateTime(System.currentTimeMillis());
         user.setStatus(UserStatus.ENABLE.getCode());
@@ -128,5 +133,9 @@ public class UserService implements UserDetailsService {
             return;
         }
         userRepository.save(user);
+    }
+
+    public Map<Long, String> getUsersByIds(List<Long> ids) {
+        return userRepository.findAllById(ids).stream().collect(Collectors.toMap(User::getId, User::getName));
     }
 }

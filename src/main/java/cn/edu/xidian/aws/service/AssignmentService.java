@@ -24,6 +24,8 @@ import java.util.stream.Collectors;
 public class AssignmentService {
     @Autowired
     private AssignmentRepository assignmentRepository;
+    @Autowired
+    private UserService userService;
 
     public WorkAssignmentsVO assignWork(WorkAssignVO vo) {
         long workId = vo.getWorkId();
@@ -31,7 +33,7 @@ public class AssignmentService {
         List<Assignment> assignments = getAssignments(workId, employeeIdList);
         assignmentRepository.saveAll(assignments);
         WorkAssignmentsVO result = new WorkAssignmentsVO();
-        result.setEmployeeIds(employeeIdList);
+        result.setEmployees(userService.getUsersByIds(employeeIdList));
         result.setWorkId(workId);
         return result;
     }
@@ -52,10 +54,7 @@ public class AssignmentService {
         List<Assignment> assignments = getAssignments(workId, newIds);
         prevAssignments.addAll(assignments);
         assignmentRepository.saveAll(assignments);
-        WorkAssignmentsVO result = new WorkAssignmentsVO();
-        result.setEmployeeIds(employeeIdList);
-        result.setWorkId(workId);
-        return result;
+        return getWorkAssignments(workId);
     }
 
     public MyAssignmentsVO getMyAssignments(User user) {
@@ -70,7 +69,7 @@ public class AssignmentService {
         List<Assignment> assignments = assignmentRepository.findAllByWorkId(workId);
         WorkAssignmentsVO vo = new WorkAssignmentsVO();
         List<Long> ids = assignments.stream().filter(x -> x.getStatus() == AssignmentStatus.ENABLE.getCode()).map(Assignment::getEmployeeId).collect(Collectors.toList());
-        vo.setEmployeeIds(ids);
+        vo.setEmployees(userService.getUsersByIds(ids));
         vo.setWorkId(workId);
         return vo;
     }

@@ -6,5 +6,4 @@ package cn.edu.xidian.aws.exception;
  * @description
  */
 public class AwsNotFoundException extends RuntimeException {
-
 }

@@ -14,13 +14,10 @@ import org.springframework.stereotype.Component;
 public interface Constants {
     String TOKEN_HEADER = "Authorization";
     String TOKEN_PREFIX = "Bearer ";
-
-    String USER_ROLE_ADMIN = "ROLE_ADMIN";
-    String USER_ROLE_EMPLOYEE = "ROLE_EMPLOYEE";
     String USER_PASSWORD_DEFAULT = "123456";
 
-    String PRE_AUTHORIZE_ADMIN = "hasAuthority('" + USER_ROLE_ADMIN + "')";
-    String PRE_AUTHORIZE_EMPLOYEE = "hasAuthority('" + USER_ROLE_EMPLOYEE + "')";
+    String PRE_AUTHORIZE_ADMIN = "hasAuthority('ROLE_ADMIN')";
+    String PRE_AUTHORIZE_EMPLOYEE = "hasAuthority('ROLE_EMPLOYEE') or hasAuthority('ROLE_ADMIN')";
 
     String[] ROUTE_PERMIT = {"/", "/index",
             "/user/login", "/user/logout",

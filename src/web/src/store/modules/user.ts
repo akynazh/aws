@@ -1,30 +1,44 @@
 import { defineStore } from "pinia";
-import { reqLogin } from "@/api/user";
+import { reqLogin, reqGetUserInfo } from "@/api/user";
 import type { UserState } from "./types";
 import { SET_TOKEN, GET_TOKEN, REMOVE_TOKEN } from "@/utils/storage";
-import type { RestResponse, UserLoginVo } from "@/api/models";
+import type { UserLoginVO, UserVO } from "@/api/models";
 
-let userStore = defineStore("User", {
+export const useUserStore = defineStore("User", {
   state: (): UserState => {
     return {
       token: GET_TOKEN(),
+      id: 0,
+      uid: "",
+      name: "",
+      roles: "",
+      createTime: 0,
+      updateTime: 0,
+      status: 0,
     };
   },
   actions: {
-    async login(data: UserLoginVo) {
-      let result: RestResponse<String> = await reqLogin(data);
-      if (result.code === 200) {
-        this.token = result.data as string;
-        SET_TOKEN(result.data as string);
-        return Promise.resolve(result);
-      } else {
-        return Promise.reject(new Error(`${result.code}: ${result.msg}`));
-      }
+    async login(data: UserLoginVO) {
+      let result: string = await reqLogin(data);
+      this.token = result;
+      SET_TOKEN(result);
     },
     logout() {
-      REMOVE_TOKEN()
-    }
+      REMOVE_TOKEN();
+    },
+    async getUserInfo() {
+      let userInfo: UserVO = await reqGetUserInfo();
+      console.log(userInfo)
+      this.id = userInfo.id;
+      this.uid = userInfo.uid;
+      this.name = userInfo.name;
+      this.roles = userInfo.roles;
+      this.createTime = userInfo.createTime;
+      this.updateTime = userInfo.updateTime;
+      this.status = userInfo.status;
+    },
   },
   getters: {},
 });
-export default userStore;
+
+export default useUserStore;

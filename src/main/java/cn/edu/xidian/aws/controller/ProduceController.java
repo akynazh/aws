@@ -2,8 +2,8 @@ package cn.edu.xidian.aws.controller;
 
 import cn.edu.xidian.aws.constant.Constants;
 import cn.edu.xidian.aws.pojo.po.Produce;
-import cn.edu.xidian.aws.pojo.vo.common.RestResponse;
 import cn.edu.xidian.aws.pojo.vo.produce.ProduceAddVO;
+import cn.edu.xidian.aws.pojo.vo.produce.ProduceListVO;
 import cn.edu.xidian.aws.pojo.vo.produce.ProduceUpdateVO;
 import cn.edu.xidian.aws.pojo.vo.produce.ProduceVO;
 import cn.edu.xidian.aws.service.ProduceService;
@@ -11,8 +11,6 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
@@ -52,17 +50,21 @@ public class ProduceController {
     @Operation(summary = "获取农作物列表")
     @GetMapping("/list")
     @PreAuthorize(Constants.PRE_AUTHORIZE_EMPLOYEE)
-    public RestResponse<List<ProduceVO>> getProduces(@RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "10") int size) {
+    public ResponseEntity<ProduceListVO> getProduces(@RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "10") int size) {
         List<Produce> produces = produceService.getProduces(page, size);
         List<ProduceVO> produceVOS = produces.stream().map(Produce::toProduceVO).collect(Collectors.toList());
-        return new RestResponse<>(HttpStatus.OK, produceVOS);
+        long produceCount = produceService.getProduceCount();
+        ProduceListVO produceListVO = new ProduceListVO();
+        produceListVO.setCount(produceCount);
+        produceListVO.setProduceList(produceVOS);
+        return ResponseEntity.ok(produceListVO);
     }
 
     @Operation(summary = "获取农作物")
     @GetMapping("/{id}")
     @PreAuthorize(Constants.PRE_AUTHORIZE_EMPLOYEE)
-    public RestResponse<ProduceVO> getProduce(@PathVariable Long id) {
+    public ResponseEntity<ProduceVO> getProduce(@PathVariable Long id) {
         Produce produce = produceService.getProduce(id);
-        return new RestResponse<>(HttpStatus.OK, Produce.toProduceVO(produce));
+        return ResponseEntity.ok(Produce.toProduceVO(produce));
     }
 }

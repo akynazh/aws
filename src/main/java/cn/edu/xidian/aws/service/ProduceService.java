@@ -61,4 +61,7 @@ public class ProduceService {
         return produceRepository.findAll(pr).getContent();
     }
 
+    public long getProduceCount() {
+        return produceRepository.count();
+    }
 }

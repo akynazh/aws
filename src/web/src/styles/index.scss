@@ -1,8 +1,53 @@
 @use "modern-css-reset";
+@use './variable.scss' as *;
+
+// 全局样式
+:root {
+  --el-color-primary: #{$el-color-primary};
+  --el-color-primary-light-3: #{$el-color-primary-light-3};
+  --el-color-primary-light-5: #{$el-color-primary-light-5};
+  --el-color-primary-light-7: #{$el-color-primary-light-7};
+  --el-color-primary-light-8: #{$el-color-primary-light-8};
+  --el-color-primary-light-9: #{$el-color-primary-light-9};
+  --el-color-primary-dark-2: #{$el-color-primary-dark-2};
+}
 
 body {
     width: 100%;
     height: 100vh;
-    // background: url("@/assets/images/farm.png") no-repeat;
+    background: url("@/assets/images/farm.png") no-repeat center center fixed;
     background-size: cover;
+    &::before {
+        content: '';
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        backdrop-filter: blur(2px);
+        background-color: rgba(255, 255, 255, 0.5);
+        z-index: -1;
+    }
+}
+
+// 调整卡片样式使其半透明
+.el-card {
+    background-color: rgba(255, 255, 255, 0.9) !important;
+    backdrop-filter: blur(10px);
+    border: none;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+// 调整表格样式
+.el-table {
+    background-color: rgba(255, 255, 255, 0.9) !important;
+    backdrop-filter: blur(10px);
+    
+    th.el-table__cell {
+        background-color: rgba(255, 255, 255, 0.95) !important;
+    }
+    
+    .el-table__body-wrapper {
+        background-color: transparent;
+    }
 }
