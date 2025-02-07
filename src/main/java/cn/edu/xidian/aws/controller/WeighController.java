@@ -49,7 +49,7 @@ public class WeighController {
     }
 
     @Operation(summary = "获取称重记录")
-    @GetMapping("/record/list")
+    @PostMapping("/record/list")
     @PreAuthorize(Constants.PRE_AUTHORIZE_EMPLOYEE)
     public ResponseEntity<RecordListVO> getRecords(@RequestBody RecordsGetVO vo) {
         List<Record> records = recordService.getRecords(vo);

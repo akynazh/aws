@@ -61,7 +61,19 @@ public class WorkService {
         if (work == null) {
             throw new AwsNotFoundException();
         }
-        BeanUtils.copyProperties(vo, work);
+
+        if  (vo.getProduceId() != null) {
+            work.setProduceId(vo.getProduceId());
+        }
+        if (vo.getStartTime() != null) {
+            work.setStartTime(vo.getStartTime());
+        }
+        if (vo.getEndTime() != null) {
+            work.setEndTime(vo.getEndTime());
+        }
+        if (vo.getDataValue() != null) {
+            work.setDataValue(vo.getDataValue());
+        }
         work.setUpdateTime(System.currentTimeMillis());
         if (System.currentTimeMillis() >= work.getStartTime() && System.currentTimeMillis() <= work.getEndTime()) {
             work.setStatus(WorkStatus.ONGOING.getCode());
@@ -70,6 +82,7 @@ public class WorkService {
         } else if (System.currentTimeMillis() < work.getStartTime()) {
             work.setStatus(WorkStatus.NOT_STARTED.getCode());
         }
+
         return workRepository.save(work);
     }
 

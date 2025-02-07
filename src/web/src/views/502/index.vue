@@ -1,10 +1,10 @@
 <template>
   <div class="not-found">
     <div class="content">
-      <div class="error-code">404</div>
-      <div class="emoji">😅</div>
-      <h1>页面未找到</h1>
-      <p>抱歉！您访问的页面不存在。</p>
+      <div class="error-code">502</div>
+      <div class="emoji">😓</div>
+      <h1>服务暂时不可用</h1>
+      <p>抱歉！服务器出现临时故障，请稍后再试。</p>
       <router-link to="/" class="home-button">
         返回首页
       </router-link>
@@ -33,7 +33,7 @@
 .error-code {
   font-size: 6rem;
   font-weight: bold;
-  color: #dc3545;
+  color: #fd7e14; /* 使用橙色区分 404 */
   margin-bottom: 1rem;
 }
 

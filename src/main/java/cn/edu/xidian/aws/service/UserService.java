@@ -80,7 +80,7 @@ public class UserService implements UserDetailsService {
         if (StringUtils.hasText(vo.getPassword())) {
             originUser.setPassword(encoder.encode(vo.getPassword()));
         }
-        if (vo.getStatus() != -1 && UserStatus.codeExists(vo.getStatus())) {
+        if (vo.getStatus() != null && UserStatus.codeExists(vo.getStatus())) {
             originUser.setStatus(vo.getStatus());
         }
         if (StringUtils.hasText(vo.getRoles())) {

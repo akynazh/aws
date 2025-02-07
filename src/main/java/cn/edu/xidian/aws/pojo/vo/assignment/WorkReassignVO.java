@@ -21,7 +21,7 @@ public class WorkReassignVO {
      * 采摘作业编号
      */
     @Schema(description = "采摘作业编号")
-    private long workId;
+    private Long workId;
     /**
      * 员工编号列表
      */

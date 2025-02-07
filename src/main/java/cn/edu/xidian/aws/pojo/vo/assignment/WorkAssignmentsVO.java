@@ -19,7 +19,7 @@ import java.util.Map;
 @Schema(name = "WorkAssignmentsVO", description = "作业分配信息")
 public class WorkAssignmentsVO {
     @Schema(description = "采摘作业编号")
-    private long workId;
+    private Long workId;
     @Schema(description = "分配的员工列表")
     private Map<Long, String> employees;
 }

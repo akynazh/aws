@@ -28,20 +28,20 @@ public class Record {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long id;
+    private Long id;
 
     /**
      * 采摘作业编号
      */
-    private long workId;
+    private Long workId;
     /**
      * 员工编号
      */
-    private long employeeId;
+    private Long employeeId;
     /**
      * 电子秤编号
      */
-    private long scaleId;
+    private Long scaleId;
     /**
      * 称重结果
      */
@@ -55,11 +55,11 @@ public class Record {
     /**
      * 称重单位，0 为 mg，1 为 g，2 为 kg，3 为 t，4 为 lb（磅），5 为 oz（盎司），6 为 ct（克拉）
      */
-    private int unit;
+    private Integer unit;
     /**
      * 称重时间，毫秒级时间戳
      */
-    private long dataTime;
+    private Long dataTime;
 
     public static RecordVO toRecordVO(Record record) {
         if (record == null) {

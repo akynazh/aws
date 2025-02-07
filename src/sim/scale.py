@@ -11,17 +11,16 @@ mqttc.connect("127.0.0.1")
 mqttc.loop_start()
 while True:
     data = {
-        "workId": 1001,
-        "employeeId": 1001,
-        "scaleId": 1001,
+        "workId": 1,
+        "employeeId": 1,
+        "scaleId": 1,
         "dataValue": random.random() * 100,
         "dataErrorMargin": 0.1,
         "unit": 1,
-        "dataTime": int(time.time() * 1000)
+        "dataTime": int(time.time() * 1000),
     }
     payload = json.dumps(data)
     msg_info = mqttc.publish("weigh", payload, qos=2)
     msg_info.wait_for_publish()
-    time.sleep(1)
+    time.sleep(3)
     print(payload)
-

@@ -18,5 +18,5 @@ import java.util.List;
 @Schema(name = "UserListVO", description = "用户列表")
 public class UserListVO {
     private List<UserVO> userList;
-    private long count;
+    private Long count;
 }

@@ -1,5 +1,5 @@
 import request from "@/utils/request";
-import type { UserVO, UserUpdateVO, UserRegisterVO, UserUpdateMeVO, UserLoginVO, UserListVO } from "@/api/models";
+import type { UserVO, UserUpdateVO, UserRegisterVO, UserUpdateMeVO, UserLoginVO, UserListVO } from "@/models";
 
 export const reqGetUserInfo = () => request.get<any, UserVO>("/user");
 export const reqUpdateUser = (data: UserUpdateVO) => request.put<any, UserVO>("/user", data);

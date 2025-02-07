@@ -19,5 +19,5 @@ import java.util.List;
 @Schema(name = "ScaleListVO", description = "电子秤列表")
 public class ScaleListVO {
     private List<ScaleVO> scaleList;
-    private long count;
+    private Long count;
 }

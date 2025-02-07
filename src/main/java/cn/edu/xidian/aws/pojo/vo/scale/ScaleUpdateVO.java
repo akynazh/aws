@@ -22,10 +22,10 @@ import java.math.BigDecimal;
 @Schema(name = "ScaleUpdateVO", description = "更新电子秤信息表单")
 public class ScaleUpdateVO {
     @Schema(description = "电子秤编号")
-    private long id;
+    private Long id;
     /**
      * 状态，0 为禁用，1 为启用，2 为已删除
      */
     @Schema(description = "状态，0 为禁用，1 为启用，2 为已删除")
-    private int status;
+    private Integer status;
 }

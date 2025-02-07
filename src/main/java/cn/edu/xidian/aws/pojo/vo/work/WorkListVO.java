@@ -19,5 +19,5 @@ import java.util.List;
 @Schema(name = "WorkListVO", description = "作业列表")
 public class WorkListVO {
     private List<WorkVO> workList;
-    private long count;
+    private Long count;
 }

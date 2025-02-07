@@ -2,7 +2,7 @@ import { defineStore } from "pinia";
 import { reqLogin, reqGetUserInfo } from "@/api/user";
 import type { UserState } from "./types";
 import { SET_TOKEN, GET_TOKEN, REMOVE_TOKEN } from "@/utils/storage";
-import type { UserLoginVO, UserVO } from "@/api/models";
+import type { UserLoginVO, UserVO } from "@/models";
 
 export const useUserStore = defineStore("User", {
   state: (): UserState => {

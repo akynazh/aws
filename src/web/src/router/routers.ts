@@ -30,11 +30,20 @@ export const constantRoutes = [
     name: "weigh",
   },
   {
+    path: "/data",
+    component: () => import("@/views/data/index.vue"),
+    name: "data",
+  },
+  {
     path: "/404",
     component: () => import("@/views/404/index.vue"),
     name: "404",
   },
-
+  {
+    path: "/502",
+    component: () => import("@/views/502/index.vue"),
+    name: "502",
+  },
   {
     path: "/:pathMatch(.*)*",
     redirect: "/404",

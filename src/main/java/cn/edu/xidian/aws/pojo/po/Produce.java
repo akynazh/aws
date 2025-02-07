@@ -21,7 +21,7 @@ public class Produce {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long id;
+    private Long id;
     /**
      * 农作物名称
      */
@@ -30,15 +30,15 @@ public class Produce {
     /**
      * 创建时间，毫秒级时间戳
      */
-    private long createTime;
+    private Long createTime;
     /**
      * 更新时间，毫秒级时间戳
      */
-    private long updateTime;
+    private Long updateTime;
     /**
      * 状态，0 为未种植，1 为在种植，2 为已删除
      */
-    private int status;
+    private Integer status;
 
     public static ProduceVO toProduceVO(Produce produce) {
         if (produce == null) {

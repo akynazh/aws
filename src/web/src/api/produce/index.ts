@@ -1,5 +1,5 @@
 import request from "@/utils/request";
-import type { ProduceVO, ProduceUpdateVO, ProduceAddVO, ProduceListVO } from "@/api/models";
+import type { ProduceVO, ProduceUpdateVO, ProduceAddVO, ProduceListVO } from "@/models";
 
 export const reqUpdateProduce = (data: ProduceUpdateVO) => request.put<ProduceVO>("/produce", data);
 export const reqAddProduce = (data: ProduceAddVO) => request.post<ProduceVO>("/produce", data);

@@ -22,7 +22,7 @@ import java.math.BigDecimal;
 @Schema(name = "ScaleVO", description = "电子秤信息")
 public class ScaleVO {
     @Schema(description = "电子秤编号")
-    private long id;
+    private Long id;
     /**
      * 电子秤密钥
      */
@@ -47,40 +47,40 @@ public class ScaleVO {
      * 量程单位，0 为 mg，1 为 g，2 为 kg，3 为 t，4 为 lb（磅），5 为 oz（盎司），6 为 ct（克拉）
      */
     @Schema(description = "量程单位，0 为 mg，1 为 g，2 为 kg，3 为 t，4 为 lb（磅），5 为 oz（盎司），6 为 ct（克拉）")
-    private int unit;
+    private Integer unit;
     /**
      * 检定分度值
      */
     @Schema(description = "检定分度值")
-    private int verificationInterval;
+    private Integer verificationInterval;
     /**
      * 显示分度值
      */
     @Schema(description = "显示分度值")
-    private int displayInterval;
+    private Integer displayInterval;
     /**
      * 分度值单位，0 为 mg，1 为 g，2 为 kg，3 为 t，4 为 lb（磅），5 为 oz（盎司），6 为 ct（克拉）
      */
     @Schema(description = "分度值单位，0 为 mg，1 为 g，2 为 kg，3 为 t，4 为 lb（磅），5 为 oz（盎司），6 为 ct（克拉）")
-    private int unitDv;
+    private Integer unitDv;
     /**
      * 通信协议，0 为 MQTT，1 为 HTTP
      */
     @Schema(description = "通信协议，0 为 MQTT，1 为 HTTP")
-    private int protocol;
+    private Integer protocol;
     /**
      * 创建时间，毫秒级时间戳
      */
     @Schema(description = "创建时间，毫秒级时间戳")
-    private long createTime;
+    private Long createTime;
     /**
      * 更新时间，毫秒级时间戳
      */
     @Schema(description = "更新时间，毫秒级时间戳")
-    private long updateTime;
+    private Long updateTime;
     /**
      * 状态，0 为禁用，1 为启用，2 为已删除
      */
     @Schema(description = "状态，0 为禁用，1 为启用，2 为已删除")
-    private int status;
+    private Integer status;
 }

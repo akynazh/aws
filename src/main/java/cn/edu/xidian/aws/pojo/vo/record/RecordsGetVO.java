@@ -16,13 +16,13 @@ import lombok.NoArgsConstructor;
 @Schema(name = "RecordsGetVO", description = "称重记录查询参数")
 public class RecordsGetVO {
     @Schema(description = "当前页码")
-    int page;
+    Integer page;
     @Schema(description = "每页记录数")
-    int size;
+    Integer size;
     @Schema(description = "采摘作业编号")
-    private long workId;
+    private Long workId;
     @Schema(description = "员工编号")
-    private long employeeId;
+    private Long employeeId;
     @Schema(description = "电子秤编号")
-    private long scaleId;
+    private Long scaleId;
 }

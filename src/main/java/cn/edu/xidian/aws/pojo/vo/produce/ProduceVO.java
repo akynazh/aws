@@ -16,13 +16,13 @@ import lombok.NoArgsConstructor;
 @Schema(name = "ProduceVO", description = "农产品")
 public class ProduceVO {
     @Schema(description = "农产品编号")
-    private long id;
+    private Long id;
     @Schema(description = "农产品名称")
     private String name;
     @Schema(description = "创建时间")
-    private long createTime;
+    private Long createTime;
     @Schema(description = "更新时间")
-    private long updateTime;
+    private Long updateTime;
     @Schema(description = "状态，0 为未种植，1 为在种植，2 为已删除")
-    private int status;
+    private Integer status;
 }

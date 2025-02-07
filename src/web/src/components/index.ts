@@ -1,12 +1,12 @@
-import SvgIcon from "./SvgIcon/index.vue";
 import Pagination from "./Pagination/index.vue";
 import Header from "./Header/index.vue";
+import Footer from "./Footer/index.vue";
 import type { App, Component } from "vue";
 
 const allGlobalComponents: { [name: string]: Component } = {
-  SvgIcon,
   Pagination,
   Header,
+  Footer,
 };
 export default {
   install(app: App) {

@@ -26,28 +26,28 @@ public class Assignment {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long id;
+    private Long id;
 
     /**
      * 采摘作业编号
      */
-    private long workId;
+    private Long workId;
     /**
      * 员工编号
      */
-    private long employeeId;
+    private Long employeeId;
     /**
      * 创建时间，毫秒级时间戳
      */
-    private long createTime;
+    private Long createTime;
     /**
      * 更新时间，毫秒级时间戳
      */
-    private long updateTime;
+    private Long updateTime;
     /**
      * 状态，0 为禁用，1 为启用，2 为已删除
      */
-    private int status;
+    private Integer status;
 
     public static AssignmentVO toAssignmentVO(Assignment assignment) {
         if (assignment == null) {

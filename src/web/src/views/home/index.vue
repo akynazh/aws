@@ -3,14 +3,17 @@
   <div class="home-container">
     <el-row justify="center">
       <el-col :span="12">
-        <el-card class="user-card">
+        <el-card class="user-card hover-effect">
           <template #header>
-            <div class="card-header">
-              <span>欢迎回来，{{ userStore.name }}</span>
+            <div class="panel-header">
+              <span class="panel-title">
+                <el-icon class="title-icon"><User /></el-icon>
+                个人信息
+              </span>
             </div>
           </template>
           <div class="user-info">
-            <el-descriptions :column="1" border>
+            <el-descriptions :column="1" border class="hover-effect">
               <el-descriptions-item label="编号">{{ userStore.id }}</el-descriptions-item>
               <el-descriptions-item label="身份证号">{{ userStore.uid }}</el-descriptions-item>
               <el-descriptions-item label="名称">{{ userStore.name }}</el-descriptions-item>
@@ -24,17 +27,102 @@
             </el-descriptions>
           </div>
         </el-card>
+
+        <!-- 操作面板 - 移到外面作为独立卡片 -->
+        <el-card class="action-card hover-effect">
+          <template #header>
+            <div class="panel-header">
+              <span class="panel-title">
+                <el-icon class="title-icon"><Operation /></el-icon>
+                操作面板
+              </span>
+            </div>
+          </template>
+          <div class="action-buttons">
+            <el-button type="primary" @click="openEditDialog">
+              <el-icon>
+                <Edit />
+              </el-icon>
+              编辑个人信息
+            </el-button>
+            <el-button type="primary" @click="openWeighRecordsDialog">
+              <el-icon>
+                <List />
+              </el-icon>
+              个人称重历史
+            </el-button>
+            <!-- 这里可以添加更多功能按钮 -->
+          </div>
+        </el-card>
       </el-col>
     </el-row>
+
+    <!-- 编辑对话框 -->
+    <el-dialog v-model="dialogVisible" title="编辑个人信息" width="30%">
+      <el-form :model="form" label-width="80px">
+        <el-form-item label="名称">
+          <el-input v-model="form.name" />
+        </el-form-item>
+        <el-form-item label="新密码">
+          <el-input v-model="form.password" type="password" placeholder="不修改请留空" />
+        </el-form-item>
+      </el-form>
+      <template #footer>
+        <span class="dialog-footer">
+          <el-button @click="dialogVisible = false">取消</el-button>
+          <el-button type="primary" @click="handleSubmit">确认</el-button>
+        </span>
+      </template>
+    </el-dialog>
+
+    <!-- 添加称重记录对话框 -->
+    <el-dialog 
+      title="个人称重历史" 
+      v-model="weighRecordsDialogVisible" 
+      width="800px"
+    >
+      <el-table :data="recordsData" border class="hover-effect">
+        <el-table-column prop="id" label="ID" width="80" />
+        <el-table-column prop="workId" label="工单号" width="120" />
+        <el-table-column prop="scaleId" label="设备ID" width="120" />
+        <el-table-column label="称重数据" width="150">
+          <template #default="{ row }">
+            {{ `${row.dataValue}${ScaleUnitMap[row.unit]}` }}
+          </template>
+        </el-table-column>
+        <el-table-column label="误差" width="150">
+          <template #default="{ row }">
+            {{ `${row.dataErrorMargin}${ScaleUnitMap[row.unit]}` }}
+          </template>
+        </el-table-column>
+        <el-table-column prop="dataTime" label="称重时间" width="180">
+          <template #default="{ row }">
+            {{ formatDate(row.dataTime) }}
+          </template>
+        </el-table-column>
+      </el-table>
+      <Pagination 
+        v-model:current-page="recordsCurrentPage" 
+        v-model:page-size="recordsPageSize" 
+        :total="recordsTotal"
+        @size-change="fetchRecordsList" 
+        @current-change="fetchRecordsList"
+      />
+    </el-dialog>
   </div>
 </template>
 
 <script setup lang="ts">
-import { onMounted } from 'vue'
+import { onMounted, ref } from 'vue'
 import { useUserStore } from '@/store/modules/user'
-import { UserRoleMap } from '@/constants/user'
-import { ElNotification } from "element-plus";
-import { getTime } from "@/utils/time";
+import { UserRoleMap } from '@/models/constants/user'
+import { ElNotification } from "element-plus"
+import { reqUpdateMe } from '@/api/user'
+import { reqGetRecords } from '@/api/weigh'
+import type { UserUpdateMeVO, RecordVO } from '@/models'
+import { Edit, List, User, Operation } from '@element-plus/icons-vue'
+import { ScaleUnitMap } from '@/models/constants/scale'
+import dayjs from 'dayjs'
 
 const userStore = useUserStore()
 
@@ -43,6 +131,77 @@ const formatRole = (roles: string) => {
     .map(role => UserRoleMap[role as keyof typeof UserRoleMap] || role)
     .join('、');
 };
+
+const dialogVisible = ref(false)
+const form = ref<UserUpdateMeVO>({
+  name: '',
+  password: ''
+})
+
+const openEditDialog = () => {
+  form.value.name = userStore.name
+  form.value.password = ''
+  dialogVisible.value = true
+}
+
+const handleSubmit = async () => {
+  try {
+    await reqUpdateMe(form.value)
+    ElNotification.success({
+      title: '成功',
+      message: '个人信息更新成功'
+    })
+    await userStore.getUserInfo()
+    dialogVisible.value = false
+  } catch (error) {
+    ElNotification.error({
+      title: '错误',
+      message: '更新失败'
+    })
+  }
+}
+
+// 添加称重记录相关的状态
+const weighRecordsDialogVisible = ref(false)
+const recordsData = ref<RecordVO[]>([])
+const recordsCurrentPage = ref(1)
+const recordsPageSize = ref(10)
+const recordsTotal = ref(0)
+
+// 打开称重记录对话框
+const openWeighRecordsDialog = async () => {
+  weighRecordsDialogVisible.value = true
+  recordsCurrentPage.value = 1
+  await fetchRecordsList()
+}
+
+// 获取称重记录列表
+const fetchRecordsList = async () => {
+  try {
+    const result = await reqGetRecords({
+      page: recordsCurrentPage.value - 1,
+      size: recordsPageSize.value,
+      workId: -1,
+      scaleId: -1,
+      employeeId: userStore.id
+    })
+    if (result) {
+      recordsData.value = result.recordList
+      recordsTotal.value = result.count
+    }
+  } catch (error) {
+    console.error('获取称重记录失败', error)
+    ElNotification.error({
+      title: '错误',
+      message: '获取称重记录失败'
+    })
+  }
+}
+
+// 添加日期格式化方法
+const formatDate = (timestamp?: number): string => {
+  return timestamp ? dayjs(timestamp).format('YYYY-MM-DD HH:mm:ss') : 'N/A'
+}
 
 onMounted(async () => {
   await userStore.getUserInfo()
@@ -62,11 +221,144 @@ onMounted(async () => {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  font-size: 18px;
+  font-size: 25px;
+  font-weight: bold;
+}
+
+.card-header-mini {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 15px;
   font-weight: bold;
 }
 
 .user-info {
   margin-top: 10px;
+}
+
+.dialog-footer {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+}
+
+.button-container {
+  margin-top: 20px;
+  display: flex;
+  justify-content: center;
+}
+
+.action-card {
+  margin-top: 20px;
+}
+
+.action-buttons {
+  display: flex;
+  gap: 16px;
+  flex-wrap: wrap;
+  justify-content: center;
+  padding: 16px 0;
+}
+
+.action-buttons .el-button {
+  min-width: 160px;
+  transition: all 0.3s ease;
+}
+
+.action-buttons .el-button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.hover-effect {
+  transition: all 0.3s ease;
+  box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.1);
+}
+
+.hover-effect:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 16px 0 rgba(0, 0, 0, 0.2);
+}
+
+:deep(.el-descriptions) {
+  background-color: white;
+  border-radius: 4px;
+  overflow: hidden;
+  transition: all 0.3s ease;
+}
+
+:deep(.el-descriptions:hover) {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+:deep(.el-descriptions__header) {
+  background-color: #f5f7fa;
+  padding: 12px 16px;
+  margin-bottom: 0;
+}
+
+:deep(.el-descriptions__body) {
+  padding: 16px;
+}
+
+:deep(.el-descriptions__label) {
+  color: #606266;
+  font-weight: 600;
+}
+
+.panel-header {
+  display: flex;
+  justify-content: center;  /* Changed from space-between to center */
+  align-items: center;
+  font-size: 20px;
+  font-weight: bold;
+}
+
+.panel-title {
+  font-size: 20px;
+  font-weight: 600;
+  color: #303133;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  position: relative;
+  padding-left: 12px;
+}
+
+.panel-title::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  height: 100%;
+  width: 4px;
+  background: var(--el-color-primary);
+  border-radius: 2px;
+}
+
+.title-icon {
+  font-size: 22px;
+  color: var(--el-color-primary);
+}
+
+/* 添加表格相关样式 */
+:deep(.el-table) {
+  border-radius: 8px;
+  overflow: hidden;
+  margin-bottom: 20px;
+}
+
+:deep(.el-table__header) {
+  background-color: #f5f7fa;
+}
+
+:deep(.el-table__row) {
+  transition: all 0.3s ease;
+}
+
+:deep(.el-table__row:hover) {
+  background-color: #f8f9fa !important;
+  transform: scale(1.001);
 }
 </style>

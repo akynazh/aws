@@ -17,13 +17,13 @@ public class WorkAddVO {
     /**
      * 农作物编号
      */
-    private long produceId;
+    private Long produceId;
     /**
      * 采摘开始时间，毫秒级时间戳
      */
-    private long startTime;
+    private Long startTime;
     /**
      * 采摘结束时间，毫秒级时间戳
      */
-    private long endTime;
+    private Long endTime;
 }

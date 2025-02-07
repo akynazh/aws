@@ -5,9 +5,12 @@
             <el-col :span="30">
                 <!-- 操作面板 -->
                 <div class="operation-wrapper">
-                    <el-card class="operation-panel">
+                    <el-card class="operation-panel hover-effect">
                         <div class="panel-header">
-                            <span class="panel-title">农作物管理</span>
+                            <span class="panel-title">
+                                <el-icon class="title-icon"><Platform /></el-icon>
+                                果实管理
+                            </span>
                             <div class="panel-buttons">
                                 <el-button 
                                     type="primary" 
@@ -16,13 +19,25 @@
                                 >
                                     添加农作物
                                 </el-button>
+                                <el-button 
+                                    type="primary" 
+                                    :icon="Search"
+                                    @click="handleSearch"
+                                >
+                                    查询农作物
+                                </el-button>
                             </div>
                         </div>
                     </el-card>
                 </div>
 
                 <!-- 农作物表格 -->
-                <el-table :data="tableData" border style="width: 100%">
+                <el-table 
+                    :data="tableData" 
+                    border 
+                    class="custom-table hover-effect"
+                    style="width: 100%"
+                >
                     <el-table-column prop="id" label="ID" width="100" />
                     <el-table-column prop="name" label="名称" width="180" />
                     <el-table-column prop="status" label="状态" width="120">
@@ -88,15 +103,37 @@
                 <el-button type="primary" @click="handleSubmit">确定</el-button>
             </template>
         </el-dialog>
+
+        <!-- 搜索农作物对话框 -->
+        <el-dialog 
+            title="查询农作物" 
+            v-model="searchDialogVisible" 
+            width="400px"
+        >
+            <el-form 
+                ref="searchFormRef"
+                :model="searchForm"
+                :rules="searchRules"
+                label-width="100px"
+            >
+                <el-form-item label="ID" prop="id">
+                    <el-input v-model.number="searchForm.id" placeholder="请输入农作物ID" type="number" />
+                </el-form-item>
+            </el-form>
+            <template #footer>
+                <el-button @click="searchDialogVisible = false">取消</el-button>
+                <el-button type="primary" @click="handleSearchSubmit">查询</el-button>
+            </template>
+        </el-dialog>
     </div>
 </template>
 
 <script setup lang="ts">
 import { ref, reactive, onMounted } from "vue";
-import type { ProduceVO, ProduceAddVO, ProduceUpdateVO } from "@/api/models";
-import { reqGetProduces, reqAddProduce, reqUpdateProduce } from "@/api/produce";
+import type { ProduceVO, ProduceAddVO, ProduceUpdateVO } from "@/models";
+import { reqGetProduces, reqAddProduce, reqUpdateProduce, reqGetProduce } from "@/api/produce";
 import { ElMessage } from 'element-plus';
-import { Plus } from '@element-plus/icons-vue';
+import { Platform, Plus, Search } from '@element-plus/icons-vue';
 import dayjs from "dayjs";
 
 const tableData = ref<ProduceVO[]>([]);
@@ -168,6 +205,48 @@ const handleSubmit = async () => {
     });
 };
 
+// 添加搜索相关的响应式变量
+const searchDialogVisible = ref(false);
+const searchFormRef = ref();
+const searchForm = reactive({
+    id: undefined as number | undefined
+});
+
+const searchRules = {
+    id: [
+        { required: true, message: '请输入农作物ID', trigger: 'blur' },
+        { type: 'number', message: '请输入有效的ID', trigger: 'blur' }
+    ]
+};
+
+// 处理搜索按钮点击
+const handleSearch = () => {
+    searchForm.id = undefined;
+    searchDialogVisible.value = true;
+};
+
+// 处理搜索提交
+const handleSearchSubmit = async () => {
+    if (!searchFormRef.value) return;
+    await searchFormRef.value.validate(async (valid: boolean) => {
+        if (valid && searchForm.id !== undefined) {
+            try {
+                const produce = await reqGetProduce(searchForm.id);
+                if (produce) {
+                    tableData.value = [produce];
+                    total.value = 1;
+                    searchDialogVisible.value = false;
+                    ElMessage.success('查询成功');
+                }
+            } catch (error) {
+                console.error('查询失败', error);
+                ElMessage.error('查询失败');
+            }
+        }
+    });
+};
+
+// 修改后的获取列表方法
 const fetchProduceList = async () => {
     try {
         const result = await reqGetProduces(currentPage.value - 1, pageSize.value);
@@ -175,6 +254,7 @@ const fetchProduceList = async () => {
         total.value = result?.count || 0;
     } catch (error) {
         console.error("获取农作物列表失败", error);
+        ElMessage.error('获取农作物列表失败');
     }
 };
 
@@ -242,5 +322,71 @@ const statusTag = (status?: number): string => {
 
 .el-table {
     margin-top: 20px;
+}
+
+.hover-effect {
+  transition: all 0.3s ease;
+  box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.1);
+}
+
+.hover-effect:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 16px 0 rgba(0, 0, 0, 0.2);
+}
+
+.custom-table {
+  border-radius: 8px;
+  overflow: hidden;
+  background-color: white;
+}
+
+:deep(.el-table__row) {
+  transition: all 0.3s ease;
+}
+
+:deep(.el-table__row:hover) {
+  background-color: #f8f9fa !important;
+  transform: scale(1.001);
+}
+
+:deep(.el-table) {
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+:deep(.el-table__header) {
+  background-color: #f5f7fa;
+}
+
+:deep(.el-table__header-row th) {
+  background-color: #f5f7fa;
+  color: #606266;
+  font-weight: 600;
+}
+
+.panel-title {
+  font-size: 20px;
+  font-weight: 600;
+  color: #303133;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  position: relative;
+  padding-left: 12px;
+}
+
+.panel-title::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  height: 100%;
+  width: 4px;
+  background: var(--el-color-primary);
+  border-radius: 2px;
+}
+
+.title-icon {
+  font-size: 22px;
+  color: var(--el-color-primary);
 }
 </style>

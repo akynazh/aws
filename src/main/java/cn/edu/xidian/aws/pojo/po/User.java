@@ -26,7 +26,7 @@ public class User {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long id;
+    private Long id;
     /**
      * 身份证号
      */
@@ -47,15 +47,15 @@ public class User {
     /**
      * 创建时间，毫秒级时间戳
      */
-    private long createTime;
+    private Long createTime;
     /**
      * 更新时间，毫秒级时间戳
      */
-    private long updateTime;
+    private Long updateTime;
     /**
      * 状态，0 为禁用，1 为启用，2 为已删除
      */
-    private int status;
+    private Integer status;
 
     public static UserVO toUserVO(User user) {
         if (user == null) {

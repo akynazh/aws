@@ -16,9 +16,9 @@ import lombok.NoArgsConstructor;
 @Schema(name = "ProduceUpdateVO", description = "修改农产品信息表单")
 public class ProduceUpdateVO {
     @Schema(description = "农产品编号")
-    private long id;
+    private Long id;
     @Schema(description = "农产品名称")
     private String name;
     @Schema(description = "状态，0 为未种植，1 为在种植，2 为已删除")
-    private int status = -1;
+    private Integer status = -1;
 }

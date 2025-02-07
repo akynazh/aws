@@ -19,5 +19,5 @@ import java.util.List;
 @Schema(name = "AssignmentListVO", description = "工作分配信息列表")
 public class AssignmentListVO {
     private List<AssignmentVO> assignmentList;
-    private long count;
+    private Long count;
 }
