@@ -12,35 +12,42 @@
                                 果实管理
                             </span>
                             <div class="panel-buttons">
-                                <el-button 
+                                <el-button v-if="store.roles?.includes(UserRole.ADMIN)"
                                     type="primary" 
                                     :icon="Plus"
                                     @click="handleAdd"
                                 >
-                                    添加农作物
+                                    添加果实
                                 </el-button>
                                 <el-button 
                                     type="primary" 
                                     :icon="Search"
                                     @click="handleSearch"
                                 >
-                                    查询农作物
+                                    查询果实
                                 </el-button>
                             </div>
                         </div>
                     </el-card>
                 </div>
 
-                <!-- 农作物表格 -->
+                <!-- 果实表格 -->
                 <el-table 
                     :data="tableData" 
                     border 
                     class="custom-table hover-effect"
                     style="width: 100%"
                 >
-                    <el-table-column prop="id" label="ID" width="100" />
+                    <el-table-column prop="id" label="编号" width="100" />
                     <el-table-column prop="name" label="名称" width="180" />
-                    <el-table-column prop="status" label="状态" width="120">
+                    <el-table-column 
+                        prop="status" 
+                        label="状态" 
+                        width="120"
+                        :filters="statusFilters"
+                        :filter-method="filterStatus"
+                        filter-placement="bottom-end"
+                    >
                         <template #default="{ row }">
                             <el-tag :type="statusTag(row.status)">
                                 {{ statusText(row.status) }}
@@ -57,7 +64,7 @@
                             {{ formatDate(row.updateTime) }}
                         </template>
                     </el-table-column>
-                    <el-table-column label="操作" width="120" fixed="right">
+                    <el-table-column v-if="store.roles?.includes(UserRole.ADMIN)" label="操作" width="120" fixed="right">
                         <template #default="{ row }">
                             <el-button type="primary" link @click="handleEdit(row)">编辑</el-button>
                         </template>
@@ -75,9 +82,9 @@
             </el-col>
         </el-row>
 
-        <!-- 农作物表单对话框 -->
+        <!-- 果实表单对话框 -->
         <el-dialog 
-            :title="isEdit ? '编辑农作物' : '添加农作物'" 
+            :title="isEdit ? '编辑果实' : '添加果实'" 
             v-model="dialogVisible" 
             width="500px"
         >
@@ -104,9 +111,9 @@
             </template>
         </el-dialog>
 
-        <!-- 搜索农作物对话框 -->
+        <!-- 搜索果实对话框 -->
         <el-dialog 
-            title="查询农作物" 
+            title="查询果实" 
             v-model="searchDialogVisible" 
             width="400px"
         >
@@ -116,8 +123,8 @@
                 :rules="searchRules"
                 label-width="100px"
             >
-                <el-form-item label="ID" prop="id">
-                    <el-input v-model.number="searchForm.id" placeholder="请输入农作物ID" type="number" />
+                <el-form-item label="名称" prop="name">
+                    <el-input v-model="searchForm.name" placeholder="请输入果实名称" />
                 </el-form-item>
             </el-form>
             <template #footer>
@@ -131,10 +138,14 @@
 <script setup lang="ts">
 import { ref, reactive, onMounted } from "vue";
 import type { ProduceVO, ProduceAddVO, ProduceUpdateVO } from "@/models";
-import { reqGetProduces, reqAddProduce, reqUpdateProduce, reqGetProduce } from "@/api/produce";
+import { reqGetProduces, reqAddProduce, reqUpdateProduce, reqGetProduce, reqGetProduceByName } from "@/api/produce";
 import { ElMessage } from 'element-plus';
 import { Platform, Plus, Search } from '@element-plus/icons-vue';
 import dayjs from "dayjs";
+import userStore from "@/store/modules/user";
+import { UserRole } from '@/models/constants/user';
+
+let store = userStore();
 
 const tableData = ref<ProduceVO[]>([]);
 const currentPage = ref(1);
@@ -205,23 +216,23 @@ const handleSubmit = async () => {
     });
 };
 
-// 添加搜索相关的响应式变量
+// 修改搜索相关的响应式变量
 const searchDialogVisible = ref(false);
 const searchFormRef = ref();
 const searchForm = reactive({
-    id: undefined as number | undefined
+    name: ''
 });
 
 const searchRules = {
-    id: [
-        { required: true, message: '请输入农作物ID', trigger: 'blur' },
-        { type: 'number', message: '请输入有效的ID', trigger: 'blur' }
+    name: [
+        { required: true, message: '请输入果实名称', trigger: 'blur' },
+        { min: 1, message: '名称不能为空', trigger: 'blur' }
     ]
 };
 
 // 处理搜索按钮点击
 const handleSearch = () => {
-    searchForm.id = undefined;
+    searchForm.name = '';
     searchDialogVisible.value = true;
 };
 
@@ -229,9 +240,9 @@ const handleSearch = () => {
 const handleSearchSubmit = async () => {
     if (!searchFormRef.value) return;
     await searchFormRef.value.validate(async (valid: boolean) => {
-        if (valid && searchForm.id !== undefined) {
+        if (valid && searchForm.name) {
             try {
-                const produce = await reqGetProduce(searchForm.id);
+                const produce = await reqGetProduceByName(searchForm.name);
                 if (produce) {
                     tableData.value = [produce];
                     total.value = 1;
@@ -246,6 +257,18 @@ const handleSearchSubmit = async () => {
     });
 };
 
+// 添加状态筛选选项
+const statusFilters = [
+    { text: '未种植', value: 0 },
+    { text: '在种植', value: 1 },
+    { text: '已删除', value: 2 }
+];
+
+// 添加状态筛选方法
+const filterStatus = (value: number, row: ProduceVO) => {
+    return row.status === value;
+};
+
 // 修改后的获取列表方法
 const fetchProduceList = async () => {
     try {
@@ -253,8 +276,8 @@ const fetchProduceList = async () => {
         tableData.value = result?.produceList || [];
         total.value = result?.count || 0;
     } catch (error) {
-        console.error("获取农作物列表失败", error);
-        ElMessage.error('获取农作物列表失败');
+        console.error("获取果实列表失败", error);
+        ElMessage.error('获取果实列表失败');
     }
 };
 

@@ -1,3 +1,5 @@
+import { UserRole } from "@/models/constants/user";
+
 export const constantRoutes = [
   {
     path: "/login",
@@ -13,6 +15,9 @@ export const constantRoutes = [
     path: "/user",
     component: () => import("@/views/user/index.vue"),
     name: "user",
+    meta: {
+      requiresRoles: [UserRole.ADMIN]
+    }
   },
   {
     path: "/produce",
@@ -29,11 +34,11 @@ export const constantRoutes = [
     component: () => import("@/views/weigh/index.vue"),
     name: "weigh",
   },
-  {
-    path: "/data",
-    component: () => import("@/views/data/index.vue"),
-    name: "data",
-  },
+  // {
+  //   path: "/data",
+  //   component: () => import("@/views/data/index.vue"),
+  //   name: "data",
+  // },
   {
     path: "/404",
     component: () => import("@/views/404/index.vue"),

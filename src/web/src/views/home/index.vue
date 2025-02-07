@@ -18,12 +18,12 @@
               <el-descriptions-item label="身份证号">{{ userStore.uid }}</el-descriptions-item>
               <el-descriptions-item label="名称">{{ userStore.name }}</el-descriptions-item>
               <el-descriptions-item label="角色">{{ formatRole(userStore.roles) }}</el-descriptions-item>
-              <el-descriptions-item label="创建时间">
-                {{ new Date(userStore.createTime).toLocaleString() }}
+              <el-descriptions-item label="入职时间">
+                {{ formatDateToYMD(userStore.createTime) }}
               </el-descriptions-item>
-              <el-descriptions-item label="最后更新">
-                {{ new Date(userStore.updateTime).toLocaleString() }}
-              </el-descriptions-item>
+              <!-- <el-descriptions-item label="最后更新">
+                {{ formatDateToYMD(userStore.updateTime) }}
+              </el-descriptions-item> -->
             </el-descriptions>
           </div>
         </el-card>
@@ -51,7 +51,10 @@
               </el-icon>
               个人称重历史
             </el-button>
-            <!-- 这里可以添加更多功能按钮 -->
+            <el-button type="primary" @click="handleExport">
+              <el-icon><Download /></el-icon>
+              导出历史称重数据
+            </el-button>
           </div>
         </el-card>
       </el-col>
@@ -83,8 +86,8 @@
     >
       <el-table :data="recordsData" border class="hover-effect">
         <el-table-column prop="id" label="ID" width="80" />
-        <el-table-column prop="workId" label="工单号" width="120" />
-        <el-table-column prop="scaleId" label="设备ID" width="120" />
+        <el-table-column prop="workId" label="作业编号" width="120" />
+        <el-table-column prop="scaleId" label="电子秤编号" width="120" />
         <el-table-column label="称重数据" width="150">
           <template #default="{ row }">
             {{ `${row.dataValue}${ScaleUnitMap[row.unit]}` }}
@@ -92,7 +95,7 @@
         </el-table-column>
         <el-table-column label="误差" width="150">
           <template #default="{ row }">
-            {{ `${row.dataErrorMargin}${ScaleUnitMap[row.unit]}` }}
+            &plusmn;{{ `${row.dataErrorMargin}${ScaleUnitMap[row.unit]}` }}
           </template>
         </el-table-column>
         <el-table-column prop="dataTime" label="称重时间" width="180">
@@ -120,9 +123,10 @@ import { ElNotification } from "element-plus"
 import { reqUpdateMe } from '@/api/user'
 import { reqGetRecords } from '@/api/weigh'
 import type { UserUpdateMeVO, RecordVO } from '@/models'
-import { Edit, List, User, Operation } from '@element-plus/icons-vue'
+import { Edit, List, User, Operation, Download } from '@element-plus/icons-vue'
 import { ScaleUnitMap } from '@/models/constants/scale'
 import dayjs from 'dayjs'
+import * as XLSX from 'xlsx'
 
 const userStore = useUserStore()
 
@@ -198,14 +202,95 @@ const fetchRecordsList = async () => {
   }
 }
 
-// 添加日期格式化方法
+// 修改导出处理函数
+const handleExport = async () => {
+  try {
+    // 先获取第一页和总数
+    const firstPage = await reqGetRecords({
+      page: 0,
+      size: 100,
+      workId: -1,
+      scaleId: -1,
+      employeeId: userStore.id
+    })
+    
+    if (!firstPage || !firstPage.count) {
+      ElNotification.warning({
+        title: '提示',
+        message: '暂无数据可导出'
+      })
+      return
+    }
+
+    const totalPages = Math.ceil(firstPage.count / 100)
+    const allRecords: RecordVO[] = [...firstPage.recordList]
+
+    // 如果有多页，继续获取其他页的数据
+    if (totalPages > 1) {
+      const otherPagesPromises = Array.from({ length: totalPages - 1 }, (_, i) =>
+        reqGetRecords({
+          page: i + 1,
+          size: 100,
+          workId: -1,
+          scaleId: -1,
+          employeeId: userStore.id
+        })
+      )
+
+      const results = await Promise.all(otherPagesPromises)
+      results.forEach(result => {
+        if (result?.recordList) {
+          allRecords.push(...result.recordList)
+        }
+      })
+    }
+
+    // 准备Excel数据
+    const excelData = allRecords.map(record => ({
+      'ID': record.id,
+      '作业编号': record.workId,
+      '电子秤编号': record.scaleId,
+      '称重数据': `${record.dataValue}${ScaleUnitMap[record.unit]}`,
+      '误差': `±${record.dataErrorMargin}${ScaleUnitMap[record.unit]}`,
+      '称重时间': formatDate(record.dataTime)
+    }))
+
+    // 创建工作簿
+    const wb = XLSX.utils.book_new()
+    const ws = XLSX.utils.json_to_sheet(excelData)
+    XLSX.utils.book_append_sheet(wb, ws, '称重记录')
+
+    // 导出Excel
+    XLSX.writeFile(wb, `称重记录_${userStore.name}_${formatDateToYMD(Date.now())}.xlsx`)
+
+    ElNotification.success({
+      title: '成功',
+      message: `成功导出${allRecords.length}条记录`
+    })
+  } catch (error) {
+    console.error('导出失败', error)
+    ElNotification.error({
+      title: '错误',
+      message: '导出失败'
+    })
+  }
+}
+
+// 添加新的日期格式化方法
 const formatDate = (timestamp?: number): string => {
   return timestamp ? dayjs(timestamp).format('YYYY-MM-DD HH:mm:ss') : 'N/A'
 }
 
-onMounted(async () => {
-  await userStore.getUserInfo()
-})
+// 添加新的日期格式化方法
+const formatDateToYMD = (timestamp?: number): string => {
+  if (!timestamp) return 'N/A';
+  const date = new Date(timestamp);
+  return `${date.getFullYear()}年${date.getMonth() + 1}月${date.getDate()}日`;
+}
+
+// onMounted(async () => {
+//   await userStore.getUserInfo()
+// })
 </script>
 
 <style scoped>
@@ -360,5 +445,11 @@ onMounted(async () => {
 :deep(.el-table__row:hover) {
   background-color: #f8f9fa !important;
   transform: scale(1.001);
+}
+
+.table-header {
+  margin-bottom: 16px;
+  display: flex;
+  justify-content: flex-end;
 }
 </style>

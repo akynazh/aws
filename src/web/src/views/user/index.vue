@@ -39,15 +39,29 @@
                     class="custom-table hover-effect"
                     style="width: 100%"
                 >
-                    <el-table-column prop="id" label="ID" width="100" />
-                    <el-table-column prop="uid" label="用户身份证" width="180" />
+                    <el-table-column prop="id" label="编号" width="100" />
+                    <el-table-column prop="uid" label="身份证号" width="180" />
                     <el-table-column prop="name" label="姓名" width="180" />
-                    <el-table-column prop="roles" label="角色" width="250">
+                    <el-table-column 
+                        prop="roles" 
+                        label="角色" 
+                        width="250"
+                        :filters="roleFilters"
+                        :filter-method="filterRole"
+                        filter-placement="bottom-end"
+                    >
                         <template #default="{ row }">
                             <span>{{ formatRoles(row.roles) }}</span>
                         </template>
                     </el-table-column>
-                    <el-table-column prop="status" label="状态" width="120">
+                    <el-table-column 
+                        prop="status" 
+                        label="状态" 
+                        width="120"
+                        :filters="statusFilters"
+                        :filter-method="filterStatus"
+                        filter-placement="bottom-end"
+                    >
                         <template #default="{ row }">
                             <el-tag :type="statusTag(row.status)">
                                 {{ statusText(row.status) }}
@@ -343,6 +357,28 @@ const formatRoles = (roles: string): string => {
         .map(role => roleText(role))
         .filter(Boolean)
         .join('、');
+};
+
+// 添加角色筛选选项
+const roleFilters = [
+    { text: UserRoleMap[UserRole.ADMIN], value: UserRole.ADMIN },
+    { text: UserRoleMap[UserRole.EMPLOYEE], value: UserRole.EMPLOYEE }
+];
+
+// 添加状态筛选选项
+const statusFilters = Object.entries(UserStatusMap).map(([value, label]) => ({
+    text: label,
+    value: Number(value)
+}));
+
+// 添加角色筛选方法
+const filterRole = (value: string, row: UserVO) => {
+    return row.roles.split(',').includes(value);
+};
+
+// 添加状态筛选方法
+const filterStatus = (value: number, row: UserVO) => {
+    return row.status === value;
 };
 </script>
 

@@ -15,7 +15,7 @@ import lombok.NoArgsConstructor;
 public class WorkAddVO {
 
     /**
-     * 农作物编号
+     * 果实编号
      */
     private Long produceId;
     /**

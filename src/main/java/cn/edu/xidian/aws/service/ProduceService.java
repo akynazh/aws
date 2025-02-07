@@ -56,6 +56,10 @@ public class ProduceService {
         return produceRepository.findById(id).orElseThrow(AwsNotFoundException::new);
     }
 
+    public Produce getProduceByName(String name) {
+        return produceRepository.findByName(name).orElseThrow(AwsNotFoundException::new);
+    }
+
     public List<Produce> getProduces(int page, int size) {
         PageRequest pr = PageRequest.of(page, size);
         return produceRepository.findAll(pr).getContent();

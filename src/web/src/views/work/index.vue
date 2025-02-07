@@ -9,37 +9,38 @@
                         <div class="panel-header">
                             <span class="panel-title">
                                 <el-icon class="title-icon"><Timer /></el-icon>
-                                工作管理
+                                作业管理
                             </span>
                             <div class="panel-buttons">
                                 <el-button 
+                                v-if="store.roles?.includes(UserRole.ADMIN)"
                                     type="primary" 
                                     :icon="Plus"
                                     @click="handleAdd"
                                 >
-                                    添加工作
+                                    添加作业
                                 </el-button>
                                 <el-button 
                                     type="primary" 
                                     :icon="Search"
                                     @click="handleSearch"
                                 >
-                                    查询工作
+                                    查询作业
                                 </el-button>
                             </div>
                         </div>
                     </el-card>
                 </div>
 
-                <!-- 工作表格 -->
+                <!-- 作业表格 -->
                 <el-table 
                     :data="tableData" 
                     border 
                     class="custom-table hover-effect"
                     style="width: 100%"
                 >
-                    <el-table-column prop="id" label="ID" width="100" />
-                    <el-table-column label="工作名称" width="200">
+                    <el-table-column prop="id" label="编号" width="100" />
+                    <el-table-column label="作业名称" width="200">
                         <template #default="{ row }">
                             {{ generateWorkName(row) }}
                         </template>
@@ -66,14 +67,21 @@
                             {{ row.dataValue ? `${row.dataValue}${formatUnit(row.unit)}` : '-' }}
                         </template>
                     </el-table-column>
-                    <el-table-column prop="status" label="状态" width="120">
+                    <el-table-column 
+                        prop="status" 
+                        label="状态" 
+                        width="120"
+                        :filters="statusFilters"
+                        :filter-method="filterStatus"
+                        filter-placement="bottom-end"
+                    >
                         <template #default="{ row }">
                             <el-tag :type="statusTag(row.status)">
                                 {{ statusText(row.status) }}
                             </el-tag>
                         </template>
                     </el-table-column>
-                    <el-table-column label="操作" width="120" fixed="right">
+                    <el-table-column v-if="store.roles?.includes(UserRole.ADMIN)" label="操作" width="120" fixed="right">
                         <template #default="{ row }">
                             <el-button type="primary" link @click="handleEdit(row)">编辑</el-button>
                         </template>
@@ -91,9 +99,9 @@
             </el-col>
         </el-row>
 
-        <!-- 工作表单对话框 -->
+        <!-- 作业表单对话框 -->
         <el-dialog 
-            :title="isEdit ? '编辑工作' : '添加工作'" 
+            :title="isEdit ? '编辑作业' : '添加作业'" 
             v-model="dialogVisible" 
             width="500px"
         >
@@ -158,9 +166,9 @@
             </template>
         </el-dialog>
 
-        <!-- 添加搜索工作对话框 -->
+        <!-- 添加搜索作业对话框 -->
         <el-dialog 
-            title="查询工作" 
+            title="查询作业" 
             v-model="searchDialogVisible" 
             width="400px"
         >
@@ -170,8 +178,8 @@
                 :rules="searchRules"
                 label-width="100px"
             >
-                <el-form-item label="工作ID" prop="workId">
-                    <el-input v-model.number="searchForm.workId" type="number" placeholder="请输入工作ID" />
+                <el-form-item label="作业编号" prop="workId">
+                    <el-input v-model.number="searchForm.workId" type="number" placeholder="请输入作业编号" />
                 </el-form-item>
             </el-form>
             <template #footer>
@@ -191,6 +199,10 @@ import { ElMessage } from 'element-plus';
 import { Plus, Timer, Search } from '@element-plus/icons-vue';
 import dayjs from "dayjs";
 import { WorkStatus, WorkStatusMap, ScaleUnit, ScaleUnitMap } from '@/models/constants/work';
+import userStore from "@/store/modules/user";
+import { UserRole } from '@/models/constants/user';
+
+let store = userStore();
 
 const tableData = ref<WorkVO[]>([]);
 const currentPage = ref(1);
@@ -221,7 +233,7 @@ const fetchProduceList = async () => {
     try {
         const result = await reqGetProduces(0, 1000); // 获取足够多的产品
         produceList.value = result?.produceList || [];
-        // 建立产品ID到名称的映射
+        // 建立产品编号到名称的映射
         produceMap.value = new Map(
             produceList.value.map(produce => [produce.id, produce.name])
         );
@@ -238,7 +250,7 @@ const getProduceName = (id: number): string => {
     return produceMap.value.get(id) || `产品${id}`;
 };
 
-// 添加工作名称生成函数
+// 添加作业名称生成函数
 const generateWorkName = (work: WorkVO): string => {
     const date = dayjs(work.startTime);
     const dateStr = date.format('YYYY-MM-DD');
@@ -262,9 +274,20 @@ const searchForm = reactive({
 
 const searchRules = {
     workId: [
-        { required: true, message: '请输入工作ID', trigger: 'blur' },
-        { type: 'number', message: '工作ID必须是数字', trigger: 'blur' }
+        { required: true, message: '请输入作业编号', trigger: 'blur' },
+        { type: 'number', message: '作业编号必须是数字', trigger: 'blur' }
     ]
+};
+
+// 添加状态筛选选项
+const statusFilters = Object.entries(WorkStatusMap).map(([value, label]) => ({
+    text: label,
+    value: Number(value)
+}));
+
+// 添加状态筛选方法
+const filterStatus = (value: number, row: WorkVO) => {
+    return row.status === value;
 };
 
 // Functions
@@ -348,11 +371,13 @@ const fetchWorkList = async (resetPage: boolean = false) => {
     }
     try {
         const result = await reqGetWorks(currentPage.value - 1, pageSize.value);
-        tableData.value = result?.workList || [];
-        total.value = result?.count || 0;
+        if (result) {
+            tableData.value = result.workList || [];
+            total.value = result.count || 0;
+        }
     } catch (error) {
-        console.error("获取工作列表失败", error);
-        ElMessage.error('获取工作列表失败');
+        console.error("获取作业列表失败", error);
+        ElMessage.error('获取作业列表失败');
     }
 };
 

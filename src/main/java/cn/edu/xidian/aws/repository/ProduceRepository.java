@@ -13,4 +13,5 @@ import java.util.Optional;
  */
 @Repository
 public interface ProduceRepository extends JpaRepository<Produce, Long> {
+    Optional<Produce> findByName(String name);
 }

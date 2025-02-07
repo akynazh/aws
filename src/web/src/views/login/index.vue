@@ -41,6 +41,9 @@
             </el-button>
           </el-form-item>
         </el-form>
+        <div class="copyright-text">
+          © 2025 西安电子科技大学 江志航
+        </div>
       </el-col>
     </el-row>
   </div>
@@ -159,6 +162,19 @@ onMounted(() => {
   border-radius: 20px;
   box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
   overflow: hidden;
+  animation: float 10s ease-in-out infinite;
+}
+
+@keyframes float {
+  0% {
+    transform: translateY(0px);
+  }
+  50% {
+    transform: translateY(-15px);
+  }
+  100% {
+    transform: translateY(0px);
+  }
 }
 
 .left-section {
@@ -247,6 +263,16 @@ onMounted(() => {
   }
 }
 
+.copyright-text {
+  text-align: center;
+  font-size: 12px;
+  color: #909399;
+  margin-top: 20px;
+  position: absolute;
+  bottom: 20px;
+  width: 100%;
+}
+
 @media (max-width: 768px) {
   .login_form {
     width: 90%;
@@ -264,6 +290,11 @@ onMounted(() => {
   .system-title {
     font-size: 28px;
     top: 20px;
+  }
+
+  .copyright-text {
+    font-size: 10px;
+    bottom: 10px;
   }
 }
 </style>

@@ -23,7 +23,7 @@ public class WorkUpdateVO {
     private Long id;
 
     /**
-     * 农作物编号
+     * 果实编号
      */
     private Long produceId;
     /**

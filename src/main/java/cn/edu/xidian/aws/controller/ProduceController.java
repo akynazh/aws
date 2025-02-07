@@ -21,17 +21,17 @@ import java.util.stream.Collectors;
 /**
  * @author akynazh@gmail.com
  * @date 2025/1/16
- * @description 农作物模块
+ * @description 果实模块
  */
 @RestController
 @RequestMapping("/produce")
 @Slf4j
-@Tag(name = "农作物模块")
+@Tag(name = "果实模块")
 public class ProduceController {
     @Autowired
     private ProduceService produceService;
 
-    @Operation(summary = "添加农作物")
+    @Operation(summary = "添加果实")
     @PostMapping
     @PreAuthorize(Constants.PRE_AUTHORIZE_ADMIN)
     public ResponseEntity<ProduceVO> addProduce(@RequestBody ProduceAddVO vo) {
@@ -39,7 +39,7 @@ public class ProduceController {
         return ResponseEntity.ok(Produce.toProduceVO(produce));
     }
 
-    @Operation(summary = "更新农作物")
+    @Operation(summary = "更新果实")
     @PutMapping
     @PreAuthorize(Constants.PRE_AUTHORIZE_ADMIN)
     public ResponseEntity<ProduceVO> updateProduce(@RequestBody ProduceUpdateVO vo) {
@@ -47,7 +47,7 @@ public class ProduceController {
         return ResponseEntity.ok(Produce.toProduceVO(produce));
     }
 
-    @Operation(summary = "获取农作物列表")
+    @Operation(summary = "获取果实列表")
     @GetMapping("/list")
     @PreAuthorize(Constants.PRE_AUTHORIZE_EMPLOYEE)
     public ResponseEntity<ProduceListVO> getProduces(@RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "10") int size) {
@@ -60,11 +60,19 @@ public class ProduceController {
         return ResponseEntity.ok(produceListVO);
     }
 
-    @Operation(summary = "获取农作物")
+    @Operation(summary = "获取果实")
     @GetMapping("/{id}")
     @PreAuthorize(Constants.PRE_AUTHORIZE_EMPLOYEE)
     public ResponseEntity<ProduceVO> getProduce(@PathVariable Long id) {
         Produce produce = produceService.getProduce(id);
+        return ResponseEntity.ok(Produce.toProduceVO(produce));
+    }
+
+    @Operation(summary = "根据名称获取果实")
+    @GetMapping
+    @PreAuthorize(Constants.PRE_AUTHORIZE_EMPLOYEE)
+    public ResponseEntity<ProduceVO> getProduceByName(@RequestParam String name) {
+        Produce produce = produceService.getProduceByName(name);
         return ResponseEntity.ok(Produce.toProduceVO(produce));
     }
 }

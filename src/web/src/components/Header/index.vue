@@ -14,7 +14,12 @@
           <el-icon><SwitchButton /></el-icon>
           称重模块
         </el-button>
-        <el-button type="primary" plain @click="router.push('/user')">
+        <el-button 
+          v-if="store.roles?.includes(UserRole.ADMIN)"
+          type="primary" 
+          plain 
+          @click="router.push('/user')"
+        >
           <el-icon><Management /></el-icon>
           用户模块
         </el-button>
@@ -22,12 +27,16 @@
           <el-icon><Platform /></el-icon>
           果实模块
         </el-button>
-        <el-button type="primary" plain @click="router.push('/work')">
+        <el-button 
+          type="primary" 
+          plain 
+          @click="router.push('/work')"
+        >
           <el-icon><DataLine /></el-icon>
           作业模块
         </el-button>
       </div>
-      <el-button type="danger" @click="logout" class="logout-btn">
+      <el-button type="info" @click="logout" class="logout-btn">
         <el-icon><SwitchButton /></el-icon>
         退出登录
       </el-button>
@@ -37,9 +46,10 @@
 
 <script setup lang="ts">
 import { Platform, Management, DataLine, User, SwitchButton } from '@element-plus/icons-vue'
-import userStore from "@/store/modules/user";
 import { ElNotification } from "element-plus";
 import { useRouter } from "vue-router";
+import userStore from "@/store/modules/user";
+import { UserRole } from '@/models/constants/user';
 
 let store = userStore();
 let router = useRouter();

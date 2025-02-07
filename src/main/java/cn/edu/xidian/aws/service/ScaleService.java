@@ -58,6 +58,10 @@ public class ScaleService {
         return scaleRepository.findById(id).orElseThrow(AwsNotFoundException::new);
     }
 
+    public Scale getScaleByKey(String key) {
+        return scaleRepository.findBySkey(key).orElseThrow(AwsNotFoundException::new);
+    }
+
     public List<Scale> getScales(int page, int size) {
         PageRequest pr = PageRequest.of(page, size);
         return scaleRepository.findAll(pr).getContent();

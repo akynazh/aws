@@ -10,7 +10,7 @@ import org.springframework.beans.BeanUtils;
 /**
  * @author akynazh@gmail.com
  * @date 2025/1/10
- * @description 农作物
+ * @description 果实
  */
 @Entity
 @Table(name = "t_produce")
@@ -23,7 +23,7 @@ public class Produce {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     /**
-     * 农作物名称
+     * 果实名称
      */
     @Column(unique = true)
     private String name;
