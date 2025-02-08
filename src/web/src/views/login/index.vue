@@ -162,7 +162,7 @@ onMounted(() => {
   border-radius: 20px;
   box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
   overflow: hidden;
-  animation: float 10s ease-in-out infinite;
+  // animation: float 10s ease-in-out infinite;
 }
 
 @keyframes float {

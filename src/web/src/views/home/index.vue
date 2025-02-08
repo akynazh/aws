@@ -7,14 +7,16 @@
           <template #header>
             <div class="panel-header">
               <span class="panel-title">
-                <el-icon class="title-icon"><User /></el-icon>
+                <el-icon class="title-icon">
+                  <User />
+                </el-icon>
                 个人信息
               </span>
             </div>
           </template>
           <div class="user-info">
             <el-descriptions :column="1" border class="hover-effect">
-              <el-descriptions-item label="编号">{{ userStore.id }}</el-descriptions-item>
+              <el-descriptions-item label="员工编号">{{ userStore.id }}</el-descriptions-item>
               <el-descriptions-item label="身份证号">{{ userStore.uid }}</el-descriptions-item>
               <el-descriptions-item label="名称">{{ userStore.name }}</el-descriptions-item>
               <el-descriptions-item label="角色">{{ formatRole(userStore.roles) }}</el-descriptions-item>
@@ -33,7 +35,9 @@
           <template #header>
             <div class="panel-header">
               <span class="panel-title">
-                <el-icon class="title-icon"><Operation /></el-icon>
+                <el-icon class="title-icon">
+                  <Operation />
+                </el-icon>
                 操作面板
               </span>
             </div>
@@ -49,14 +53,19 @@
               <el-icon>
                 <List />
               </el-icon>
-              个人称重历史
+              查看个人称重历史
             </el-button>
-            <el-button type="primary" @click="handleExport">
-              <el-icon><Download /></el-icon>
-              导出历史称重数据
+            <el-button type="primary" @click="openWorkSummaryDialog">
+              <el-icon>
+                <Histogram />
+              </el-icon>
+              查看个人分批次采摘量
             </el-button>
           </div>
         </el-card>
+
+        <!-- 移除作业采摘量卡片 -->
+
       </el-col>
     </el-row>
 
@@ -78,14 +87,21 @@
       </template>
     </el-dialog>
 
-    <!-- 添加称重记录对话框 -->
-    <el-dialog 
-      title="个人称重历史" 
-      v-model="weighRecordsDialogVisible" 
-      width="800px"
-    >
+    <!-- 修改称重记录对话框 -->
+    <el-dialog title="个人称重历史" v-model="weighRecordsDialogVisible" width="800px">
+      <template #header>
+        <div class="weigh-records-header">
+          <span>个人称重历史</span>
+          <el-button type="primary" @click="handleExport">
+            <el-icon>
+              <Download />
+            </el-icon>
+            导出历史称重数据
+          </el-button>
+        </div>
+      </template>
       <el-table :data="recordsData" border class="hover-effect">
-        <el-table-column prop="id" label="ID" width="80" />
+        <el-table-column prop="id" label="记录编号" width="120" />
         <el-table-column prop="workId" label="作业编号" width="120" />
         <el-table-column prop="scaleId" label="电子秤编号" width="120" />
         <el-table-column label="称重数据" width="150">
@@ -104,13 +120,33 @@
           </template>
         </el-table-column>
       </el-table>
-      <Pagination 
-        v-model:current-page="recordsCurrentPage" 
-        v-model:page-size="recordsPageSize" 
-        :total="recordsTotal"
-        @size-change="fetchRecordsList" 
-        @current-change="fetchRecordsList"
-      />
+      <Pagination v-model:current-page="recordsCurrentPage" v-model:page-size="recordsPageSize" :total="recordsTotal"
+        @size-change="fetchRecordsList" @current-change="fetchRecordsList" />
+    </el-dialog>
+
+    <!-- 作业采摘量对话框 -->
+    <el-dialog title="作业采摘量" v-model="workSummaryDialogVisible" width="800px">
+      <template #header>
+        <div class="weigh-records-header">
+          <span>作业采摘量</span>
+          <el-button type="primary" @click="handleExportSummary">
+            <el-icon>
+              <Download />
+            </el-icon>
+            导出采摘量数据
+          </el-button>
+        </div>
+      </template>
+      <el-table :data="workSummaryData" border class="hover-effect">
+        <el-table-column prop="workId" label="作业编号" width="120" />
+        <el-table-column prop="name" label="员工名称" width="200" />
+        <el-table-column prop="produceName" label="果实名称" width="150" />
+        <el-table-column label="采摘量" width="150">
+          <template #default="{ row }">
+            {{ `${row.dataValue}${row.unit}` }}
+          </template>
+        </el-table-column>
+      </el-table>
     </el-dialog>
   </div>
 </template>
@@ -121,9 +157,9 @@ import { useUserStore } from '@/store/modules/user'
 import { UserRoleMap } from '@/models/constants/user'
 import { ElNotification } from "element-plus"
 import { reqUpdateMe } from '@/api/user'
-import { reqGetRecords } from '@/api/weigh'
-import type { UserUpdateMeVO, RecordVO } from '@/models'
-import { Edit, List, User, Operation, Download } from '@element-plus/icons-vue'
+import { reqGetRecords, reqGetUserWorkSummary } from '@/api/weigh'
+import type { UserUpdateMeVO, RecordVO, UserWorkOutputVO } from '@/models'
+import { Edit, List, User, Operation, Download, DataLine, Histogram } from '@element-plus/icons-vue'
 import { ScaleUnitMap } from '@/models/constants/scale'
 import dayjs from 'dayjs'
 import * as XLSX from 'xlsx'
@@ -213,7 +249,7 @@ const handleExport = async () => {
       scaleId: -1,
       employeeId: userStore.id
     })
-    
+
     if (!firstPage || !firstPage.count) {
       ElNotification.warning({
         title: '提示',
@@ -245,9 +281,9 @@ const handleExport = async () => {
       })
     }
 
-    // 准备Excel数据
+    // 准备 Excel 数据
     const excelData = allRecords.map(record => ({
-      'ID': record.id,
+      '记录编号': record.id,
       '作业编号': record.workId,
       '电子秤编号': record.scaleId,
       '称重数据': `${record.dataValue}${ScaleUnitMap[record.unit]}`,
@@ -288,9 +324,71 @@ const formatDateToYMD = (timestamp?: number): string => {
   return `${date.getFullYear()}年${date.getMonth() + 1}月${date.getDate()}日`;
 }
 
-// onMounted(async () => {
-//   await userStore.getUserInfo()
-// })
+// 添加作业采摘量相关的状态
+const workSummaryDialogVisible = ref(false)
+const workSummaryData = ref<UserWorkOutputVO[]>([])
+
+// 打开作业采摘量对话框
+const openWorkSummaryDialog = async () => {
+  workSummaryDialogVisible.value = true
+  await fetchWorkSummary()
+}
+
+// 获取作业采摘量数据
+const fetchWorkSummary = async () => {
+  try {
+    const result = await reqGetUserWorkSummary(userStore.id);
+    if (result) {
+      workSummaryData.value = result;
+    }
+  } catch (error) {
+    console.error('获取作业采摘量失败', error);
+    ElNotification.error({
+      title: '错误',
+      message: '获取作业采摘量失败'
+    });
+  }
+}
+
+// 导出作业采摘量
+const handleExportSummary = () => {
+  try {
+    if (!workSummaryData.value.length) {
+      ElNotification.warning({
+        title: '提示',
+        message: '暂无数据可导出'
+      })
+      return
+    }
+
+    // 准备 Excel 数据
+    const excelData = workSummaryData.value.map(summary => ({
+      '作业编号': summary.workId,
+      '作业名称': summary.name,
+      '产品': summary.produceName,
+      '采摘量': `${summary.dataValue}${summary.unit}`
+    }))
+
+    // 创建工作簿
+    const wb = XLSX.utils.book_new()
+    const ws = XLSX.utils.json_to_sheet(excelData)
+    XLSX.utils.book_append_sheet(wb, ws, '作业采摘量')
+
+    // 导出Excel
+    XLSX.writeFile(wb, `作业采摘量_${userStore.name}_${formatDateToYMD(Date.now())}.xlsx`)
+
+    ElNotification.success({
+      title: '成功',
+      message: `成功导出作业采摘量数据`
+    })
+  } catch (error) {
+    console.error('导出失败', error)
+    ElNotification.error({
+      title: '错误',
+      message: '导出失败'
+    })
+  }
+}
 </script>
 
 <style scoped>
@@ -395,7 +493,8 @@ const formatDateToYMD = (timestamp?: number): string => {
 
 .panel-header {
   display: flex;
-  justify-content: center;  /* Changed from space-between to center */
+  justify-content: center;
+  /* Changed from space-between to center */
   align-items: center;
   font-size: 20px;
   font-weight: bold;
@@ -451,5 +550,14 @@ const formatDateToYMD = (timestamp?: number): string => {
   margin-bottom: 16px;
   display: flex;
   justify-content: flex-end;
+}
+
+.weigh-records-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  font-size: 18px;
+  font-weight: bold;
 }
 </style>

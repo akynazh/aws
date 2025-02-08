@@ -1,8 +1,10 @@
 # AWS(Agricultural Weighing System)
 
-## STEP
+## 优化事项
 
-- [ ] 果实产量数据可视化和导出
+1. 缓存
+2. MQTT 监控
+3. 
 
 ## NOTE
 

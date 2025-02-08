@@ -73,8 +73,10 @@
                             {{ formatDate(row.createTime) }}
                         </template>
                     </el-table-column>
-                    <el-table-column label="操作" width="120" fixed="right">
+                    <el-table-column label="操作" width="320" fixed="right">
                         <template #default="{ row }">
+                            <el-button type="primary" link @click="handleViewRecords(row)">称重历史</el-button>
+                            <el-button type="primary" link @click="handleViewWorkSummary(row)">分批采摘量</el-button>
                             <el-button type="primary" link @click="handleEdit(row)">编辑</el-button>
                         </template>
                     </el-table-column>
@@ -171,18 +173,91 @@
                 <el-button type="primary" @click="handleSearchSubmit">查询</el-button>
             </template>
         </el-dialog>
+
+        <!-- 称重记录对话框 -->
+        <el-dialog 
+            title="称重记录" 
+            v-model="recordsDialogVisible" 
+            width="800px"
+        >
+            <template #header>
+                <div class="dialog-header">
+                    <span>称重记录 - {{ currentUser?.name }}</span>
+                    <el-button type="primary" @click="handleExportRecords">
+                        <el-icon><Download /></el-icon>
+                        导出历史称重数据
+                    </el-button>
+                </div>
+            </template>
+            <el-table :data="recordsData" border class="hover-effect">
+                <el-table-column prop="id" label="记录编号" width="120" />
+                <el-table-column prop="workId" label="作业编号" width="120" />
+                <el-table-column prop="scaleId" label="电子秤编号" width="120" />
+                <el-table-column label="称重数据" width="150">
+                    <template #default="{ row }">
+                        {{ `${row.dataValue}${ScaleUnitMap[row.unit]}` }}
+                    </template>
+                </el-table-column>
+                <el-table-column label="误差" width="150">
+                    <template #default="{ row }">
+                        &plusmn;{{ `${row.dataErrorMargin}${ScaleUnitMap[row.unit]}` }}
+                    </template>
+                </el-table-column>
+                <el-table-column prop="dataTime" label="称重时间" width="180">
+                    <template #default="{ row }">
+                        {{ formatDate(row.dataTime) }}
+                    </template>
+                </el-table-column>
+            </el-table>
+            <Pagination 
+                v-model:current-page="recordsCurrentPage" 
+                v-model:page-size="recordsPageSize" 
+                :total="recordsTotal"
+                @size-change="fetchRecordsList" 
+                @current-change="fetchRecordsList"
+            />
+        </el-dialog>
+
+        <!-- 作业采摘量对话框 -->
+        <el-dialog 
+            title="作业采摘量" 
+            v-model="workSummaryDialogVisible" 
+            width="800px"
+        >
+            <template #header>
+                <div class="dialog-header">
+                    <span>作业采摘量 - {{ currentUser?.name }}</span>
+                    <el-button type="primary" @click="handleExportSummary">
+                        <el-icon><Download /></el-icon>
+                        导出采摘量数据
+                    </el-button>
+                </div>
+            </template>
+            <el-table :data="workSummaryData" border class="hover-effect">
+                <el-table-column prop="workId" label="作业编号" width="120" />
+                <el-table-column prop="name" label="员工名称" width="200" />
+                <el-table-column prop="produceName" label="果实名称" width="150" />
+                <el-table-column label="采摘量" width="150">
+                    <template #default="{ row }">
+                        {{ `${row.dataValue}${row.unit}` }}
+                    </template>
+                </el-table-column>
+            </el-table>
+        </el-dialog>
     </div>
 </template>
 
 <script setup lang="ts">
 import { ref, reactive, onMounted } from "vue";
-import type { UserVO } from "@/models";
+import type { UserVO, RecordVO, UserWorkOutputVO } from "@/models";
 import { reqGetUsers, reqAddUser, reqUpdateUser, reqGetEmployee } from "@/api/user";
+import { reqGetRecords, reqGetUserWorkSummary } from '@/api/weigh';
 import { ElMessage } from 'element-plus';
-import { Plus, Search, User } from '@element-plus/icons-vue';
+import { Plus, Search, User, Download } from '@element-plus/icons-vue';
 import { UserStatus, UserStatusMap, UserRole, UserRoleMap } from '@/models/constants/user';
-
+import { ScaleUnitMap } from '@/models/constants/scale';
 import dayjs from "dayjs";
+import * as XLSX from 'xlsx';
 
 const tableData = ref<UserVO[]>([]);
 const currentPage = ref(1); // 当前页码
@@ -380,6 +455,152 @@ const filterRole = (value: string, row: UserVO) => {
 const filterStatus = (value: number, row: UserVO) => {
     return row.status === value;
 };
+
+// Add new state variables
+const recordsDialogVisible = ref(false);
+const workSummaryDialogVisible = ref(false);
+const currentUser = ref<UserVO>();
+const recordsData = ref<RecordVO[]>([]);
+const workSummaryData = ref<UserWorkOutputVO[]>([]);
+const recordsCurrentPage = ref(1);
+const recordsPageSize = ref(10);
+const recordsTotal = ref(0);
+
+// View records handler
+const handleViewRecords = async (row: UserVO) => {
+  currentUser.value = row;
+  recordsCurrentPage.value = 1;
+  recordsDialogVisible.value = true;
+  await fetchRecordsList();
+};
+
+// View work summary handler 
+const handleViewWorkSummary = async (row: UserVO) => {
+  currentUser.value = row;
+  workSummaryDialogVisible.value = true;
+  await fetchWorkSummary();
+};
+
+// Fetch records list
+const fetchRecordsList = async () => {
+  if (!currentUser.value) return;
+  try {
+    const result = await reqGetRecords({
+      page: recordsCurrentPage.value - 1,
+      size: recordsPageSize.value,
+      workId: -1,
+      scaleId: -1,
+      employeeId: currentUser.value.id
+    });
+    recordsData.value = result?.recordList || [];
+    recordsTotal.value = result?.count || 0;
+  } catch (error) {
+    console.error("获取称重记录失败", error);
+    ElMessage.error('获取称重记录失败');
+  }
+};
+
+// Fetch work summary
+const fetchWorkSummary = async () => {
+  if (!currentUser.value) return;
+  try {
+    const result = await reqGetUserWorkSummary(currentUser.value.id);
+    if (result) {
+      workSummaryData.value = result;
+    }
+  } catch (error) {
+    console.error('获取作业采摘量失败', error);
+    ElMessage.error('获取作业采摘量失败');
+  }
+};
+
+// Export handlers
+const handleExportRecords = async () => {
+  if (!currentUser.value) return;
+  try {
+    const firstPage = await reqGetRecords({
+      page: 0,
+      size: 100,
+      workId: -1,
+      scaleId: -1,
+      employeeId: currentUser.value.id
+    });
+    
+    if (!firstPage || !firstPage.count) {
+      ElMessage.warning('暂无数据可导出');
+      return;
+    }
+
+    const totalPages = Math.ceil(firstPage.count / 100);
+    const allRecords: RecordVO[] = [...firstPage.recordList];
+
+    if (totalPages > 1) {
+      const otherPagesPromises = Array.from({ length: totalPages - 1 }, (_, i) =>
+        reqGetRecords({
+          page: i + 1,
+          size: 100,
+          workId: -1,
+          scaleId: -1,
+          employeeId: currentUser.value.id
+        })
+      );
+
+      const results = await Promise.all(otherPagesPromises);
+      results.forEach(result => {
+        if (result?.recordList) {
+          allRecords.push(...result.recordList);
+        }
+      });
+    }
+
+    const excelData = allRecords.map(record => ({
+      '编号': record.id,
+      '作业编号': record.workId,
+      '电子秤编号': record.scaleId,
+      '称重数据': `${record.dataValue}${ScaleUnitMap[record.unit]}`,
+      '误差': `±${record.dataErrorMargin}${ScaleUnitMap[record.unit]}`,
+      '称重时间': formatDate(record.dataTime)
+    }));
+
+    const wb = XLSX.utils.book_new();
+    const ws = XLSX.utils.json_to_sheet(excelData);
+    XLSX.utils.book_append_sheet(wb, ws, '称重记录');
+
+    XLSX.writeFile(wb, `称重记录_${currentUser.value.name}_${formatDate(Date.now())}.xlsx`);
+
+    ElMessage.success(`成功导出${allRecords.length}条记录`);
+  } catch (error) {
+    console.error('导出失败', error);
+    ElMessage.error('导出失败');
+  }
+};
+
+const handleExportSummary = () => {
+  if (!currentUser.value || !workSummaryData.value.length) {
+    ElMessage.warning('暂无数据可导出');
+    return;
+  }
+
+  try {
+    const excelData = workSummaryData.value.map(summary => ({
+      '作业编号': summary.workId,
+      '作业名称': summary.name,
+      '产品': summary.produceName,
+      '采摘量': `${summary.dataValue}${summary.unit}`
+    }));
+
+    const wb = XLSX.utils.book_new();
+    const ws = XLSX.utils.json_to_sheet(excelData);
+    XLSX.utils.book_append_sheet(wb, ws, '作业采摘量');
+
+    XLSX.writeFile(wb, `作业采摘量_${currentUser.value.name}_${formatDate(Date.now())}.xlsx`);
+
+    ElMessage.success('成功导出作业采摘量数据');
+  } catch (error) {
+    console.error('导出失败', error);
+    ElMessage.error('导出失败');
+  }
+};
 </script>
 
 <style scoped>
@@ -477,5 +698,14 @@ const filterStatus = (value: number, row: UserVO) => {
 .title-icon {
     font-size: 22px;
     color: var(--el-color-primary);
+}
+
+.dialog-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  font-size: 18px;
+  font-weight: bold;
 }
 </style>

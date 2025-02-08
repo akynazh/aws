@@ -1,30 +1,27 @@
 package cn.edu.xidian.aws.service;
 
-import cn.edu.xidian.aws.constant.ScaleStatus;
 import cn.edu.xidian.aws.constant.ScaleUnit;
 import cn.edu.xidian.aws.exception.AwsArgumentException;
 import cn.edu.xidian.aws.exception.AwsNotFoundException;
+import cn.edu.xidian.aws.pojo.dto.UserWorkOutputDTO;
 import cn.edu.xidian.aws.pojo.po.Record;
-import cn.edu.xidian.aws.pojo.po.Scale;
 import cn.edu.xidian.aws.pojo.po.Work;
 import cn.edu.xidian.aws.pojo.vo.record.RecordAddVO;
 import cn.edu.xidian.aws.pojo.vo.record.RecordsGetVO;
-import cn.edu.xidian.aws.pojo.vo.scale.ScaleAddVO;
-import cn.edu.xidian.aws.pojo.vo.scale.ScaleUpdateVO;
+import cn.edu.xidian.aws.pojo.vo.user.UserWorkOutputVO;
 import cn.edu.xidian.aws.pojo.vo.work.WorkUpdateVO;
 import cn.edu.xidian.aws.repository.RecordRepository;
-import cn.edu.xidian.aws.repository.ScaleRepository;
 import cn.edu.xidian.aws.util.ScaleUtil;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Example;
 import org.springframework.data.domain.ExampleMatcher;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * @author akynazh@gmail.com
@@ -77,5 +74,19 @@ public class RecordService {
         ExampleMatcher matcher = ExampleMatcher.matching()
                 .withIgnoreNullValues();
         return Example.of(probe, matcher);
+    }
+
+    public List<UserWorkOutputVO> getUserWorkSummaryVO(Long id) {
+        List<UserWorkOutputDTO> summaries = recordRepository.getUserWorkSummary(id);
+
+        return summaries.stream().map(summary -> {
+            UserWorkOutputVO vo = new UserWorkOutputVO();
+            vo.setName(summary.getName());
+            vo.setWorkId(summary.getWorkId());
+            vo.setProduceName(summary.getProduceName());
+            vo.setDataValue(summary.getDataValue());
+            vo.setUnit(ScaleUnit.valueOf(summary.getUnit()).getMessage());
+            return vo;
+        }).collect(Collectors.toList());
     }
 }

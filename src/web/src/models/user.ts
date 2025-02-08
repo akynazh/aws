@@ -1,3 +1,11 @@
+export interface UserWorkOutputVO {
+  name: string;
+  workId: number;
+  produceName: string;
+  dataValue: number;
+  unit: string;
+}
+
 export interface UserUpdateVO {
   uid: string;
   name: string;

@@ -1,3 +1,17 @@
+export interface ProduceWorkOutputVO {
+  name: string;
+  workId: number;
+  dataValue: number;
+  unit: string;
+}
+
+export interface ProduceAnnualOutputVO {
+  name: string;
+  year: number;
+  dataValue: number;
+  unit: string;
+}
+
 export interface ProduceUpdateVO {
   id: number;
   name: string;

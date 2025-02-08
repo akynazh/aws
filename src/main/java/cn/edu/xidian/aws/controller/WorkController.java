@@ -83,7 +83,7 @@ public class WorkController {
     @Operation(summary = "获取果实的采摘工作列表")
     @GetMapping("/produce/{id}")
     @PreAuthorize(Constants.PRE_AUTHORIZE_EMPLOYEE)
-    public ResponseEntity<List<WorkVO>> getProduceWorks(@PathVariable long id, @RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "10") int size) {
+    public ResponseEntity<List<WorkVO>> getProduceWorks(@PathVariable long id) {
         List<Work> produceWorks = workService.getProduceWorks(id);
         List<WorkVO> workVOS = produceWorks.stream().map(Work::toWorkVO).collect(Collectors.toList());
         return ResponseEntity.ok(workVOS);

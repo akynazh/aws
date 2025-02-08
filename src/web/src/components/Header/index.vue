@@ -12,16 +12,7 @@
         </el-button>
         <el-button type="primary" plain @click="router.push('/weigh')">
           <el-icon><SwitchButton /></el-icon>
-          称重模块
-        </el-button>
-        <el-button 
-          v-if="store.roles?.includes(UserRole.ADMIN)"
-          type="primary" 
-          plain 
-          @click="router.push('/user')"
-        >
-          <el-icon><Management /></el-icon>
-          用户模块
+          电子秤模块
         </el-button>
         <el-button type="primary" plain @click="router.push('/produce')">
           <el-icon><Platform /></el-icon>
@@ -34,6 +25,15 @@
         >
           <el-icon><DataLine /></el-icon>
           作业模块
+        </el-button>
+        <el-button 
+          v-if="store.roles?.includes(UserRole.ADMIN)"
+          type="primary" 
+          plain 
+          @click="router.push('/user')"
+        >
+          <el-icon><Management /></el-icon>
+          用户模块
         </el-button>
       </div>
       <el-button type="info" @click="logout" class="logout-btn">

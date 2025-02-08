@@ -9,7 +9,7 @@
                         <div class="panel-header">
                             <span class="panel-title">
                                 <el-icon class="title-icon"><Platform /></el-icon>
-                                称重管理
+                                电子秤管理
                             </span>
                             <div class="panel-buttons">
                                 <el-button 
@@ -172,6 +172,15 @@
                     v-model="recordsDialogVisible" 
                     width="800px"
                 >
+                    <template #header>
+                        <div class="weigh-records-header">
+                            <span>称重记录</span>
+                            <el-button type="primary" @click="handleExport(currentScaleId!)">
+                                <el-icon><Download /></el-icon>
+                                导出历史称重数据
+                            </el-button>
+                        </div>
+                    </template>
                     <el-table :data="recordsData" border>
                         <!-- <el-table-column prop="id" label="ID" width="80" /> -->
                         <el-table-column prop="workId" label="电子秤编号" width="120" />
@@ -230,7 +239,8 @@
 <script setup lang="ts">
 import { ref, reactive, onMounted } from "vue";
 import { ElMessage } from 'element-plus';
-import { Plus, Platform, Search } from '@element-plus/icons-vue';  // 添加 Search 图标
+import { Plus, Platform, Search, Download } from '@element-plus/icons-vue';  // Add Download icon
+import * as XLSX from 'xlsx';  // Add XLSX import
 import type { ScaleVO, RecordVO } from "@/models";
 import { reqGetScales, reqAddScale, reqUpdateScale, reqGetRecords, reqGetScaleByKey } from "@/api/weigh";  // 添加 reqGetScale
 import { ScaleUnit, ScaleUnitMap, ScaleStatus, ScaleStatusMap } from '@/models/constants/scale';
@@ -460,6 +470,73 @@ const filterStatus = (value: number, row: ScaleVO) => {
     return row.status === value;
 };
 
+// Add export handler function
+const handleExport = async (scaleId: number) => {
+    try {
+        // First get page one and total count
+        const firstPage = await reqGetRecords({
+            page: 0,
+            size: 100,
+            workId: -1,
+            scaleId: scaleId,
+            employeeId: -1
+        });
+        
+        if (!firstPage || !firstPage.count) {
+            ElMessage.warning('暂无数据可导出');
+            return;
+        }
+
+        const totalPages = Math.ceil(firstPage.count / 100);
+        const allRecords: RecordVO[] = [...firstPage.recordList];
+
+        // If there are more pages, fetch them all
+        if (totalPages > 1) {
+            const otherPagesPromises = Array.from({ length: totalPages - 1 }, (_, i) =>
+                reqGetRecords({
+                    page: i + 1,
+                    size: 100,
+                    workId: -1,
+                    scaleId: scaleId,
+                    employeeId: -1
+                })
+            );
+
+            const results = await Promise.all(otherPagesPromises);
+            results.forEach(result => {
+                if (result?.recordList) {
+                    allRecords.push(...result.recordList);
+                }
+            });
+        }
+
+        // Prepare Excel data
+        const excelData = allRecords.map(record => ({
+            '编号': record.id,
+            '作业编号': record.workId,
+            '员工编号': record.employeeId,
+            '称重数据': `${record.dataValue}${ScaleUnitMap[record.unit]}`,
+            '误差': `±${record.dataErrorMargin}${ScaleUnitMap[record.unit]}`,
+            '称重时间': formatDate(record.dataTime)
+        }));
+
+        // Create workbook
+        const wb = XLSX.utils.book_new();
+        const ws = XLSX.utils.json_to_sheet(excelData);
+        XLSX.utils.book_append_sheet(wb, ws, '称重记录');
+
+        // Export Excel
+        const currentScale = tableData.value.find(scale => scale.id === scaleId);
+        const fileName = `称重记录_${currentScale?.model || scaleId}_${dayjs().format('YYYY-MM-DD')}.xlsx`;
+        XLSX.writeFile(wb, fileName);
+
+        ElMessage.success(`成功导出${allRecords.length}条记录`);
+    } catch (error) {
+        console.error('导出失败', error);
+        ElMessage.error('导出失败');
+    }
+};
+
 onMounted(() => {
     fetchScaleList();
 });
@@ -560,5 +637,14 @@ onMounted(() => {
 .title-icon {
     font-size: 22px;
     color: var(--el-color-primary);
+}
+
+.weigh-records-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    font-size: 18px;
+    font-weight: bold;
 }
 </style>

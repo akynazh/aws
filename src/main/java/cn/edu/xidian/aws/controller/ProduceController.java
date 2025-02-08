@@ -2,11 +2,10 @@ package cn.edu.xidian.aws.controller;
 
 import cn.edu.xidian.aws.constant.Constants;
 import cn.edu.xidian.aws.pojo.po.Produce;
-import cn.edu.xidian.aws.pojo.vo.produce.ProduceAddVO;
-import cn.edu.xidian.aws.pojo.vo.produce.ProduceListVO;
-import cn.edu.xidian.aws.pojo.vo.produce.ProduceUpdateVO;
-import cn.edu.xidian.aws.pojo.vo.produce.ProduceVO;
+import cn.edu.xidian.aws.pojo.po.Work;
+import cn.edu.xidian.aws.pojo.vo.produce.*;
 import cn.edu.xidian.aws.service.ProduceService;
+import cn.edu.xidian.aws.service.WorkService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.extern.slf4j.Slf4j;
@@ -15,6 +14,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -30,6 +30,8 @@ import java.util.stream.Collectors;
 public class ProduceController {
     @Autowired
     private ProduceService produceService;
+    @Autowired
+    private WorkService workService;
 
     @Operation(summary = "添加果实")
     @PostMapping
@@ -74,5 +76,23 @@ public class ProduceController {
     public ResponseEntity<ProduceVO> getProduceByName(@RequestParam String name) {
         Produce produce = produceService.getProduceByName(name);
         return ResponseEntity.ok(Produce.toProduceVO(produce));
+    }
+
+    @Operation(summary = "获取果实年产量")
+    @GetMapping("/summary/year")
+    @PreAuthorize(Constants.PRE_AUTHORIZE_EMPLOYEE)
+    public ResponseEntity<List<ProduceAnnualOutputVO>> getProduceAnnualOutput(@RequestParam Long id) {
+        List<Work> produceWorks = workService.getProduceWorks(id);
+        Produce produce = produceService.getProduce(id);
+        return ResponseEntity.ok(ProduceAnnualOutputVO.build(produce, produceWorks));
+    }
+
+    @Operation(summary = "获取果实分批产量")
+    @GetMapping("/summary/work")
+    @PreAuthorize(Constants.PRE_AUTHORIZE_EMPLOYEE)
+    public ResponseEntity<List<ProduceWorkOutputVO>> getProduceWorkOutput(@RequestParam Long id) {
+        List<Work> produceWorks = workService.getProduceWorks(id);
+        Produce produce = produceService.getProduce(id);
+        return ResponseEntity.ok(produceWorks.stream().map(work -> ProduceWorkOutputVO.build(produce, work)).collect(Collectors.toList()));
     }
 }

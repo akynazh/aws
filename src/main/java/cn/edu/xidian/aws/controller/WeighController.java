@@ -3,6 +3,7 @@ package cn.edu.xidian.aws.controller;
 import cn.edu.xidian.aws.constant.Constants;
 import cn.edu.xidian.aws.pojo.po.Record;
 import cn.edu.xidian.aws.pojo.po.Scale;
+import cn.edu.xidian.aws.pojo.po.User;
 import cn.edu.xidian.aws.pojo.vo.record.RecordAddVO;
 import cn.edu.xidian.aws.pojo.vo.record.RecordListVO;
 import cn.edu.xidian.aws.pojo.vo.record.RecordVO;
@@ -11,13 +12,16 @@ import cn.edu.xidian.aws.pojo.vo.scale.ScaleAddVO;
 import cn.edu.xidian.aws.pojo.vo.scale.ScaleListVO;
 import cn.edu.xidian.aws.pojo.vo.scale.ScaleUpdateVO;
 import cn.edu.xidian.aws.pojo.vo.scale.ScaleVO;
+import cn.edu.xidian.aws.pojo.vo.user.UserWorkOutputVO;
+import cn.edu.xidian.aws.service.JwtService;
 import cn.edu.xidian.aws.service.RecordService;
 import cn.edu.xidian.aws.service.ScaleService;
+import cn.edu.xidian.aws.service.UserService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
@@ -39,6 +43,10 @@ public class WeighController {
     private ScaleService scaleService;
     @Autowired
     private RecordService recordService;
+    @Autowired
+    private UserService userService;
+    @Autowired
+    private JwtService jwtService;
 
     @Operation(summary = "添加称重记录")
     @PostMapping("/record")
@@ -104,5 +112,12 @@ public class WeighController {
     public ResponseEntity<ScaleVO> getScaleByKey(@RequestParam String key) {
         Scale scale = scaleService.getScaleByKey(key);
         return ResponseEntity.ok(Scale.toScaleVO(scale));
+    }
+
+    @Operation(summary = "获取员工各作业采摘量")
+    @GetMapping("/summary")
+    @PreAuthorize(Constants.PRE_AUTHORIZE_EMPLOYEE)
+    public ResponseEntity<List<UserWorkOutputVO>> getUserWorkSummary(@RequestParam Long id) {
+        return ResponseEntity.ok(recordService.getUserWorkSummaryVO(id));
     }
 }

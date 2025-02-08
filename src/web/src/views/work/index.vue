@@ -27,6 +27,14 @@
                                 >
                                     查询作业
                                 </el-button>
+                                <el-button 
+                                    type="primary" 
+                                    :icon="Download"
+                                    @click="handleExport"
+                                     v-if="store.roles?.includes(UserRole.ADMIN)"
+                                >
+                                    导出作业数据
+                                </el-button>
                             </div>
                         </div>
                     </el-card>
@@ -40,12 +48,12 @@
                     style="width: 100%"
                 >
                     <el-table-column prop="id" label="编号" width="100" />
-                    <el-table-column label="作业名称" width="200">
+                    <!-- <el-table-column label="作业名称" width="200">
                         <template #default="{ row }">
                             {{ generateWorkName(row) }}
                         </template>
-                    </el-table-column>
-                    <el-table-column prop="produceId" label="产品" width="180">
+                    </el-table-column> -->
+                    <el-table-column prop="produceId" label="采摘产品" width="180">
                         <template #default="{ row }">
                             <el-tooltip :content="getProduceName(row.produceId)" placement="top">
                                 <span>{{ getProduceName(row.produceId) || row.produceId }}</span>
@@ -112,10 +120,10 @@
                 label-width="100px"
             >
                 <!-- 产品选择仅在添加时可用 -->
-                <el-form-item label="产品" prop="produceId">
+                <el-form-item label="采摘产品" prop="produceId">
                     <el-select 
                         v-model="form.produceId" 
-                        placeholder="请选择产品"
+                        placeholder="请选择采摘产品"
                         filterable
                         :loading="produceLoading"
                         :disabled="isEdit"
@@ -196,11 +204,12 @@ import type { WorkVO, WorkAddVO, WorkUpdateVO, ProduceVO } from "@/models";
 import { reqGetWorks, reqAddWork, reqUpdateWork, reqGetWork } from "@/api/work";
 import { reqGetProduces } from "@/api/produce";
 import { ElMessage } from 'element-plus';
-import { Plus, Timer, Search } from '@element-plus/icons-vue';
+import { Plus, Timer, Search, Download } from '@element-plus/icons-vue';
 import dayjs from "dayjs";
 import { WorkStatus, WorkStatusMap, ScaleUnit, ScaleUnitMap } from '@/models/constants/work';
 import userStore from "@/store/modules/user";
 import { UserRole } from '@/models/constants/user';
+import * as XLSX from 'xlsx';
 
 let store = userStore();
 
@@ -260,7 +269,7 @@ const generateWorkName = (work: WorkVO): string => {
 
 // 修改表单验证规则
 const rules = {
-    produceId: [{ required: true, message: '请选择产品', trigger: 'change' }],
+    produceId: [{ required: true, message: '请选择采摘产品', trigger: 'change' }],
     startTime: [{ required: true, message: '请选择开始时间', trigger: 'change' }],
     endTime: [{ required: true, message: '请选择结束时间', trigger: 'change' }]
 };
@@ -410,6 +419,60 @@ const handleSearchSubmit = async () => {
 const handleRefresh = () => {
     searchForm.workId = null;
     fetchWorkList(true);
+};
+
+const handleExport = async () => {
+    try {
+        // First get page one and total count
+        const firstPage = await reqGetWorks(0, 100);
+        
+        if (!firstPage || !firstPage.count) {
+            ElMessage.warning('暂无数据可导出');
+            return;
+        }
+
+        const totalPages = Math.ceil(firstPage.count / 100);
+        const allWorks = [...(firstPage.workList || [])];
+
+        // If there are more pages, fetch them all
+        if (totalPages > 1) {
+            const otherPagesPromises = Array.from({ length: totalPages - 1 }, (_, i) =>
+                reqGetWorks(i + 1, 100)
+            );
+
+            const results = await Promise.all(otherPagesPromises);
+            results.forEach(result => {
+                if (result?.workList) {
+                    allWorks.push(...result.workList);
+                }
+            });
+        }
+
+        // Prepare Excel data
+        const excelData = allWorks.map(work => ({
+            '编号': work.id,
+            // '作业名称': generateWorkName(work),
+            '采摘产品': getProduceName(work.produceId),
+            '开始时间': formatDate(work.startTime),
+            '结束时间': formatDate(work.endTime),
+            '采摘量': work.dataValue ? `${work.dataValue}${formatUnit(work.unit)}` : '-',
+            '状态': statusText(work.status)
+        }));
+
+        // Create workbook
+        const wb = XLSX.utils.book_new();
+        const ws = XLSX.utils.json_to_sheet(excelData);
+        XLSX.utils.book_append_sheet(wb, ws, '作业记录');
+
+        // Export Excel
+        const fileName = `作业记录_${dayjs().format('YYYY-MM-DD')}.xlsx`;
+        XLSX.writeFile(wb, fileName);
+
+        ElMessage.success(`成功导出${allWorks.length}条记录`);
+    } catch (error) {
+        console.error('导出失败', error);
+        ElMessage.error('导出失败');
+    }
 };
 
 onMounted(async () => {

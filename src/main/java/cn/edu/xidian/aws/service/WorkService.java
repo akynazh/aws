@@ -1,5 +1,6 @@
 package cn.edu.xidian.aws.service;
 
+import cn.edu.xidian.aws.constant.ScaleUnit;
 import cn.edu.xidian.aws.constant.WorkStatus;
 import cn.edu.xidian.aws.exception.AwsArgumentException;
 import cn.edu.xidian.aws.exception.AwsNotFoundException;
@@ -40,7 +41,7 @@ public class WorkService {
         work.setStartTime(startTime);
         work.setEndTime(endTime);
         work.setDataValue(new BigDecimal(0));
-        work.setUnit(0);
+        work.setUnit(ScaleUnit.KG.getCode());
         work.setCreateTime(System.currentTimeMillis());
         work.setUpdateTime(System.currentTimeMillis());
         if (System.currentTimeMillis() >= startTime && System.currentTimeMillis() <= endTime) {
