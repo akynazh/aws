@@ -1,17 +1,19 @@
 <mxfile host="65bd71144e">
     <diagram id="hqitrBEsFxFD-rjdB9nJ" name="Page-1">
-        <mxGraphModel dx="1431" dy="663" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="850" pageHeight="1100" math="0" shadow="0">
+        <mxGraphModel dx="1094" dy="593" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="850" pageHeight="1100" math="0" shadow="0">
             <root>
                 <mxCell id="0"/>
                 <mxCell id="1" parent="0"/>
                 <mxCell id="13" style="edgeStyle=none;html=1;strokeColor=default;endArrow=none;endFill=0;" parent="1" source="4" target="11" edge="1">
                     <mxGeometry relative="1" as="geometry"/>
                 </mxCell>
-                <mxCell id="14" style="edgeStyle=none;html=1;entryX=0;entryY=1;entryDx=0;entryDy=0;strokeColor=default;endArrow=none;endFill=0;" parent="1" source="4" target="12" edge="1">
-                    <mxGeometry relative="1" as="geometry"/>
+                <mxCell id="14" style="edgeStyle=none;html=1;entryX=0.5;entryY=1;entryDx=0;entryDy=0;strokeColor=default;endArrow=none;endFill=0;" parent="1" source="4" target="12" edge="1">
+                    <mxGeometry relative="1" as="geometry">
+                        <Array as="points"/>
+                    </mxGeometry>
                 </mxCell>
                 <mxCell id="4" value="果实" style="whiteSpace=wrap;html=1;align=center;" parent="1" vertex="1">
-                    <mxGeometry x="150" y="120" width="100" height="40" as="geometry"/>
+                    <mxGeometry x="160" y="190" width="100" height="40" as="geometry"/>
                 </mxCell>
                 <mxCell id="72" style="edgeStyle=none;html=1;entryX=0;entryY=0;entryDx=0;entryDy=0;strokeColor=default;endArrow=none;endFill=0;" parent="1" source="5" target="39" edge="1">
                     <mxGeometry relative="1" as="geometry"/>
@@ -33,7 +35,7 @@
                 <mxCell id="100" style="edgeStyle=none;html=1;entryX=0.95;entryY=0.3;entryDx=0;entryDy=0;entryPerimeter=0;endArrow=none;endFill=0;" parent="1" source="5" target="95" edge="1">
                     <mxGeometry relative="1" as="geometry"/>
                 </mxCell>
-                <mxCell id="101" style="edgeStyle=none;html=1;entryX=0.93;entryY=0.25;entryDx=0;entryDy=0;entryPerimeter=0;endArrow=none;endFill=0;" parent="1" source="5" target="96" edge="1">
+                <mxCell id="101" style="edgeStyle=none;html=1;entryX=0.5;entryY=0;entryDx=0;entryDy=0;endArrow=none;endFill=0;" parent="1" source="5" target="96" edge="1">
                     <mxGeometry relative="1" as="geometry"/>
                 </mxCell>
                 <mxCell id="5" value="采摘作业" style="whiteSpace=wrap;html=1;align=center;" parent="1" vertex="1">
@@ -46,7 +48,7 @@
                     <mxGeometry relative="1" as="geometry"/>
                 </mxCell>
                 <mxCell id="6" value="采摘关系" style="shape=rhombus;perimeter=rhombusPerimeter;whiteSpace=wrap;html=1;align=center;" parent="1" vertex="1">
-                    <mxGeometry x="160" y="240" width="120" height="60" as="geometry"/>
+                    <mxGeometry x="205" y="260" width="120" height="60" as="geometry"/>
                 </mxCell>
                 <mxCell id="15" style="edgeStyle=none;html=1;strokeColor=none;endArrow=none;endFill=0;" parent="1" edge="1">
                     <mxGeometry relative="1" as="geometry">
@@ -55,30 +57,22 @@
                     </mxGeometry>
                 </mxCell>
                 <mxCell id="11" value="编号" style="ellipse;whiteSpace=wrap;html=1;align=center;" parent="1" vertex="1">
-                    <mxGeometry x="100" y="50" width="100" height="40" as="geometry"/>
+                    <mxGeometry x="90" y="240" width="100" height="40" as="geometry"/>
                 </mxCell>
                 <mxCell id="12" value="名称" style="ellipse;whiteSpace=wrap;html=1;align=center;" parent="1" vertex="1">
-                    <mxGeometry x="215" y="50" width="100" height="40" as="geometry"/>
+                    <mxGeometry x="90" y="140" width="100" height="40" as="geometry"/>
                 </mxCell>
                 <mxCell id="68" value="1" style="edgeStyle=none;html=1;strokeColor=default;endArrow=none;endFill=0;" parent="1" source="19" target="22" edge="1">
                     <mxGeometry relative="1" as="geometry"/>
                 </mxCell>
                 <mxCell id="19" value="电子秤" style="whiteSpace=wrap;html=1;align=center;" parent="1" vertex="1">
-                    <mxGeometry x="500" y="120" width="100" height="40" as="geometry"/>
+                    <mxGeometry x="490" y="190" width="100" height="40" as="geometry"/>
                 </mxCell>
-                <mxCell id="62" style="edgeStyle=none;html=1;entryX=0.617;entryY=0.083;entryDx=0;entryDy=0;entryPerimeter=0;strokeColor=default;endArrow=none;endFill=0;" parent="1" source="20" target="32" edge="1">
-                    <mxGeometry relative="1" as="geometry"/>
-                </mxCell>
-                <mxCell id="64" value="M" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" parent="62" vertex="1" connectable="0">
-                    <mxGeometry x="0.0534" y="-1" relative="1" as="geometry">
-                        <mxPoint as="offset"/>
-                    </mxGeometry>
-                </mxCell>
-                <mxCell id="66" value="1" style="edgeStyle=none;html=1;entryX=0.6;entryY=0.1;entryDx=0;entryDy=0;entryPerimeter=0;strokeColor=default;endArrow=none;endFill=0;" parent="1" source="20" target="23" edge="1">
+                <mxCell id="66" value="1" style="edgeStyle=none;html=1;entryX=0.5;entryY=0;entryDx=0;entryDy=0;strokeColor=default;endArrow=none;endFill=0;" parent="1" source="20" target="23" edge="1">
                     <mxGeometry relative="1" as="geometry"/>
                 </mxCell>
                 <mxCell id="20" value="员工" style="whiteSpace=wrap;html=1;align=center;" parent="1" vertex="1">
-                    <mxGeometry x="340" y="120" width="100" height="40" as="geometry"/>
+                    <mxGeometry x="315" y="190" width="100" height="40" as="geometry"/>
                 </mxCell>
                 <mxCell id="105" style="edgeStyle=none;html=1;endArrow=none;endFill=0;" parent="1" source="21" target="92" edge="1">
                     <mxGeometry relative="1" as="geometry"/>
@@ -99,9 +93,9 @@
                     <mxGeometry relative="1" as="geometry"/>
                 </mxCell>
                 <mxCell id="21" value="称重记录" style="whiteSpace=wrap;html=1;align=center;" parent="1" vertex="1">
-                    <mxGeometry x="440" y="390" width="100" height="40" as="geometry"/>
+                    <mxGeometry x="460" y="380" width="100" height="40" as="geometry"/>
                 </mxCell>
-                <mxCell id="69" style="edgeStyle=none;html=1;entryX=1;entryY=0;entryDx=0;entryDy=0;strokeColor=default;endArrow=none;endFill=0;" parent="1" source="22" target="21" edge="1">
+                <mxCell id="69" style="edgeStyle=none;html=1;entryX=0.75;entryY=0;entryDx=0;entryDy=0;strokeColor=default;endArrow=none;endFill=0;" parent="1" source="22" target="21" edge="1">
                     <mxGeometry relative="1" as="geometry"/>
                 </mxCell>
                 <mxCell id="71" value="N" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" parent="69" vertex="1" connectable="0">
@@ -110,26 +104,15 @@
                     </mxGeometry>
                 </mxCell>
                 <mxCell id="22" value="电子秤称重记录" style="shape=rhombus;perimeter=rhombusPerimeter;whiteSpace=wrap;html=1;align=center;" parent="1" vertex="1">
-                    <mxGeometry x="600" y="240" width="120" height="60" as="geometry"/>
+                    <mxGeometry x="480" y="280" width="120" height="60" as="geometry"/>
                 </mxCell>
                 <mxCell id="67" value="N" style="edgeStyle=none;html=1;entryX=0.5;entryY=0;entryDx=0;entryDy=0;strokeColor=default;endArrow=none;endFill=0;" parent="1" source="23" target="21" edge="1">
                     <mxGeometry relative="1" as="geometry"/>
                 </mxCell>
                 <mxCell id="23" value="员工称重记录" style="shape=rhombus;perimeter=rhombusPerimeter;whiteSpace=wrap;html=1;align=center;" parent="1" vertex="1">
-                    <mxGeometry x="440" y="240" width="120" height="60" as="geometry"/>
+                    <mxGeometry x="365" y="260" width="120" height="60" as="geometry"/>
                 </mxCell>
-                <mxCell id="63" style="edgeStyle=none;html=1;entryX=0.75;entryY=0;entryDx=0;entryDy=0;strokeColor=default;endArrow=none;endFill=0;" parent="1" source="32" target="5" edge="1">
-                    <mxGeometry relative="1" as="geometry"/>
-                </mxCell>
-                <mxCell id="65" value="N" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" parent="63" vertex="1" connectable="0">
-                    <mxGeometry x="-0.0763" y="-1" relative="1" as="geometry">
-                        <mxPoint as="offset"/>
-                    </mxGeometry>
-                </mxCell>
-                <mxCell id="32" value="作业分配关系" style="shape=rhombus;perimeter=rhombusPerimeter;whiteSpace=wrap;html=1;align=center;" parent="1" vertex="1">
-                    <mxGeometry x="300" y="240" width="120" height="60" as="geometry"/>
-                </mxCell>
-                <mxCell id="73" style="edgeStyle=none;html=1;entryX=0.34;entryY=1.025;entryDx=0;entryDy=0;entryPerimeter=0;strokeColor=default;endArrow=none;endFill=0;" parent="1" source="39" target="21" edge="1">
+                <mxCell id="73" style="edgeStyle=none;html=1;entryX=0;entryY=0.75;entryDx=0;entryDy=0;strokeColor=default;endArrow=none;endFill=0;exitX=0.875;exitY=0.692;exitDx=0;exitDy=0;exitPerimeter=0;" parent="1" source="39" target="21" edge="1">
                     <mxGeometry relative="1" as="geometry"/>
                 </mxCell>
                 <mxCell id="75" value="N" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" parent="73" vertex="1" connectable="0">
@@ -138,64 +121,64 @@
                     </mxGeometry>
                 </mxCell>
                 <mxCell id="39" value="作业完成记录" style="shape=rhombus;perimeter=rhombusPerimeter;whiteSpace=wrap;html=1;align=center;" parent="1" vertex="1">
-                    <mxGeometry x="330" y="470" width="120" height="60" as="geometry"/>
+                    <mxGeometry x="295" y="310" width="120" height="60" as="geometry"/>
                 </mxCell>
                 <mxCell id="78" style="edgeStyle=none;html=1;entryX=0.25;entryY=0;entryDx=0;entryDy=0;endArrow=none;endFill=0;" parent="1" source="76" target="20" edge="1">
                     <mxGeometry relative="1" as="geometry"/>
                 </mxCell>
                 <mxCell id="76" value="编号" style="ellipse;whiteSpace=wrap;html=1;align=center;" parent="1" vertex="1">
-                    <mxGeometry x="270" width="100" height="40" as="geometry"/>
+                    <mxGeometry x="225" y="140" width="100" height="40" as="geometry"/>
                 </mxCell>
                 <mxCell id="79" style="edgeStyle=none;html=1;entryX=0.59;entryY=-0.025;entryDx=0;entryDy=0;entryPerimeter=0;endArrow=none;endFill=0;" parent="1" source="77" target="20" edge="1">
                     <mxGeometry relative="1" as="geometry"/>
                 </mxCell>
                 <mxCell id="77" value="名称" style="ellipse;whiteSpace=wrap;html=1;align=center;" parent="1" vertex="1">
-                    <mxGeometry x="385" width="100" height="40" as="geometry"/>
+                    <mxGeometry x="340" y="140" width="100" height="40" as="geometry"/>
                 </mxCell>
                 <mxCell id="86" style="edgeStyle=none;html=1;entryX=0.18;entryY=-0.025;entryDx=0;entryDy=0;entryPerimeter=0;endArrow=none;endFill=0;" parent="1" source="84" target="19" edge="1">
                     <mxGeometry relative="1" as="geometry"/>
                 </mxCell>
                 <mxCell id="84" value="编号" style="ellipse;whiteSpace=wrap;html=1;align=center;" parent="1" vertex="1">
-                    <mxGeometry x="425" y="50" width="100" height="40" as="geometry"/>
+                    <mxGeometry x="460" y="140" width="100" height="40" as="geometry"/>
                 </mxCell>
                 <mxCell id="87" style="edgeStyle=none;html=1;endArrow=none;endFill=0;" parent="1" source="85" target="19" edge="1">
                     <mxGeometry relative="1" as="geometry"/>
                 </mxCell>
                 <mxCell id="85" value="密钥" style="ellipse;whiteSpace=wrap;html=1;align=center;" parent="1" vertex="1">
-                    <mxGeometry x="510" width="100" height="40" as="geometry"/>
+                    <mxGeometry x="570" y="140" width="100" height="40" as="geometry"/>
                 </mxCell>
                 <mxCell id="88" value="编号" style="ellipse;whiteSpace=wrap;html=1;align=center;" parent="1" vertex="1">
-                    <mxGeometry x="90" y="310" width="100" height="40" as="geometry"/>
+                    <mxGeometry x="90" y="300" width="100" height="40" as="geometry"/>
                 </mxCell>
                 <mxCell id="89" value="采摘作业编号" style="ellipse;whiteSpace=wrap;html=1;align=center;" parent="1" vertex="1">
-                    <mxGeometry x="602.5" y="400" width="100" height="40" as="geometry"/>
+                    <mxGeometry x="600" y="360" width="100" height="40" as="geometry"/>
                 </mxCell>
                 <mxCell id="91" value="员工编号" style="ellipse;whiteSpace=wrap;html=1;align=center;" parent="1" vertex="1">
-                    <mxGeometry x="580" y="450" width="100" height="40" as="geometry"/>
+                    <mxGeometry x="600" y="410" width="100" height="40" as="geometry"/>
                 </mxCell>
                 <mxCell id="92" value="编号" style="ellipse;whiteSpace=wrap;html=1;align=center;" parent="1" vertex="1">
-                    <mxGeometry x="610" y="350" width="100" height="40" as="geometry"/>
+                    <mxGeometry x="600" y="310" width="100" height="40" as="geometry"/>
                 </mxCell>
                 <mxCell id="93" value="果实编号" style="ellipse;whiteSpace=wrap;html=1;align=center;" parent="1" vertex="1">
-                    <mxGeometry x="70" y="360" width="100" height="40" as="geometry"/>
+                    <mxGeometry x="90" y="360" width="100" height="40" as="geometry"/>
                 </mxCell>
                 <mxCell id="94" value="开始时间&lt;span style=&quot;color: rgba(0, 0, 0, 0); font-family: monospace; font-size: 0px; text-align: start;&quot;&gt;%3CmxGraphModel%3E%3Croot%3E%3CmxCell%20id%3D%220%22%2F%3E%3CmxCell%20id%3D%221%22%20parent%3D%220%22%2F%3E%3CmxCell%20id%3D%222%22%20value%3D%22%E7%BC%96%E5%8F%B7%22%20style%3D%22ellipse%3BwhiteSpace%3Dwrap%3Bhtml%3D1%3Balign%3Dcenter%3B%22%20vertex%3D%221%22%20parent%3D%221%22%3E%3CmxGeometry%20x%3D%2260%22%20y%3D%22330%22%20width%3D%22100%22%20height%3D%2240%22%20as%3D%22geometry%22%2F%3E%3C%2FmxCell%3E%3C%2Froot%3E%3C%2FmxGraphModel%3E&lt;/span&gt;" style="ellipse;whiteSpace=wrap;html=1;align=center;" parent="1" vertex="1">
-                    <mxGeometry x="70" y="410" width="100" height="40" as="geometry"/>
+                    <mxGeometry x="90" y="410" width="100" height="40" as="geometry"/>
                 </mxCell>
                 <mxCell id="95" value="结束时间" style="ellipse;whiteSpace=wrap;html=1;align=center;" parent="1" vertex="1">
-                    <mxGeometry x="80" y="460" width="100" height="40" as="geometry"/>
+                    <mxGeometry x="90" y="460" width="100" height="40" as="geometry"/>
                 </mxCell>
                 <mxCell id="96" value="采摘结果" style="ellipse;whiteSpace=wrap;html=1;align=center;" parent="1" vertex="1">
-                    <mxGeometry x="170" y="500" width="100" height="40" as="geometry"/>
+                    <mxGeometry x="225" y="460" width="100" height="40" as="geometry"/>
                 </mxCell>
                 <mxCell id="102" value="电子秤编号" style="ellipse;whiteSpace=wrap;html=1;align=center;" parent="1" vertex="1">
-                    <mxGeometry x="545" y="490" width="100" height="40" as="geometry"/>
+                    <mxGeometry x="570" y="460" width="100" height="40" as="geometry"/>
                 </mxCell>
                 <mxCell id="103" value="称重时间&lt;span style=&quot;color: rgba(0, 0, 0, 0); font-family: monospace; font-size: 0px; text-align: start;&quot;&gt;%3CmxGraphModel%3E%3Croot%3E%3CmxCell%20id%3D%220%22%2F%3E%3CmxCell%20id%3D%221%22%20parent%3D%220%22%2F%3E%3CmxCell%20id%3D%222%22%20value%3D%22%E7%BC%96%E5%8F%B7%22%20style%3D%22ellipse%3BwhiteSpace%3Dwrap%3Bhtml%3D1%3Balign%3Dcenter%3B%22%20vertex%3D%221%22%20parent%3D%221%22%3E%3CmxGeometry%20x%3D%22730%22%20y%3D%22330%22%20width%3D%22100%22%20height%3D%2240%22%20as%3D%22geometry%22%2F%3E%3C%2FmxCell%3E%3C%2Froot%3E%3C%2FmxGraphModel%3E&lt;/span&gt;" style="ellipse;whiteSpace=wrap;html=1;align=center;" parent="1" vertex="1">
-                    <mxGeometry x="470" y="530" width="100" height="40" as="geometry"/>
+                    <mxGeometry x="460" y="460" width="100" height="40" as="geometry"/>
                 </mxCell>
                 <mxCell id="104" value="称重结果" style="ellipse;whiteSpace=wrap;html=1;align=center;" parent="1" vertex="1">
-                    <mxGeometry x="375" y="550" width="100" height="40" as="geometry"/>
+                    <mxGeometry x="340" y="460" width="100" height="40" as="geometry"/>
                 </mxCell>
             </root>
         </mxGraphModel>

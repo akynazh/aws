@@ -1,14 +1,3 @@
-CREATE TABLE t_assignment
-(
-    id          BIGINT AUTO_INCREMENT NOT NULL,
-    work_id     BIGINT                NOT NULL,
-    employee_id BIGINT                NOT NULL,
-    create_time BIGINT                NOT NULL,
-    update_time BIGINT                NOT NULL,
-    status      INT                   NOT NULL,
-    CONSTRAINT pk_t_assignment PRIMARY KEY (id)
-);
-
 CREATE TABLE t_produce
 (
     id          BIGINT AUTO_INCREMENT NOT NULL,
@@ -94,15 +83,11 @@ ALTER TABLE t_user
 ALTER TABLE t_user
     ADD CONSTRAINT uc_t_user_uid UNIQUE (uid);
 
-CREATE INDEX idx_1d522efde180b221bed7ae334 ON t_assignment (work_id);
-
 CREATE INDEX idx_853a0d80741b5033f24de6623 ON t_record (employee_id, work_id);
 
 CREATE INDEX idx_9d65f7f0ba74b613b48315934 ON t_record (work_id);
 
 CREATE INDEX idx_c8f83c4cdd003e5fb42b2ae65 ON t_record (employee_id);
-
-CREATE INDEX idx_e5ed67b9678d2a2c954c3d33d ON t_assignment (employee_id);
 
 CREATE INDEX idx_e65c826206e0bf0f5d4f8351e ON t_work (produce_id);
 

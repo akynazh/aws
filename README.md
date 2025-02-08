@@ -1,10 +1,11 @@
 # AWS(Agricultural Weighing System)
 
-## 优化事项
+## TODO
 
 1. 缓存
 2. MQTT 监控
-3. 
+3. 单元测试
+4. 压力测试
 
 ## NOTE
 
