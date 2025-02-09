@@ -1,12 +1,11 @@
 {
   "name": "web",
   "private": true,
-  "version": "0.0.0",
+  "version": "1.0.0",
   "type": "module",
   "scripts": {
     "dev": "vite --open",
-    "build:prod": "vue-tsc && vite build --mode production",
-    "preview": "vite preview"
+    "build": "vue-tsc && vite build --mode production"
   },
   "dependencies": {
     "@element-plus/icons-vue": "^2.3.1",

@@ -1,5 +1,12 @@
 # AWS(Agricultural Weighing System)
 
+## TEST
+
+```sh
+mosquitto
+/Library/Java/JavaVirtualMachines/jdk-17.jdk/Contents/Home/bin/java -jar aws-1.0.0.jar
+```
+
 ## TODO
 
 1. 缓存

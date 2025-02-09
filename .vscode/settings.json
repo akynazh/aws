@@ -10,6 +10,8 @@
         "target": true,
         ".venv": true,
         ".idea": true,
+        ".git": true,
+        "*.iml": true,
 
         "xduts/xdufont.sty": true,
         "xduts/xduts.dtx": true,
