@@ -1,12 +1,17 @@
-# Agricultural Weighing System
+# aws-web
+
+## TODO
+
+- [ ] 总结开发流程，完善本文，书写博客
 
 ## Steps
 
 1. `pnpm create vite`
 2. `pnpm install`
 
+## NOTE
 
-## Template
+### Template
 
 Vue 3 + TypeScript + Vite
 

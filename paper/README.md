@@ -1,5 +1,12 @@
 # Paper
 
+## TODO
+
+- [ ] 阅读相关论文的摘要
+- [ ] 翻译外文摘要
+- [ ] 学习摘要编写（AI，百科）
+- [ ] 完成摘要
+
 ## PREPARE
 
 1. Install vsce: LaTeX Workshop

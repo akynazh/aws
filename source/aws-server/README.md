@@ -1,4 +1,4 @@
-# AWS(Agricultural Weighing System)
+# aws-server
 
 ## TEST
 
@@ -9,7 +9,6 @@ mosquitto
 
 ## TODO
 
-1. 缓存
-2. MQTT 监控
-3. 单元测试
-4. 压力测试
+- [ ] 缓存优化
+- [ ] MQTT 监控模块
+- [ ] 单元测试生成（AI）
