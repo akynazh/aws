@@ -2,19 +2,17 @@
 
 ## PREPARE
 
-1. Install vsce: LaTeX Workshop
-2. Install tex: `wget https://mirrors.rit.edu/CTAN/systems/mac/mactex/BasicTeX.pkg`
-3. Config environment variable: `export PATH="$PATH:/usr/local/texlive/2024basic/bin/universal-darwin"`
-4. Install packages: `sudo tlmgr install scheme-full && sudo tlmgr update --all --self`
-5. Get and build xduts: `git clone https://github.com/note286/xduts && cd xduts && xetex xduts.ins && l3build doc`
+1. Install tex: `wget https://mirrors.rit.edu/CTAN/systems/mac/mactex/BasicTeX.pkg`
+2. Config environment variable: `export PATH="$PATH:/usr/local/texlive/2024basic/bin/universal-darwin"`
+3. Install packages: `sudo tlmgr install scheme-full && sudo tlmgr update --all --self`
+4. Get and build xduts: `git clone https://github.com/note286/xduts && cd xduts && xetex xduts.ins && l3build doc`
 
 ## WRITE
 
 1. Refer: xduts.pdf
 2. Write: main.tex
 3. Compile: `xelatex main.tex`
-4. Get: main.pdf
-5. Smart Compile: `latexmk -pdf -xelatex main.tex` (vsce's way)
+4. Auto Compile: `latexmk -pdf -xelatex -pvc main.tex`
 
 ## NOTE
 

@@ -1,5 +1,9 @@
-yoyo
-
+help
+*.bbl
+*.blg
+*.fdb_latexmk
+*.fls
+*.xdv
 
 *.7z
 *.aux
