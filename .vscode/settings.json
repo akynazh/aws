@@ -1,17 +1,6 @@
 {
     "files.exclude": {
         "paper/build": true,
-        "paper/*.aux": true,
-        "paper/*.log": true,
-        "paper/*.bcf": true,
-        "paper/*.out": true,
-        "paper/*.run.xml": true,
-        "paper/*.toc": true,
-        "paper/*.bbl": true,
-        "paper/*.blg": true,
-        "paper/*.fdb_latexmk": true,
-        "paper/*.fls": true,
-        "paper/*.xdv": true,
         ".git": true,
 
         "paper/xdufont.sty": true,

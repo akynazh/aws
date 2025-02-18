@@ -1,9 +1,5 @@
 help
-*.bbl
-*.blg
-*.fdb_latexmk
-*.fls
-*.xdv
+out
 
 *.7z
 *.aux
