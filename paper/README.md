@@ -11,8 +11,8 @@
 
 1. Refer: xduts.pdf
 2. Write: main.tex
-3. Compile: `xelatex main.tex`
-4. Auto Compile: `latexmk -pdf -xelatex -pvc main.tex`
+3. Compile: `xelatex main.tex && biber main && xelatex main.tex`
+4. Auto Compile: `latexmk -pdf -xelatex -pvc main.tex` (Or use: Vsce-latexWorkshop)
 
 ## NOTE
 

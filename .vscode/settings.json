@@ -11,5 +11,6 @@
         "paper/xduugthesis.cls": true,
         "paper/xduugtp.cls": true,
         "paper/build.lua": true,
-    }
+    },
+    "plantuml.exportOutDir": "design/out"
 }
