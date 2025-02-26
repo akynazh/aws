@@ -10,19 +10,17 @@ mqttc = mqtt.Client(mqtt.CallbackAPIVersion.VERSION2)
 mqttc.username_pw_set("testp", "testp")
 mqttc.connect(host="127.0.0.1", port=1883)
 mqttc.loop_start()
-while True:
-    t = int(time.time() * 1000)
-    data = {
-        "workId": 9,
-        "employeeId": random.randint(1, 10),
-        "scaleId": random.randint(1, 3),
-        "dataValue": float(random.randint(10, 100)),
-        "dataErrorMargin": 0.1,
-        "unit": 2,
-        "dataTime": t - m1,
-    }
-    payload = json.dumps(data)
-    msg_info = mqttc.publish("t/scale", payload, qos=2)
-    msg_info.wait_for_publish()
-    print(payload)
-    time.sleep(5)
+t = int(time.time() * 1000)
+data = {
+    "workId": 9,
+    "employeeId": random.randint(1, 10),
+    "scaleId": random.randint(1, 3),
+    "dataValue": float(random.randint(10, 100)),
+    "dataErrorMargin": 0.1,
+    "unit": 2,
+    "dataTime": t - m1,
+}
+payload = json.dumps(data)
+msg_info = mqttc.publish("t/scale", payload, qos=2)
+msg_info.wait_for_publish()
+print(payload)
