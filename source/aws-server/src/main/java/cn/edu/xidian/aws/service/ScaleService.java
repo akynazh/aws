@@ -1,24 +1,22 @@
 package cn.edu.xidian.aws.service;
 
-import cn.edu.xidian.aws.constant.ProduceStatus;
 import cn.edu.xidian.aws.constant.ScaleStatus;
 import cn.edu.xidian.aws.exception.AwsArgumentException;
 import cn.edu.xidian.aws.exception.AwsNotFoundException;
-import cn.edu.xidian.aws.pojo.po.Produce;
 import cn.edu.xidian.aws.pojo.po.Scale;
-import cn.edu.xidian.aws.pojo.vo.produce.ProduceAddVO;
-import cn.edu.xidian.aws.pojo.vo.produce.ProduceUpdateVO;
 import cn.edu.xidian.aws.pojo.vo.scale.ScaleAddVO;
 import cn.edu.xidian.aws.pojo.vo.scale.ScaleUpdateVO;
 import cn.edu.xidian.aws.repository.ScaleRepository;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
-import org.springframework.util.StringUtils;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 
+import java.security.NoSuchAlgorithmException;
 import java.util.List;
+import java.util.UUID;
 
 /**
  * @author akynazh@gmail.com
@@ -29,17 +27,24 @@ import java.util.List;
 public class ScaleService {
     @Autowired
     private ScaleRepository scaleRepository;
+    @Autowired
+    private MqttUserService mqttUserService;
 
-    public Scale addScale(ScaleAddVO vo) {
+    @Transactional(propagation = Propagation.REQUIRED)
+    public Scale addScale(ScaleAddVO vo) throws NoSuchAlgorithmException {
         if (vo == null) {
             throw new AwsArgumentException();
         }
         Scale scale = new Scale();
         BeanUtils.copyProperties(vo, scale);
+        String sid = UUID.randomUUID().toString();
+        scale.setSid(sid);
         scale.setCreateTime(System.currentTimeMillis());
         scale.setUpdateTime(System.currentTimeMillis());
         scale.setStatus(ScaleStatus.ENABLE.getCode());
-        return scaleRepository.save(scale);
+        Scale savedScale = scaleRepository.save(scale);
+        mqttUserService.createScalePublisher(sid, savedScale.getSkey());
+        return savedScale;
     }
 
     public Scale updateScale(ScaleUpdateVO vo) {

@@ -1,5 +1,6 @@
 package cn.edu.xidian.aws.config;
 
+import cn.edu.xidian.aws.constant.Mqtt;
 import cn.edu.xidian.aws.service.MqttWeighService;
 import lombok.extern.slf4j.Slf4j;
 import org.eclipse.paho.client.mqttv3.MqttConnectOptions;
@@ -35,8 +36,10 @@ public class MqttConfig {
     private String brokerUrl;
     @Value("${mqtt.clientId}")
     private String clientId;
-    @Value("${mqtt.topic}")
-    private String topic;
+    @Value("${mqtt.username}")
+    private String username;
+    @Value("${mqtt.password}")
+    private String password;
     @Autowired
     private MqttWeighService weighService;
 
@@ -47,8 +50,13 @@ public class MqttConfig {
 
     @Bean
     public MessageProducer inbound() {
+        MqttConnectOptions options = new MqttConnectOptions();
+        options.setUserName(username);
+        options.setPassword(password.toCharArray());
+        DefaultMqttPahoClientFactory factory = new DefaultMqttPahoClientFactory();
+        factory.setConnectionOptions(options);
         MqttPahoMessageDrivenChannelAdapter adapter =
-                new MqttPahoMessageDrivenChannelAdapter(brokerUrl, clientId, topic);
+                new MqttPahoMessageDrivenChannelAdapter(brokerUrl, clientId, factory, Mqtt.TOPIC_SCALE);
         adapter.setCompletionTimeout(5000);
         adapter.setConverter(new DefaultPahoMessageConverter());
         adapter.setQos(2);

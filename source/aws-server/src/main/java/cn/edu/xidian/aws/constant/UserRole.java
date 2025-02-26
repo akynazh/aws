@@ -35,7 +35,7 @@ public enum UserRole {
     }
 
     public static List<UserRole> getRolesFromCodesString(String roles) {
-        return Arrays.stream(roles.split(","))
+        return Arrays.stream(roles.split(Constants.ROLE_SPLITER))
                 .map(UserRole::getUserRoleFromCode)
                 .filter(Optional::isPresent)
                 .map(Optional::get)

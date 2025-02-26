@@ -6,6 +6,7 @@ export interface ScaleUpdateVO {
 export interface ScaleVO {
   id: number;
   skey: string;
+  sid: string; // MQTT CLIENT
   model: string;
   maxCapacity: number;
   minCapacity: number;

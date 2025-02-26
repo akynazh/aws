@@ -12,5 +12,6 @@
         "paper/xduugtp.cls": true,
         "paper/build.lua": true,
     },
-    "plantuml.exportOutDir": "design/out"
+    "plantuml.exportOutDir": "design/out",
+    "python.analysis.autoImportCompletions": false
 }

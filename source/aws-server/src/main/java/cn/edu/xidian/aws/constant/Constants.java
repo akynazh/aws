@@ -25,4 +25,6 @@ public interface Constants {
 //            "/swagger-ui.html", "/swagger-ui/**",
     };
     String[] ROUTE_ADMIN = {"/admin/**"};
+
+    String ROLE_SPLITER = ",";
 }

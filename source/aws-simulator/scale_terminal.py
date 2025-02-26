@@ -7,7 +7,7 @@ y1 = 24 * 3600 * 1000 * 365 * 1
 m1 = 24 * 3600 * 1000 * 30 * 1
 
 mqttc = mqtt.Client(mqtt.CallbackAPIVersion.VERSION2)
-mqttc.username_pw_set("testp", "testp")
+mqttc.username_pw_set("7686889b-1981-42cd-80bf-ae3338922c4c", "123456")
 mqttc.connect(host="127.0.0.1", port=1883)
 mqttc.loop_start()
 while True:

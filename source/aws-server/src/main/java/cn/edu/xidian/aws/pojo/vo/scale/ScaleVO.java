@@ -23,6 +23,8 @@ import java.math.BigDecimal;
 public class ScaleVO {
     @Schema(description = "电子秤编号")
     private Long id;
+    @Schema(description = "MQTT CLIENT")
+    private String sid;
     /**
      * 电子秤密钥
      */

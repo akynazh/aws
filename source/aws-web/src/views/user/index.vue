@@ -45,7 +45,7 @@
                     <el-table-column 
                         prop="roles" 
                         label="角色" 
-                        width="250"
+                        width="150"
                         :filters="roleFilters"
                         :filter-method="filterRole"
                         filter-placement="bottom-end"

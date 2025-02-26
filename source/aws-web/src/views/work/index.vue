@@ -53,7 +53,7 @@
                             {{ generateWorkName(row) }}
                         </template>
                     </el-table-column> -->
-                    <el-table-column prop="produceId" label="采摘产品" width="180">
+                    <el-table-column prop="produceId" label="采摘产品" width="120">
                         <template #default="{ row }">
                             <el-tooltip :content="getProduceName(row.produceId)" placement="top">
                                 <span>{{ getProduceName(row.produceId) || row.produceId }}</span>

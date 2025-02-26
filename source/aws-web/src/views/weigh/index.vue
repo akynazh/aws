@@ -40,19 +40,38 @@
                     style="width: 100%"
                 >
                     <el-table-column prop="id" label="编号" width="80" />
-                    <el-table-column prop="skey" label="密钥" width="120" />
+                    <el-table-column prop="skey" label="密钥" width="120">
+                        <template #default="{ row }">
+                            <span 
+                                @click="toggleSkeyVisibility(row.id)"
+                                class="skey-text"
+                            >
+                                {{ skeyVisibility[row.id] ? row.skey : '********' }}
+                            </span>
+                        </template>
+                    </el-table-column>
+                    <el-table-column prop="sid" label="客户端号" width="120">
+                        <template #default="{ row }">
+                            <span 
+                                class="sid-text"
+                                @click="toggleSidVisibility(row.id)"
+                            >
+                                {{ sidVisibility[row.id] ? row.sid : formatSid(row.sid) }}
+                            </span>
+                        </template>
+                    </el-table-column>
                     <el-table-column prop="model" label="型号" width="80" />
                     <el-table-column label="量程" width="80">
                         <template #default="{ row }">
                             {{ `${row.minCapacity}-${row.maxCapacity}${ScaleUnitMap[row.unit]}` }}
                         </template>
                     </el-table-column>
-                    <el-table-column label="显示分度值" width="120">
+                    <el-table-column label="显示分度值" width="80">
                         <template #default="{ row }">
                             {{ `${row.displayInterval}${ScaleUnitMap[row.unitDv]}` }}
                         </template>
                     </el-table-column>
-                    <el-table-column label="检定分度值" width="120">
+                    <el-table-column label="检定分度值" width="80">
                         <template #default="{ row }">
                             {{ `${row.verificationInterval}${ScaleUnitMap[row.unitDv]}` }}
                         </template>
@@ -76,12 +95,12 @@
                             </el-tag>
                         </template>
                     </el-table-column>
-                    <el-table-column prop="createTime" label="创建时间" width="180">
+                    <el-table-column prop="createTime" label="创建时间" width="120">
                         <template #default="{ row }">
                             {{ formatDate(row.createTime) }}
                         </template>
                     </el-table-column>
-                    <el-table-column label="操作" width="200" fixed="right" v-if="store.roles?.includes(UserRole.ADMIN)">
+                    <el-table-column label="操作" width="150" fixed="right" v-if="store.roles?.includes(UserRole.ADMIN)">
                         <template #default="{ row }">
                             <el-button type="primary" link @click="handleViewRecords(row)">称重记录</el-button>
                             <el-button type="primary" link @click="handleEdit(row)">编辑</el-button>
@@ -239,7 +258,7 @@
 <script setup lang="ts">
 import { ref, reactive, onMounted } from "vue";
 import { ElMessage } from 'element-plus';
-import { Plus, Platform, Search, Download } from '@element-plus/icons-vue';  // Add Download icon
+import { Plus, Platform, Search, Download } from '@element-plus/icons-vue';  // Remove Hide and View icons from import since we don't need them anymore
 import * as XLSX from 'xlsx';  // Add XLSX import
 import type { ScaleVO, RecordVO } from "@/models";
 import { reqGetScales, reqAddScale, reqUpdateScale, reqGetRecords, reqGetScaleByKey } from "@/api/weigh";  // 添加 reqGetScale
@@ -470,6 +489,25 @@ const filterStatus = (value: number, row: ScaleVO) => {
     return row.status === value;
 };
 
+// Add skey visibility control
+const skeyVisibility = ref<{ [key: number]: boolean }>({});
+
+const toggleSkeyVisibility = (id: number) => {
+    skeyVisibility.value[id] = !skeyVisibility.value[id];
+};
+
+// Add sid visibility control
+const sidVisibility = ref<{ [key: number]: boolean }>({});
+
+const toggleSidVisibility = (id: number) => {
+    sidVisibility.value[id] = !sidVisibility.value[id];
+};
+
+const formatSid = (sid: string) => {
+    if (!sid) return '';
+    return sid.slice(0, 10) + '...';
+};
+
 // Add export handler function
 const handleExport = async (scaleId: number) => {
     try {
@@ -646,5 +684,41 @@ onMounted(() => {
     width: 100%;
     font-size: 18px;
     font-weight: bold;
+}
+
+.skey-text {
+    cursor: pointer;
+    color: var(--el-color-primary);
+    transition: opacity 0.2s;
+}
+
+.skey-text:hover {
+    opacity: 0.8;
+}
+
+.sid-container {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.sid-ellipsis {
+    color: var(--el-color-primary);
+    cursor: pointer;
+    transition: opacity 0.2s;
+}
+
+.sid-ellipsis:hover {
+    opacity: 0.8;
+}
+
+.sid-text {
+    cursor: pointer;
+    color: var(--el-color-primary);
+    transition: opacity 0.2s;
+}
+
+.sid-text:hover {
+    opacity: 0.8;
 }
 </style>

@@ -1,5 +1,11 @@
 # Paper
 
+## TODO
+
+- 三级标题问题
+- xduts 原理
+- latex 语法学习
+
 ## PREPARE
 
 1. Install tex: `wget https://mirrors.rit.edu/CTAN/systems/mac/mactex/BasicTeX.pkg`

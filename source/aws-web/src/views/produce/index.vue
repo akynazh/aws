@@ -35,7 +35,7 @@
                 <!-- 果实表格 -->
                 <el-table :data="tableData" border class="custom-table hover-effect" style="width: 100%">
                     <el-table-column prop="id" label="编号" width="100" />
-                    <el-table-column prop="name" label="名称" width="180" />
+                    <el-table-column prop="name" label="名称" width="120" />
                     <el-table-column prop="status" label="状态" width="120" :filters="statusFilters"
                         :filter-method="filterStatus" filter-placement="bottom-end">
                         <template #default="{ row }">
@@ -54,7 +54,7 @@
                             {{ formatDate(row.updateTime) }}
                         </template>
                     </el-table-column>
-                    <el-table-column v-if="store.roles?.includes(UserRole.ADMIN)" label="操作" width="400" fixed="right">
+                    <el-table-column v-if="store.roles?.includes(UserRole.ADMIN)" label="操作" width="200" fixed="right">
                         <template #default="{ row }">
                             <el-button type="primary" link @click="handleViewAnnualOutput(row)">年产量</el-button>
                             <el-button type="primary" link @click="handleViewWorkOutput(row)">分批产量</el-button>

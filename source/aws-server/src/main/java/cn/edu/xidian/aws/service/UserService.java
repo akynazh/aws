@@ -125,7 +125,7 @@ public class UserService implements UserDetailsService {
         user.setUid(adminUID);
         user.setName(adminUID);
         user.setPassword(encoder.encode(adminPassword));
-        user.setRoles(UserRole.ADMIN.getCode() + "," + UserRole.EMPLOYEE.getCode());
+        user.setRoles(UserRole.ADMIN.getCode() + Constants.ROLE_SPLITER + UserRole.EMPLOYEE.getCode());
         user.setCreateTime(System.currentTimeMillis());
         user.setUpdateTime(System.currentTimeMillis());
         user.setStatus(UserStatus.ENABLE.getCode());

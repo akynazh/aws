@@ -26,6 +26,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
+import java.security.NoSuchAlgorithmException;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -72,7 +73,7 @@ public class WeighController {
     @Operation(summary = "添加电子秤")
     @PostMapping("/scale")
     @PreAuthorize(Constants.PRE_AUTHORIZE_ADMIN)
-    public ResponseEntity<ScaleVO> addScale(@RequestBody ScaleAddVO vo) {
+    public ResponseEntity<ScaleVO> addScale(@RequestBody ScaleAddVO vo) throws NoSuchAlgorithmException {
         Scale scale = scaleService.addScale(vo);
         return ResponseEntity.ok(Scale.toScaleVO(scale));
     }

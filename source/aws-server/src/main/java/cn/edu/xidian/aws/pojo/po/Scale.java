@@ -25,7 +25,11 @@ public class Scale {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     /**
-     * 电子秤密钥
+     * mqtt user name (uuid)
+     */
+    private String sid;
+    /**
+     * 电子秤密钥 mqtt client password
      */
     @Column(unique = true)
     private String skey;

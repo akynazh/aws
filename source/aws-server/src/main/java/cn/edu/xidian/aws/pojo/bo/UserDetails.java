@@ -1,5 +1,6 @@
 package cn.edu.xidian.aws.pojo.bo;
 
+import cn.edu.xidian.aws.constant.Constants;
 import cn.edu.xidian.aws.pojo.po.User;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -24,7 +25,7 @@ public class UserDetails implements org.springframework.security.core.userdetail
     public UserDetails(User user) {
         this.uid = user.getUid();
         this.password = user.getPassword();
-        this.authorities = Stream.of(user.getRoles().split(","))
+        this.authorities = Stream.of(user.getRoles().split(Constants.ROLE_SPLITER))
                 .map(SimpleGrantedAuthority::new)
                 .collect(Collectors.toList());
     }
