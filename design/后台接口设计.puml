@@ -1,0 +1,51 @@
+@startmindmap
+* 农业果实称重云端软件接口设计
+
+** 用户管理模块
+*** 用户登录 POST /user/login
+*** 用户获取个人信息 GET /user
+*** 用户更新个人信息 PUT /user/me
+*** 管理员
+**** 获取用户列表 GET /user/list
+**** 获取用户信息 GET /user/{uid}
+**** 添加用户 POST /user
+**** 更新用户 PUT /user
+
+** 果实模块
+*** 果实管理
+**** 获取果实列表 GET /produce/list
+**** 获取果实 GET /produce/{id}
+**** 根据名称获取果实 GET /produce
+**** 添加果实 POST /produce
+**** 更新果实 PUT /produce
+*** 果实统计
+**** 获取果实年产量 GET /produce/summary/year
+**** 获取果实分批产量 GET /produce/summary/work
+
+** 工作服务模块
+*** 工作管理
+**** 获取采摘工作列表 GET /work/list
+**** 获取采摘工作 GET /work/{id}
+**** 获取果实的采摘工作列表 GET /work/produce/{id}
+**** 添加采摘工作 POST /work
+**** 更新采摘工作 PUT /work
+*** 工作分配
+**** 获取采摘作业的分配情况 GET /work/{id}/assignments
+**** 获取我被分配的工作 GET /work/assignments/me
+**** 分配工作 POST /work/assign
+**** 重新分配工作 PUT /work/assign
+
+** 称重服务模块
+*** 电子秤管理
+**** 获取电子秤列表 GET /weigh/scale/list
+**** 获取电子秤 GET /weigh/scale/{id}
+**** 根据key获取电子秤 GET /weigh/scale
+**** 添加电子秤 POST /weigh/scale
+**** 更新电子秤信息 PUT /weigh/scale
+*** 称重记录
+**** 添加称重记录 POST /weigh/record
+**** 获取称重记录 POST /weigh/record/list
+*** 统计
+**** 获取员工各作业采摘量 GET /weigh/summary
+
+@endmindmap

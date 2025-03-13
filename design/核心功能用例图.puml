@@ -5,15 +5,15 @@ actor "农场管理员" as admin
 actor "电子秤终端" as terminal
 
 rectangle 农业果实称重云端软件 {
-    (称重服务模块) as uc1
+    (称重服务) as uc1
 
-    (员工个人模块) as uc2
+    (用户服务) as uc2
     (个人信息管理) as uc2_a
     (农场信息获取) as uc2_b
     uc2_a .up.> uc2 : <<include>>
     uc2_b .up.> uc2 : <<include>>
 
-    (农场管理模块) as uc3
+    (农场管理) as uc3
     (员工管理) as uc3_a
     (农场管理) as uc3_b
     (电子秤管理) as uc3_c
@@ -23,7 +23,7 @@ rectangle 农业果实称重云端软件 {
     uc3_c .up.> uc3 : <<include>>
     uc3_d .up.> uc3 : <<include>>
     
-    (数据可视化模块) as uc4
+    (数据可视化) as uc4
     (果实采摘统计信息) as uc4_a
     (员工采摘统计信息) as uc4_b
     uc4_a .up.> uc4 : <<include>>
