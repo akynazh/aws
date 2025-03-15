@@ -902,13 +902,13 @@
         % { 国内外研究现状和发展趋势 }
         { 后期拟完成的研究工作及进度安排（要有可行性） }
           {
+            \__xdu_bib:
             \end   { tpbox }
             \begin { tpbox } [ tpboxii ]
           }
         % { 主要研究内容、要解决的问题及本文的初步方案 }
         { 存在的困难与问题 }
           {
-            \__xdu_bib:
             \end   { tpbox }
             \begin { tpbox } [ tpboxii ]
           }
@@ -947,7 +947,8 @@
     section       / name       = { ,、   },
     subsection    / name       = { （,） },
     subsubsection / name       = { （,） },
-    section       / number     = { \chinese { section       } },
+    section       / number     = { \arabic { section       } },
+    % section       / number     = { \chinese { section       } },
     subsection    / number     = { \chinese { subsection    } },
     subsubsection / number     = { \arabic  { subsubsection } },
     section       / format     = { \raggedright \zihao { -4 } },

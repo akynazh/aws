@@ -453,7 +453,6 @@ MQTT（Message Queuing Telemetry Transport）即消息队列遥测传输协议�
 \label{tab:称重服务模块接口设计}
 \end{table}
 
-
 \subsubsection{数据库设计}
 
 本软件数据库设计分为三个阶段：概念模型设计、逻辑模型设计和物理模型设计，下面进行具体阐述。
@@ -667,11 +666,153 @@ MQTT 客户端 - 设备授权 & 一对多（1:N） & 一个 MQTT 客户端可以
 
 本系统使用 MySQL 作为数据库管理系统，采用 InnoDB 存储引擎，事务隔离级别设置为可重复读，以确保数据的一致性和可靠性。在后台应用中，数据库访问通过 JPA (Java Persistence API) 进行实现，简化了数据库操作，提升了代码的可维护性和开发效率。
 
+\subsection{系统功能实现}
+\subsubsection{登录界面}
 
+启动前后台服务，访问 8081 端口，即可进入登录界面：
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.8\linewidth]{../result/登录界面.png}
+    \caption{登录界面}
+    \label{fig:登录界面}
+\end{figure}
+
+用户可以通过用户唯一编号（身份证）和密码完成登录。
+
+\subsubsection{个人信息模块}
+
+在登录界面完成登录后，即可进入个人中心：
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.8\linewidth]{../result/个人中心.png}
+    \caption{个人中心}
+    \label{fig:个人中心}
+\end{figure}
+
+在个人中心，用户可以查看或更新个人信息。
+
+用户可以点击查看个人称重历史：
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.8\linewidth]{../result/个人称重历史.png}
+    \caption{个人称重历史}
+    \label{fig:个人称重历史}
+\end{figure}
+
+用户可以点击查看个人分批次采摘量：
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.8\linewidth]{../result/个人分批次采摘量.png}
+    \caption{个人分批次采摘量}
+    \label{fig:个人分批次采摘量}
+\end{figure}
+
+\subsubsection{工作服务模块}
+
+在上方导航处，点击作业模块，进入作业模块界面：
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.8\linewidth]{../result/作业模块.png}
+    \caption{作业模块}
+    \label{fig:作业模块}
+\end{figure}
+
+在作业模块中，目前支持对作业执行查看、新增、更新、查询和导出数据等操作。
+
+\subsubsection{称重服务模块}
+
+在上方导航处，点击电子秤模块，进入电子秤模块界面：
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.8\linewidth]{../result/电子秤模块.png}
+    \caption{电子秤模块}
+    \label{fig:电子秤模块}
+\end{figure}
+
+在该界面中，用户可以查看、新增、查询和更新电子秤。
+
+在任一电子秤中，用户可以点击称重记录按钮查看称重记录：
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.8\linewidth]{../result/电子秤称重记录.png}
+    \caption{电子秤称重记录}
+    \label{fig:电子秤称重记录}
+\end{figure}
+
+此外，该界面后续将会支持电子秤终端的模拟操作，实现对称重流程的模拟，支持通过 MQTT、HTTP、CoAP 等协议进行称重数据的提交。
+
+\subsubsection{用户管理模块}
+
+在上方导航处，点击用户模块，进入用户模块界面：
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.8\linewidth]{../result/用户模块.png}
+    \caption{用户模块}
+    \label{fig:用户模块}
+\end{figure}
+
+该界面仅供管理员访问，支持查看、添加、查询和更新员工，也支持查看员工的产出。
+
+\subsubsection{果实管理模块}
+
+在上方导航处，点击果实模块，进入果实模块界面：
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.8\linewidth]{../result/果实模块.png}
+    \caption{果实模块}
+    \label{fig:果实模块}
+\end{figure}
+
+在该界面中，用户可以对果实执行查看、更新、添加、查询和导出数据等操作。
+
+用户可以点击查看果实分批产量：
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.8\linewidth]{../result/果实分批产量.png}
+    \caption{果实分批产量}
+    \label{fig:果实分批产量}
+\end{figure}
+
+横坐标为作业编号（批次），纵坐标为产量，单位为 KG。
+
+用户可以点击查看果实年产量：
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.8\linewidth]{../result/果实年产量.png}
+    \caption{果实年产量}
+    \label{fig:果实年产量}
+\end{figure}
+
+横坐标为年份，纵坐标为产量，单位为 KG。
 
 \section{后期拟完成的研究工作及进度安排（要有可行性）}
+
+\begin{enumerate}
+    \item 第九周：完成电子秤终端模拟器的开发和相关论文编写
+    \item 第十周：优化前后台系统，让功能更加完善，比如优化接口性能、优化前台界面展现等
+    \item 第十一周：完成系统测试，包括接口测试、压力测试等，然后完成相关论文编写
+    \item 第十二周及以后：持续润色、完善论文，正式答辩前完成论文编写
+\end{enumerate}
+
 \section{存在的困难与问题}
+\begin{enumerate}
+    \item 对前台开发不够熟悉，前台代码出现较多冗余，设计不够合理，优化空间很大，后续如果有时间，将会进行重构；
+    \item 对压力测试计划的设计存在困难，没有做过相关压力测试的经验，对压力测试根据 Jmeter 不够熟悉，需要借鉴相关项目的测试计划来完成；
+    \item 对物联网协议网关的设计不够细致，部分协议转换到 MQTT 可能存在安全性问题，这是由于协议之间的设计差异导致的，后续需要想办法进行优化。
+\end{enumerate}
+
 \section{如期完成全部论文工作的可能性}
-\section{指导教师意见}
-\section{学院审核意见}
+可以如期完成全部论文工作。
+
 \end{document}
