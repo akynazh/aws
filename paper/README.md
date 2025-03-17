@@ -1,11 +1,5 @@
 # Paper
 
-## TODO
-
-- 三级标题问题
-- xduts 原理
-- latex 语法学习
-
 ## PREPARE
 
 1. Install tex: `wget https://mirrors.rit.edu/CTAN/systems/mac/mactex/BasicTeX.pkg`
@@ -20,9 +14,26 @@
 3. Compile: `xelatex main.tex && biber main && xelatex main.tex`
 4. Auto Compile: `latexmk -pdf -xelatex -pvc main.tex` (Or use: Vsce-latexWorkshop)
 
+## Word
+
+```sh
+# brew install pandoc-crossref
+
+pandoc main.tex \
+--filter pandoc-crossref \
+--citeproc --csl ieee.csl \
+--bibliography=reference.bib \
+-M reference-section-title=Reference \
+-M autoEqnLabels \
+-M tableEqns \
+-t docx+native_numbering \
+--number-sections \
+-o main.docx
+```
+
 ## NOTE
 
-### XDUTS
+### LATEX 模版
 
 https://github.com/note286/xduts
 

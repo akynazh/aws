@@ -8,10 +8,12 @@
         "paper/xduts.ins": true,
         "paper/xdulogo.pdf": true,
         "paper/xdupgthesis.cls": true,
-        // "paper/xduugthesis.cls": true,
-        // "paper/xduugir.cls": true,
+        "paper/xduugthesis.cls": true,
         "paper/xduugtp.cls": true,
         "paper/build.lua": true,
+
+        "paper/xduugmr.cls": true,
+        "paper/mr.tex": true
     },
     "plantuml.exportOutDir": "design/out",
     "python.analysis.autoImportCompletions": false
