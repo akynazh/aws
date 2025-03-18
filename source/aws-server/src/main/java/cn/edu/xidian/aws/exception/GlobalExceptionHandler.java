@@ -42,4 +42,10 @@ public class GlobalExceptionHandler {
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public void awsArgumentException() {
     }
+
+    @ExceptionHandler(AwsArgumentException.class)
+    @ResponseStatus(HttpStatus.FORBIDDEN)
+    public String awsForbiddenException(AwsForbiddenException e) {
+        return e.getMessage();
+    }
 }

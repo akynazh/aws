@@ -8,7 +8,6 @@ import cn.edu.xidian.aws.pojo.vo.produce.ProduceAddVO;
 import cn.edu.xidian.aws.pojo.vo.produce.ProduceUpdateVO;
 import cn.edu.xidian.aws.repository.ProduceRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
@@ -33,7 +32,7 @@ public class ProduceService {
         produce.setName(vo.getName());
         produce.setCreateTime(System.currentTimeMillis());
         produce.setUpdateTime(System.currentTimeMillis());
-        produce.setStatus(ProduceStatus.ENABLE.getCode());
+        produce.setStatus(ProduceStatus.ENABLED.getCode());
         return produceRepository.save(produce);
     }
 

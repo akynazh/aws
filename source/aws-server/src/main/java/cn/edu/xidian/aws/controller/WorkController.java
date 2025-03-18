@@ -1,20 +1,16 @@
 package cn.edu.xidian.aws.controller;
 
 import cn.edu.xidian.aws.constant.Constants;
-import cn.edu.xidian.aws.pojo.po.User;
 import cn.edu.xidian.aws.pojo.po.Work;
-import cn.edu.xidian.aws.pojo.vo.assignment.*;
 import cn.edu.xidian.aws.pojo.vo.work.WorkAddVO;
 import cn.edu.xidian.aws.pojo.vo.work.WorkListVO;
 import cn.edu.xidian.aws.pojo.vo.work.WorkUpdateVO;
 import cn.edu.xidian.aws.pojo.vo.work.WorkVO;
-import cn.edu.xidian.aws.service.AssignmentService;
 import cn.edu.xidian.aws.service.JwtService;
 import cn.edu.xidian.aws.service.UserService;
 import cn.edu.xidian.aws.service.WorkService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -36,8 +32,6 @@ import java.util.stream.Collectors;
 public class WorkController {
     @Autowired
     private WorkService workService;
-    @Autowired
-    private AssignmentService assignmentService;
     @Autowired
     private UserService userService;
     @Autowired
@@ -87,34 +81,5 @@ public class WorkController {
         List<Work> produceWorks = workService.getProduceWorks(id);
         List<WorkVO> workVOS = produceWorks.stream().map(Work::toWorkVO).collect(Collectors.toList());
         return ResponseEntity.ok(workVOS);
-    }
-
-    @Operation(summary = "分配工作")
-    @PreAuthorize(Constants.PRE_AUTHORIZE_ADMIN)
-    @PostMapping("/assign")
-    public ResponseEntity<WorkAssignmentsVO> assignWork(@RequestBody WorkAssignVO vo) {
-        return ResponseEntity.ok(assignmentService.assignWork(vo));
-    }
-
-    @Operation(summary = "重新分配工作")
-    @PreAuthorize(Constants.PRE_AUTHORIZE_ADMIN)
-    @PutMapping("/assign")
-    public ResponseEntity<WorkAssignmentsVO> reassignWork(@RequestBody WorkReassignVO vo) {
-        return ResponseEntity.ok(assignmentService.reassignWork(vo));
-    }
-
-    @Operation(summary = "获取我被分配的工作")
-    @PreAuthorize(Constants.PRE_AUTHORIZE_EMPLOYEE)
-    @GetMapping("/assignments/me")
-    public ResponseEntity<MyAssignmentsVO> getMyAssignments(HttpServletRequest request) {
-        User user = userService.getUser(jwtService.extractUsername(jwtService.extractToken(request)));
-        return ResponseEntity.ok(assignmentService.getMyAssignments(user));
-    }
-
-    @Operation(summary = "获取采摘作业的分配情况")
-    @PreAuthorize(Constants.PRE_AUTHORIZE_ADMIN)
-    @GetMapping("/{id}/assignments")
-    public ResponseEntity<WorkAssignmentsVO> getWorkAssignments(@PathVariable Long id) {
-        return ResponseEntity.ok(assignmentService.getWorkAssignments(id));
     }
 }

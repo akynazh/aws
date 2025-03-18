@@ -12,7 +12,7 @@ import java.util.Arrays;
 @Getter
 public enum ProduceStatus {
     DISABLED(0, "未种植"),
-    ENABLE(1, "在种植"),
+    ENABLED(1, "在种植"),
     DELETED(2, "已删除");
 
     private final int code;
@@ -25,5 +25,13 @@ public enum ProduceStatus {
 
     public static boolean codeExists(int code) {
         return Arrays.stream(UserStatus.values()).anyMatch(userStatus -> userStatus.getCode() == code);
+    }
+
+    public static ProduceStatus fromCode(int code) {
+        return Arrays.stream(ProduceStatus.values()).filter(s -> s.getCode() == code).findFirst().orElse(null);
+    }
+
+    public static boolean produceNotEnabled(int code) {
+        return ENABLED.getCode() != code;
     }
 }

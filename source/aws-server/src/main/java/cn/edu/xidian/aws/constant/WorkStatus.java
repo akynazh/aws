@@ -28,4 +28,12 @@ public enum WorkStatus {
     public static boolean codeExists(int code) {
         return Arrays.stream(UserStatus.values()).anyMatch(userStatus -> userStatus.getCode() == code);
     }
+
+    public static WorkStatus fromCode(int code) {
+        return Arrays.stream(WorkStatus.values()).filter(s -> s.getCode() == code).findFirst().orElse(null);
+    }
+
+    public static boolean workNotOnGoing(int code) {
+        return ONGOING.getCode() != code;
+    }
 }

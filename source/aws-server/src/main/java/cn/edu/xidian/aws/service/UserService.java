@@ -4,6 +4,7 @@ import cn.edu.xidian.aws.constant.Constants;
 import cn.edu.xidian.aws.constant.UserRole;
 import cn.edu.xidian.aws.constant.UserStatus;
 import cn.edu.xidian.aws.exception.AwsArgumentException;
+import cn.edu.xidian.aws.exception.AwsForbiddenException;
 import cn.edu.xidian.aws.exception.AwsNotFoundException;
 import cn.edu.xidian.aws.pojo.po.User;
 import cn.edu.xidian.aws.pojo.vo.user.UserRegisterVO;
@@ -59,7 +60,7 @@ public class UserService implements UserDetailsService {
         user.setPassword(encoder.encode(Constants.USER_PASSWORD_DEFAULT));
         user.setCreateTime(System.currentTimeMillis());
         user.setUpdateTime(System.currentTimeMillis());
-        user.setStatus(UserStatus.ENABLE.getCode());
+        user.setStatus(UserStatus.ENABLED.getCode());
         user.setRoles(vo.getRoles());
         return userRepository.save(user);
     }
@@ -97,6 +98,9 @@ public class UserService implements UserDetailsService {
         if (originUser == null) {
             throw new AwsNotFoundException();
         }
+        if (UserStatus.userNotEnabled(originUser.getStatus())) {
+            throw new AwsForbiddenException(UserStatus.fromCode(originUser.getStatus()).getMessage());
+        }
         if (StringUtils.hasText(vo.getName())) {
             originUser.setName(vo.getName());
         }
@@ -107,8 +111,12 @@ public class UserService implements UserDetailsService {
         return userRepository.save(originUser);
     }
 
-    public User getUser(String uid) {
+    public User getUserByUID(String uid) {
         return userRepository.findByUid(uid).orElseThrow(AwsNotFoundException::new);
+    }
+
+    public User getUserByID(Long id) {
+        return userRepository.findById(id).orElseThrow(AwsNotFoundException::new);
     }
 
     public List<User> getUsers(int page, int size) {
@@ -128,7 +136,7 @@ public class UserService implements UserDetailsService {
         user.setRoles(UserRole.ADMIN.getCode() + Constants.ROLE_SPLITER + UserRole.EMPLOYEE.getCode());
         user.setCreateTime(System.currentTimeMillis());
         user.setUpdateTime(System.currentTimeMillis());
-        user.setStatus(UserStatus.ENABLE.getCode());
+        user.setStatus(UserStatus.ENABLED.getCode());
         if (userRepository.findByUid(adminUID).isPresent()) {
             return;
         }

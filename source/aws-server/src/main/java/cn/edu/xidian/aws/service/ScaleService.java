@@ -41,7 +41,7 @@ public class ScaleService {
         scale.setSid(sid);
         scale.setCreateTime(System.currentTimeMillis());
         scale.setUpdateTime(System.currentTimeMillis());
-        scale.setStatus(ScaleStatus.ENABLE.getCode());
+        scale.setStatus(ScaleStatus.ENABLED.getCode());
         Scale savedScale = scaleRepository.save(scale);
         mqttUserService.createScalePublisher(sid, savedScale.getSkey());
         return savedScale;

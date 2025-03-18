@@ -1,10 +1,16 @@
 package cn.edu.xidian.aws.service;
 
+import cn.edu.xidian.aws.constant.ScaleStatus;
 import cn.edu.xidian.aws.constant.ScaleUnit;
+import cn.edu.xidian.aws.constant.UserStatus;
+import cn.edu.xidian.aws.constant.WorkStatus;
 import cn.edu.xidian.aws.exception.AwsArgumentException;
+import cn.edu.xidian.aws.exception.AwsForbiddenException;
 import cn.edu.xidian.aws.exception.AwsNotFoundException;
 import cn.edu.xidian.aws.pojo.dto.UserWorkOutputDTO;
 import cn.edu.xidian.aws.pojo.po.Record;
+import cn.edu.xidian.aws.pojo.po.Scale;
+import cn.edu.xidian.aws.pojo.po.User;
 import cn.edu.xidian.aws.pojo.po.Work;
 import cn.edu.xidian.aws.pojo.vo.record.RecordAddVO;
 import cn.edu.xidian.aws.pojo.vo.record.RecordsGetVO;
@@ -34,6 +40,10 @@ public class RecordService {
     private RecordRepository recordRepository;
     @Autowired
     private WorkService workService;
+    @Autowired
+    private UserService userService;
+    @Autowired
+    private ScaleService scaleService;
 
     public Record addRecord(RecordAddVO vo) {
         if (vo == null) {
@@ -42,9 +52,30 @@ public class RecordService {
         Record record = new Record();
         BeanUtils.copyProperties(vo, record);
         Long workId = record.getWorkId();
+        Long employeeId = record.getEmployeeId();
+        Long scaleId = record.getScaleId();
+        Integer unit = record.getUnit();
+        Scale scale = scaleService.getScale(scaleId);
+        User employee = userService.getUserByID(employeeId);
         Work work = workService.getWork(workId);
 
-        BigDecimal dataValue = ScaleUtil.convDataValue(record.getDataValue(), record.getUnit(), work.getUnit());
+        if (employee == null || work == null || scale == null) {
+            throw new AwsNotFoundException();
+        }
+        if (UserStatus.userNotEnabled(employee.getStatus())) {
+            throw new AwsForbiddenException(UserStatus.fromCode(employee.getStatus()).getMessage());
+        }
+        if (ScaleStatus.scaleNotEnabled(scale.getStatus())) {
+            throw new AwsForbiddenException(ScaleStatus.fromCode(scale.getStatus()).getMessage());
+        }
+        if (WorkStatus.workNotOnGoing(work.getStatus())) {
+            throw new AwsForbiddenException(WorkStatus.fromCode(work.getStatus()).getMessage());
+        }
+        if (ScaleUnit.codeExists(unit)) {
+            throw new AwsArgumentException();
+        }
+
+        BigDecimal dataValue = ScaleUtil.convDataValue(record.getDataValue(), unit, work.getUnit());
         WorkUpdateVO workUpdateVO = new WorkUpdateVO();
         workUpdateVO.setId(workId);
         workUpdateVO.setDataValue(work.getDataValue().add(dataValue));

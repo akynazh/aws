@@ -50,7 +50,7 @@ public class UserController {
     @PutMapping
     @PreAuthorize(Constants.PRE_AUTHORIZE_ADMIN)
     public ResponseEntity<UserVO> updateUser(@RequestBody UserUpdateVO vo) {
-        User user = userService.getUser(vo.getUid());
+        User user = userService.getUserByUID(vo.getUid());
         User updatedUser = userService.updateUser(vo, user);
         return ResponseEntity.ok(User.toUserVO(updatedUser));
     }
@@ -59,7 +59,7 @@ public class UserController {
     @PutMapping("/me")
     @PreAuthorize(Constants.PRE_AUTHORIZE_EMPLOYEE)
     public ResponseEntity<UserVO> updateMe(@RequestBody UserUpdateMeVO vo, HttpServletRequest request) {
-        User user = userService.getUser(jwtService.extractUsername(jwtService.extractToken(request)));
+        User user = userService.getUserByUID(jwtService.extractUsername(jwtService.extractToken(request)));
         User updatedUser = userService.updateMe(vo, user);
         return ResponseEntity.ok(User.toUserVO(updatedUser));
     }
@@ -68,7 +68,7 @@ public class UserController {
     @GetMapping
     @PreAuthorize(Constants.PRE_AUTHORIZE_EMPLOYEE)
     public ResponseEntity<UserVO> getMe(HttpServletRequest request) {
-        User user = userService.getUser(jwtService.extractUsername(jwtService.extractToken(request)));
+        User user = userService.getUserByUID(jwtService.extractUsername(jwtService.extractToken(request)));
         return ResponseEntity.ok(User.toUserVO(user));
     }
 
@@ -76,7 +76,7 @@ public class UserController {
     @GetMapping("/{uid}")
     @PreAuthorize(Constants.PRE_AUTHORIZE_ADMIN)
     public ResponseEntity<UserVO> getEmployee(@PathVariable String uid) {
-        User user = userService.getUser(uid);
+        User user = userService.getUserByUID(uid);
         return ResponseEntity.ok(User.toUserVO(user));
     }
 

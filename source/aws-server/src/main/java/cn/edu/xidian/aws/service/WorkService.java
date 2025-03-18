@@ -4,6 +4,7 @@ import cn.edu.xidian.aws.constant.ScaleUnit;
 import cn.edu.xidian.aws.constant.WorkStatus;
 import cn.edu.xidian.aws.exception.AwsArgumentException;
 import cn.edu.xidian.aws.exception.AwsNotFoundException;
+import cn.edu.xidian.aws.pojo.po.Produce;
 import cn.edu.xidian.aws.pojo.po.Work;
 import cn.edu.xidian.aws.pojo.vo.work.WorkAddVO;
 import cn.edu.xidian.aws.pojo.vo.work.WorkUpdateVO;
@@ -29,15 +30,25 @@ public class WorkService {
 
     @Autowired
     private WorkRepository workRepository;
+    @Autowired
+    private ProduceService produceService;
 
     public Work addWork(WorkAddVO vo) {
         if (vo == null) {
             throw new AwsArgumentException();
         }
+        Long produceId = vo.getProduceId();
+        Produce produce = produceService.getProduce(produceId);
+        if (produce == null) {
+            throw new AwsNotFoundException();
+        }
         Work work = new Work();
-        work.setProduceId(vo.getProduceId());
+        work.setProduceId(produceId);
         long startTime = vo.getStartTime();
         long endTime = vo.getEndTime();
+        if (startTime >= endTime) {
+            throw new AwsArgumentException();
+        }
         work.setStartTime(startTime);
         work.setEndTime(endTime);
         work.setDataValue(new BigDecimal(0));
@@ -63,14 +74,22 @@ public class WorkService {
             throw new AwsNotFoundException();
         }
 
-        if  (vo.getProduceId() != null) {
-            work.setProduceId(vo.getProduceId());
+        Long produceId = vo.getProduceId();
+        if  (produceId != null) {
+            work.setProduceId(produceId);
         }
-        if (vo.getStartTime() != null) {
-            work.setStartTime(vo.getStartTime());
+        Produce produce = produceService.getProduce(produceId);
+        if (produce == null) {
+            throw new AwsNotFoundException();
         }
-        if (vo.getEndTime() != null) {
-            work.setEndTime(vo.getEndTime());
+        Long startTime = vo.getStartTime();
+        Long endTime = vo.getEndTime();
+        if (startTime != null && endTime != null) {
+            if (startTime >= endTime) {
+                throw new AwsArgumentException();
+            }
+            work.setStartTime(startTime);
+            work.setEndTime(endTime);
         }
         if (vo.getDataValue() != null) {
             work.setDataValue(vo.getDataValue());

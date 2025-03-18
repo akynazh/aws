@@ -12,7 +12,7 @@ import java.util.Arrays;
 @Getter
 public enum ScaleStatus {
     DISABLED(0, "禁用"),
-    ENABLE(1, "启用"),
+    ENABLED(1, "启用"),
     DELETED(2, "已删除");
 
     private final int code;
@@ -25,5 +25,13 @@ public enum ScaleStatus {
 
     public static boolean codeExists(int code) {
         return Arrays.stream(UserStatus.values()).anyMatch(userStatus -> userStatus.getCode() == code);
+    }
+
+    public static ScaleStatus fromCode(int code) {
+        return Arrays.stream(ScaleStatus.values()).filter(s -> s.getCode() == code).findFirst().orElse(null);
+    }
+
+    public static boolean scaleNotEnabled(int code) {
+        return ENABLED.getCode() != code;
     }
 }
