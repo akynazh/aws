@@ -43,7 +43,7 @@ public class GlobalExceptionHandler {
     public void awsArgumentException() {
     }
 
-    @ExceptionHandler(AwsArgumentException.class)
+    @ExceptionHandler(AwsForbiddenException.class)
     @ResponseStatus(HttpStatus.FORBIDDEN)
     public String awsForbiddenException(AwsForbiddenException e) {
         return e.getMessage();
