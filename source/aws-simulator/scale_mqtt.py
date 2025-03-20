@@ -13,13 +13,13 @@ mqttc.loop_start()
 
 t = int(time.time() * 1000)
 data = {
-    "workId": 9,
-    "employeeId": random.randint(1, 10),
-    "scaleId": random.randint(1, 3),
+    "workId": 12,
+    "employeeId": random.choice([1, 2, 5, 8, 11, 12]),
+    "scaleId": random.choice([2, 3, 4]),
     "dataValue": float(random.randint(10, 100)),
     "dataErrorMargin": 0.1,
     "unit": 2,
-    "dataTime": t - m1,
+    "dataTime": t,
 }
 payload = json.dumps(data)
 msg_info = mqttc.publish("t/scale", payload, qos=2)

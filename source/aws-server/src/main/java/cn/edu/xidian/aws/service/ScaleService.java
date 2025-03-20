@@ -1,5 +1,6 @@
 package cn.edu.xidian.aws.service;
 
+import cn.edu.xidian.aws.constant.ScaleProtocol;
 import cn.edu.xidian.aws.constant.ScaleStatus;
 import cn.edu.xidian.aws.exception.AwsArgumentException;
 import cn.edu.xidian.aws.exception.AwsNotFoundException;
@@ -32,9 +33,10 @@ public class ScaleService {
 
     @Transactional(propagation = Propagation.REQUIRED)
     public Scale addScale(ScaleAddVO vo) throws NoSuchAlgorithmException {
-        if (vo == null) {
+        if (vo == null || !ScaleProtocol.codeExists(vo.getProtocol())) {
             throw new AwsArgumentException();
         }
+
         Scale scale = new Scale();
         BeanUtils.copyProperties(vo, scale);
         String sid = UUID.randomUUID().toString();
@@ -51,8 +53,12 @@ public class ScaleService {
         if (vo == null) {
             throw new AwsArgumentException();
         }
+        if (vo.getStatus() != null && !ScaleStatus.codeExists(vo.getStatus())) {
+            throw new AwsArgumentException();
+        }
         Scale originScale = scaleRepository.findById(vo.getId()).orElseThrow(AwsNotFoundException::new);
-        if (ScaleStatus.codeExists(vo.getStatus())) {
+
+        if (vo.getStatus() != null) {
             originScale.setStatus(vo.getStatus());
         }
         originScale.setUpdateTime(System.currentTimeMillis());

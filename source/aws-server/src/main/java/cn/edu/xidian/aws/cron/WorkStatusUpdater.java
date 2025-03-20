@@ -27,7 +27,7 @@ public class WorkStatusUpdater {
 
     @Scheduled(fixedRate = 5 * 1000) // 5s
     public void updateJobStatus() {
-        log.info(UPDATE_WORK_START_MSG, LocalDateTime.now());
+//        log.info(UPDATE_WORK_START_MSG, LocalDateTime.now());
         List<Work> works = workRepository.findAllByStatus(WorkStatus.NOT_STARTED.getCode());
         for (Work work : works) {
             if (System.currentTimeMillis() >= work.getStartTime()
@@ -41,7 +41,7 @@ public class WorkStatusUpdater {
                 updateWorkStatus(work, WorkStatus.FINISHED);
             }
         }
-        log.info(UPDATE_WORK_END_MSG, LocalDateTime.now());
+//        log.info(UPDATE_WORK_END_MSG, LocalDateTime.now());
     }
 
     private void updateWorkStatus(Work work, WorkStatus status) {

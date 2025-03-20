@@ -30,10 +30,10 @@ public enum ScaleUnit {
     }
 
     public static boolean codeExists(int code) {
-        return Arrays.stream(UserStatus.values()).anyMatch(userStatus -> userStatus.getCode() == code);
+        return Arrays.stream(ScaleUnit.values()).anyMatch(s -> s.getCode() == code);
     }
 
     public static ScaleUnit valueOf(int code) {
-        return Arrays.stream(ScaleUnit.values()).filter(scaleUnit -> scaleUnit.getCode() == code).findFirst().orElse(null);
+        return Arrays.stream(ScaleUnit.values()).filter(s -> s.getCode() == code).findFirst().orElse(null);
     }
 }

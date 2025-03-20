@@ -7,7 +7,6 @@ import cn.edu.xidian.aws.repository.MqttAclRepository;
 import cn.edu.xidian.aws.repository.MqttUserRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.crypto.codec.Hex;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -34,6 +33,19 @@ public class MqttUserService {
 
     @Transactional
     public void createScalePublisher(String username, String password) throws NoSuchAlgorithmException {
+        createUser(username, password);
+        createAcl(username, Mqtt.PERMISSION_ALLOW, Mqtt.ACTION_PUBLISH, Mqtt.TOPIC_SCALE);
+        createAcl(username, Mqtt.PERMISSION_DENY, Mqtt.ACTION_ALL, Mqtt.TOPIC_ALL);
+    }
+
+    @Transactional
+    public void createResultSubscriber(String username, String password) throws NoSuchAlgorithmException {
+        createUser(username, password);
+        createAcl(username, Mqtt.PERMISSION_ALLOW, Mqtt.ACTION_SUBSCRIBE, Mqtt.TOPIC_RESULT);
+        createAcl(username, Mqtt.PERMISSION_DENY, Mqtt.ACTION_ALL, Mqtt.TOPIC_ALL);
+    }
+
+    private void createUser(String username, String password) throws NoSuchAlgorithmException {
         String salt = generateSalt();
         String passwordWithSalt = password + salt;
         String hashedPassword = hashWithSHA256(passwordWithSalt);
@@ -45,20 +57,15 @@ public class MqttUserService {
         user.setIsSuperuser(Mqtt.NOT_SUPERUSER);
         user.setCreated(java.time.LocalDateTime.now());
         mqttUserRepository.save(user);
+    }
 
-        MqttAcl mqttAcl1 = new MqttAcl();
-        mqttAcl1.setUsername(username);
-        mqttAcl1.setPermission(Mqtt.PERMISSION_ALLOW);
-        mqttAcl1.setAction(Mqtt.ACTION_PUBLISH);
-        mqttAcl1.setTopic(Mqtt.TOPIC_SCALE);
-        mqttAclRepository.save(mqttAcl1);
-
-        MqttAcl mqttAcl2 = new MqttAcl();
-        mqttAcl2.setUsername(username);
-        mqttAcl2.setPermission(Mqtt.PERMISSION_DENY);
-        mqttAcl2.setAction(Mqtt.ACTION_ALL);
-        mqttAcl2.setTopic(Mqtt.TOPIC_ALL);
-        mqttAclRepository.save(mqttAcl2);
+    private void createAcl(String username, String permission, String action, String topic) {
+        MqttAcl acl = new MqttAcl();
+        acl.setUsername(username);
+        acl.setPermission(permission);
+        acl.setAction(action);
+        acl.setTopic(topic);
+        mqttAclRepository.save(acl);
     }
 
     public String generateSalt() {

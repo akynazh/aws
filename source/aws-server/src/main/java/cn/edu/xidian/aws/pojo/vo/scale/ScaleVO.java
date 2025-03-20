@@ -66,9 +66,9 @@ public class ScaleVO {
     @Schema(description = "分度值单位，0 为 mg，1 为 g，2 为 kg，3 为 t，4 为 lb（磅），5 为 oz（盎司），6 为 ct（克拉）")
     private Integer unitDv;
     /**
-     * 通信协议，0 为 MQTT，1 为 HTTP
+     * 通信协议，0 为 MQTT，1 为 HTTP, 2 为 CoAP, 3 为 STOMP
      */
-    @Schema(description = "通信协议，0 为 MQTT，1 为 HTTP")
+    @Schema(description = "通信协议，0 为 MQTT，1 为 HTTP, 2 为 CoAP, 3 为 STOMP")
     private Integer protocol;
     /**
      * 创建时间，毫秒级时间戳

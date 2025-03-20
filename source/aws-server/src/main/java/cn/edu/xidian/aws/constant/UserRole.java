@@ -1,6 +1,7 @@
 package cn.edu.xidian.aws.constant;
 
 import lombok.Getter;
+import org.springframework.util.StringUtils;
 
 import java.util.Arrays;
 import java.util.List;
@@ -28,6 +29,14 @@ public enum UserRole {
         return Arrays.stream(UserRole.values()).anyMatch(role -> role.getCode().equals(code));
     }
 
+    public static boolean codesStringNotOK(String roles) {
+        if (!StringUtils.hasText(roles)) {
+            return false;
+        }
+        List<UserRole> lst = getRolesFromCodesString(roles);
+        return lst.isEmpty();
+    }
+
     public static Optional<UserRole> getUserRoleFromCode(String code) {
         return Arrays.stream(UserRole.values())
                 .filter(role -> role.getCode().equals(code))
@@ -35,7 +44,7 @@ public enum UserRole {
     }
 
     public static List<UserRole> getRolesFromCodesString(String roles) {
-        return Arrays.stream(roles.split(Constants.ROLE_SPLITER))
+        return Arrays.stream(roles.split(Constants.ROLE_SPLITTER))
                 .map(UserRole::getUserRoleFromCode)
                 .filter(Optional::isPresent)
                 .map(Optional::get)

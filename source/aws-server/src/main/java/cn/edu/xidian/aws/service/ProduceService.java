@@ -40,11 +40,15 @@ public class ProduceService {
         if (vo == null) {
             throw new AwsArgumentException();
         }
+        if (vo.getStatus() != null && !ProduceStatus.codeExists(vo.getStatus())) {
+            throw new AwsArgumentException();
+        }
         Produce originProduce = produceRepository.findById(vo.getId()).orElseThrow(AwsNotFoundException::new);
+
         if (StringUtils.hasText(vo.getName())) {
             originProduce.setName(vo.getName());
         }
-        if (ProduceStatus.codeExists(vo.getStatus())) {
+        if (vo.getStatus() != null) {
             originProduce.setStatus(vo.getStatus());
         }
         originProduce.setUpdateTime(System.currentTimeMillis());

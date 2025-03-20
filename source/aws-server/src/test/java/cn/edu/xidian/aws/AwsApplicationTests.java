@@ -22,5 +22,6 @@ class AwsApplicationTests {
 
     @Test
     void test() throws Exception {
+        mqttUserService.createResultSubscriber("result", "result");
     }
 }

@@ -24,7 +24,7 @@ public enum ScaleStatus {
     }
 
     public static boolean codeExists(int code) {
-        return Arrays.stream(UserStatus.values()).anyMatch(userStatus -> userStatus.getCode() == code);
+        return Arrays.stream(ScaleStatus.values()).anyMatch(s -> s.getCode() == code);
     }
 
     public static ScaleStatus fromCode(int code) {

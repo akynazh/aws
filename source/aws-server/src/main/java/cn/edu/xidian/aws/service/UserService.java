@@ -51,7 +51,7 @@ public class UserService implements UserDetailsService {
     }
 
     public User addUser(UserRegisterVO vo) {
-        if (vo == null) {
+        if (vo == null || UserRole.codesStringNotOK(vo.getRoles())) {
             throw new AwsArgumentException();
         }
         User user = new User();
@@ -66,12 +66,16 @@ public class UserService implements UserDetailsService {
     }
 
     public User updateUser(UserUpdateVO vo, User originUser) {
-        if (vo == null) {
+        if (vo == null || originUser == null) {
             throw new AwsArgumentException();
         }
-        if (originUser == null) {
-            throw new AwsNotFoundException();
+        if (vo.getStatus() != null && !UserStatus.codeExists(vo.getStatus())) {
+            throw new AwsArgumentException();
         }
+        if (StringUtils.hasText(vo.getRoles()) && UserRole.codesStringNotOK(vo.getRoles())) {
+            throw new AwsArgumentException();
+        }
+
         if (StringUtils.hasText(vo.getUid())) {
             originUser.setUid(vo.getUid());
         }
@@ -133,7 +137,7 @@ public class UserService implements UserDetailsService {
         user.setUid(adminUID);
         user.setName(adminUID);
         user.setPassword(encoder.encode(adminPassword));
-        user.setRoles(UserRole.ADMIN.getCode() + Constants.ROLE_SPLITER + UserRole.EMPLOYEE.getCode());
+        user.setRoles(UserRole.ADMIN.getCode() + Constants.ROLE_SPLITTER + UserRole.EMPLOYEE.getCode());
         user.setCreateTime(System.currentTimeMillis());
         user.setUpdateTime(System.currentTimeMillis());
         user.setStatus(UserStatus.ENABLED.getCode());

@@ -78,7 +78,12 @@
                     </el-table-column>
                     <el-table-column label="通信协议" width="120">
                         <template #default="{ row }">
-                            {{ row.protocol === 0 ? 'MQTT' : 'HTTP' }}
+                            {{ 
+                                row.protocol === 0 ? 'MQTT' : 
+                                row.protocol === 1 ? 'HTTP' :
+                                row.protocol === 2 ? 'CoAP' :
+                                row.protocol === 3 ? 'STOMP' : '未知'
+                            }}
                         </template>
                     </el-table-column>
                     <el-table-column 
@@ -163,6 +168,8 @@
                                 <el-select v-model="form.protocol">
                                     <el-option label="MQTT" :value="0" />
                                     <el-option label="HTTP" :value="1" />
+                                    <el-option label="COAP" :value="2" />
+                                    <el-option label="STOMP" :value="3" />
                                 </el-select>
                             </el-form-item>
                         </template>

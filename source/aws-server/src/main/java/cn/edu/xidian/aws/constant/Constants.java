@@ -1,8 +1,5 @@
 package cn.edu.xidian.aws.constant;
 
-import lombok.Getter;
-import lombok.Setter;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 /**
@@ -26,5 +23,5 @@ public interface Constants {
     };
     String[] ROUTE_ADMIN = {"/admin/**"};
 
-    String ROLE_SPLITER = ",";
+    String ROLE_SPLITTER = ",";
 }

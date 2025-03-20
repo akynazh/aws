@@ -9,6 +9,7 @@ import cn.edu.xidian.aws.pojo.po.Work;
 import cn.edu.xidian.aws.pojo.vo.work.WorkAddVO;
 import cn.edu.xidian.aws.pojo.vo.work.WorkUpdateVO;
 import cn.edu.xidian.aws.repository.WorkRepository;
+import lombok.NonNull;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -37,18 +38,19 @@ public class WorkService {
         if (vo == null) {
             throw new AwsArgumentException();
         }
+        if (vo.getStartTime() == null || vo.getEndTime() == null || vo.getStartTime() >= vo.getEndTime()) {
+            throw new AwsArgumentException();
+        }
         Long produceId = vo.getProduceId();
         Produce produce = produceService.getProduce(produceId);
         if (produce == null) {
             throw new AwsNotFoundException();
         }
+
         Work work = new Work();
         work.setProduceId(produceId);
         long startTime = vo.getStartTime();
         long endTime = vo.getEndTime();
-        if (startTime >= endTime) {
-            throw new AwsArgumentException();
-        }
         work.setStartTime(startTime);
         work.setEndTime(endTime);
         work.setDataValue(new BigDecimal(0));
@@ -69,25 +71,31 @@ public class WorkService {
         if (vo == null) {
             throw new AwsArgumentException();
         }
+        if (vo.getStatus() != null && !WorkStatus.codeExists(vo.getStatus())) {
+            throw new AwsArgumentException();
+        }
+        if (vo.getUnit() != null && !ScaleUnit.codeExists(vo.getUnit())) {
+            throw new AwsArgumentException();
+        }
+        Long startTime = vo.getStartTime();
+        Long endTime = vo.getEndTime();
+        if (startTime != null && endTime != null && startTime >= endTime) {
+            throw new AwsArgumentException();
+        }
         Work work = workRepository.findById(vo.getId()).orElseThrow(AwsNotFoundException::new);
         if (work == null) {
             throw new AwsNotFoundException();
         }
-
         Long produceId = vo.getProduceId();
-        if  (produceId != null) {
+        if (produceId != null) {
+            Produce produce = produceService.getProduce(produceId);
+            if (produce == null) {
+                throw new AwsNotFoundException();
+            }
             work.setProduceId(produceId);
         }
-        Produce produce = produceService.getProduce(produceId);
-        if (produce == null) {
-            throw new AwsNotFoundException();
-        }
-        Long startTime = vo.getStartTime();
-        Long endTime = vo.getEndTime();
+
         if (startTime != null && endTime != null) {
-            if (startTime >= endTime) {
-                throw new AwsArgumentException();
-            }
             work.setStartTime(startTime);
             work.setEndTime(endTime);
         }

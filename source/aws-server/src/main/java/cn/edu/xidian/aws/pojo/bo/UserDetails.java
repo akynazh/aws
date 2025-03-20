@@ -25,7 +25,7 @@ public class UserDetails implements org.springframework.security.core.userdetail
     public UserDetails(User user) {
         this.uid = user.getUid();
         this.password = user.getPassword();
-        this.authorities = Stream.of(user.getRoles().split(Constants.ROLE_SPLITER))
+        this.authorities = Stream.of(user.getRoles().split(Constants.ROLE_SPLITTER))
                 .map(SimpleGrantedAuthority::new)
                 .collect(Collectors.toList());
     }

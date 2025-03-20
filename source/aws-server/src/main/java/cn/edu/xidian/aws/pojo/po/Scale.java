@@ -64,7 +64,7 @@ public class Scale {
      */
     private Integer unitDv;
     /**
-     * 通信协议，0 为 MQTT，1 为 HTTP
+     * 通信协议，0 为 MQTT，1 为 HTTP, 2 为 CoAP, 3 为 STOMP
      */
     private Integer protocol;
     /**

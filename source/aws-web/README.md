@@ -1,13 +1,17 @@
 # aws-web
 
-## TODO
+## INIT
 
-- [ ] 总结开发流程，完善本文，书写博客
+```sh
+pnpm create vite
+pnpm install
+```
 
-## Steps
+## START
 
-1. `pnpm create vite`
-2. `pnpm install`
+```sh
+pnpm run dev
+```
 
 ## NOTE
 

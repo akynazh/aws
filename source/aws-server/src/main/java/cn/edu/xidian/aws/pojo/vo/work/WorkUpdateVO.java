@@ -45,5 +45,5 @@ public class WorkUpdateVO {
     /**
      * 状态，0 为未开始，1 为进行中，2 为已结束，3 为已取消，4 为已删除
      */
-    private Integer status = -1;
+    private Integer status;
 }

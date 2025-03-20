@@ -18,6 +18,7 @@ import cn.edu.xidian.aws.pojo.vo.user.UserWorkOutputVO;
 import cn.edu.xidian.aws.pojo.vo.work.WorkUpdateVO;
 import cn.edu.xidian.aws.repository.RecordRepository;
 import cn.edu.xidian.aws.util.ScaleUtil;
+import jakarta.transaction.Transactional;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Example;
@@ -45,8 +46,9 @@ public class RecordService {
     @Autowired
     private ScaleService scaleService;
 
+    @Transactional
     public Record addRecord(RecordAddVO vo) {
-        if (vo == null) {
+        if (vo == null || !ScaleUnit.codeExists(vo.getUnit())) {
             throw new AwsArgumentException();
         }
         Record record = new Record();
@@ -58,7 +60,6 @@ public class RecordService {
         Scale scale = scaleService.getScale(scaleId);
         User employee = userService.getUserByID(employeeId);
         Work work = workService.getWork(workId);
-
         if (employee == null || work == null || scale == null) {
             throw new AwsNotFoundException();
         }
@@ -70,9 +71,6 @@ public class RecordService {
         }
         if (WorkStatus.workNotOnGoing(work.getStatus())) {
             throw new AwsForbiddenException(WorkStatus.fromCode(work.getStatus()).getMessage());
-        }
-        if (ScaleUnit.codeExists(unit)) {
-            throw new AwsArgumentException();
         }
 
         BigDecimal dataValue = ScaleUtil.convDataValue(record.getDataValue(), unit, work.getUnit());

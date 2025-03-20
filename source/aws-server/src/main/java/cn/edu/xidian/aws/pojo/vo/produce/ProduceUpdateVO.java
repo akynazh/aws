@@ -20,5 +20,5 @@ public class ProduceUpdateVO {
     @Schema(description = "农产品名称")
     private String name;
     @Schema(description = "状态，0 为未种植，1 为在种植，2 为已删除")
-    private Integer status = -1;
+    private Integer status;
 }

@@ -13,6 +13,7 @@ public class Mqtt {
     public static final String ACTION_ALL = "all";
     public static final String TOPIC_ALL = "#";
     public static final String TOPIC_SCALE = "t/scale";
+    public static final String TOPIC_RESULT = "t/result";
     public static final int QOS_AT_MOST_ONCE = 0;
     public static final int QOS_AT_LEAST_ONCE = 1;
     public static final int QOS_EXACTLY_ONCE = 2;
