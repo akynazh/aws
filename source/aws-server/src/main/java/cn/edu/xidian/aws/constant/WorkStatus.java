@@ -19,6 +19,7 @@ public enum WorkStatus {
 
     private final int code;
     private final String message;
+    public static final String label = "作业";
 
     WorkStatus(int code, String message) {
         this.code = code;

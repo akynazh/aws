@@ -8,6 +8,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.Message;
 import org.springframework.stereotype.Service;
 
+import java.io.IOException;
+
 /**
  * @author akynazh@gmail.com
  * @date 1/31/25
@@ -19,7 +21,7 @@ public class MqttWeighService {
     @Autowired
     private RecordService recordService;
 
-    public void handleMessage(Message<?> message) {
+    public void handleMessage(Message<?> message) throws IOException {
         Object payload = message.getPayload();
         try {
             RecordAddVO data = new ObjectMapper().readValue(payload.toString(), RecordAddVO.class);

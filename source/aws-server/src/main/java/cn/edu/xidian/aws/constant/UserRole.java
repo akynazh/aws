@@ -19,6 +19,7 @@ public enum UserRole {
 
     private final String code;
     private final String name;
+    public static final String label = "用户角色";
 
     UserRole(String code, String name) {
         this.code = code;

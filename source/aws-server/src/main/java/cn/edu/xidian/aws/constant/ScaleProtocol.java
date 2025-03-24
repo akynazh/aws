@@ -19,6 +19,7 @@ public enum ScaleProtocol {
 
     private final int code;
     private final String protocol;
+    public static final String label = "电子秤协议";
 
     ScaleProtocol(int code, String protocol) {
         this.code = code;

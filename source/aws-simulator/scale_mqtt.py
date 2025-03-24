@@ -13,7 +13,9 @@ mqttc.loop_start()
 
 t = int(time.time() * 1000)
 data = {
-    "workId": 12,
+    "image": "",
+    "image64": "",
+    "produceId": "",
     "employeeId": random.choice([1, 2, 5, 8, 11, 12]),
     "scaleId": random.choice([2, 3, 4]),
     "dataValue": float(random.randint(10, 100)),

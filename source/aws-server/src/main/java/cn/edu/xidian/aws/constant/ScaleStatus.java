@@ -17,6 +17,7 @@ public enum ScaleStatus {
 
     private final int code;
     private final String message;
+    public static final String label = "电子秤状态";
 
     ScaleStatus(int code, String message) {
         this.code = code;

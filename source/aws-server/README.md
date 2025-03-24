@@ -4,5 +4,5 @@
 
 ```sh
 # mvn package
-java -jar target/aws-1.0.0.jar
+java -jar target/aws-server-1.0.0.jar
 ```

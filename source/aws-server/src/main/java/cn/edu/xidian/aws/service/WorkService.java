@@ -3,23 +3,19 @@ package cn.edu.xidian.aws.service;
 import cn.edu.xidian.aws.constant.ScaleUnit;
 import cn.edu.xidian.aws.constant.WorkStatus;
 import cn.edu.xidian.aws.exception.AwsArgumentException;
+import cn.edu.xidian.aws.exception.AwsForbiddenException;
 import cn.edu.xidian.aws.exception.AwsNotFoundException;
 import cn.edu.xidian.aws.pojo.po.Produce;
 import cn.edu.xidian.aws.pojo.po.Work;
 import cn.edu.xidian.aws.pojo.vo.work.WorkAddVO;
 import cn.edu.xidian.aws.pojo.vo.work.WorkUpdateVO;
 import cn.edu.xidian.aws.repository.WorkRepository;
-import lombok.NonNull;
-import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
 
 /**
  * @author akynazh@gmail.com
@@ -36,15 +32,20 @@ public class WorkService {
 
     public Work addWork(WorkAddVO vo) {
         if (vo == null) {
-            throw new AwsArgumentException();
+            throw new AwsArgumentException(AwsArgumentException.ARGUMENT_NULL);
         }
         if (vo.getStartTime() == null || vo.getEndTime() == null || vo.getStartTime() >= vo.getEndTime()) {
-            throw new AwsArgumentException();
+            throw new AwsArgumentException(AwsArgumentException.TIME_ERROR);
         }
         Long produceId = vo.getProduceId();
         Produce produce = produceService.getProduce(produceId);
         if (produce == null) {
-            throw new AwsNotFoundException();
+            throw new AwsNotFoundException(AwsNotFoundException.PRODUCE_NOT_FOUND);
+        }
+        boolean hasProduceWork = getProduceWorks(produceId).stream()
+                .anyMatch(work -> work.getStatus() == WorkStatus.ONGOING.getCode());
+        if (hasProduceWork) {
+            throw new AwsForbiddenException(AwsForbiddenException.WORK_ALREADY_HAS_PRODUCE_WORK);
         }
 
         Work work = new Work();
@@ -69,28 +70,29 @@ public class WorkService {
 
     public Work updateWork(WorkUpdateVO vo) {
         if (vo == null) {
-            throw new AwsArgumentException();
+            throw new AwsArgumentException(AwsArgumentException.ARGUMENT_NULL);
         }
         if (vo.getStatus() != null && !WorkStatus.codeExists(vo.getStatus())) {
-            throw new AwsArgumentException();
+            throw new AwsArgumentException(AwsArgumentException.STATUS_WORK_NOT_EXISTS);
         }
         if (vo.getUnit() != null && !ScaleUnit.codeExists(vo.getUnit())) {
-            throw new AwsArgumentException();
+            throw new AwsArgumentException(AwsArgumentException.SCALE_UNIT_NOT_EXISTS);
         }
         Long startTime = vo.getStartTime();
         Long endTime = vo.getEndTime();
         if (startTime != null && endTime != null && startTime >= endTime) {
-            throw new AwsArgumentException();
+            throw new AwsArgumentException(AwsArgumentException.TIME_ERROR);
         }
-        Work work = workRepository.findById(vo.getId()).orElseThrow(AwsNotFoundException::new);
+        Work work = workRepository.findById(vo.getId()).orElseThrow(
+                () -> new AwsNotFoundException(AwsNotFoundException.WORK_NOT_FOUND));
         if (work == null) {
-            throw new AwsNotFoundException();
+            throw new AwsNotFoundException(AwsNotFoundException.WORK_NOT_FOUND);
         }
         Long produceId = vo.getProduceId();
         if (produceId != null) {
             Produce produce = produceService.getProduce(produceId);
             if (produce == null) {
-                throw new AwsNotFoundException();
+                throw new AwsNotFoundException(AwsNotFoundException.PRODUCE_NOT_FOUND);
             }
             work.setProduceId(produceId);
         }
@@ -115,7 +117,9 @@ public class WorkService {
     }
 
     public Work getWork(Long id) {
-        return workRepository.findById(id).orElseThrow(AwsNotFoundException::new);
+        return workRepository.findById(id).orElseThrow(
+                () -> new AwsNotFoundException(AwsNotFoundException.WORK_NOT_FOUND)
+        );
     }
 
     public List<Work> getWorks(int page, int size) {

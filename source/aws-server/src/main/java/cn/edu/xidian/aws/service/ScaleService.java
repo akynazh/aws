@@ -33,8 +33,11 @@ public class ScaleService {
 
     @Transactional(propagation = Propagation.REQUIRED)
     public Scale addScale(ScaleAddVO vo) throws NoSuchAlgorithmException {
-        if (vo == null || !ScaleProtocol.codeExists(vo.getProtocol())) {
-            throw new AwsArgumentException();
+        if (vo == null) {
+            throw new AwsArgumentException(AwsArgumentException.ARGUMENT_NULL);
+        }
+        if (!ScaleProtocol.codeExists(vo.getProtocol())) {
+            throw new AwsArgumentException(AwsArgumentException.SCALE_PROTOCOL_NOT_EXISTS);
         }
 
         Scale scale = new Scale();
@@ -51,12 +54,14 @@ public class ScaleService {
 
     public Scale updateScale(ScaleUpdateVO vo) {
         if (vo == null) {
-            throw new AwsArgumentException();
+            throw new AwsArgumentException(AwsArgumentException.ARGUMENT_NULL);
         }
         if (vo.getStatus() != null && !ScaleStatus.codeExists(vo.getStatus())) {
-            throw new AwsArgumentException();
+            throw new AwsArgumentException(AwsArgumentException.STATUS_SCALE_NOT_EXISTS);
         }
-        Scale originScale = scaleRepository.findById(vo.getId()).orElseThrow(AwsNotFoundException::new);
+        Scale originScale = scaleRepository.findById(vo.getId()).orElseThrow(
+                () -> new AwsNotFoundException(AwsNotFoundException.SCALE_NOT_FOUND)
+        );
 
         if (vo.getStatus() != null) {
             originScale.setStatus(vo.getStatus());
@@ -66,11 +71,15 @@ public class ScaleService {
     }
 
     public Scale getScale(Long id) {
-        return scaleRepository.findById(id).orElseThrow(AwsNotFoundException::new);
+        return scaleRepository.findById(id).orElseThrow(
+                () -> new AwsNotFoundException(AwsNotFoundException.SCALE_NOT_FOUND)
+        );
     }
 
     public Scale getScaleByKey(String key) {
-        return scaleRepository.findBySkey(key).orElseThrow(AwsNotFoundException::new);
+        return scaleRepository.findBySkey(key).orElseThrow(
+                () -> new AwsNotFoundException(AwsNotFoundException.SCALE_NOT_FOUND)
+        );
     }
 
     public List<Scale> getScales(int page, int size) {

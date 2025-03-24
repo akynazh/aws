@@ -35,17 +35,25 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(AwsNotFoundException.class)
     @ResponseStatus(HttpStatus.NOT_FOUND)
-    public void awsItemNotFoundException() {
+    public String awsNotFoundException(AwsNotFoundException e) {
+        return e.getMessage();
     }
 
     @ExceptionHandler(AwsArgumentException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public void awsArgumentException() {
+    public String awsArgumentException(AwsArgumentException e) {
+        return e.getMessage();
     }
 
     @ExceptionHandler(AwsForbiddenException.class)
     @ResponseStatus(HttpStatus.FORBIDDEN)
     public String awsForbiddenException(AwsForbiddenException e) {
+        return e.getMessage();
+    }
+
+    @ExceptionHandler(AwsNetworkException.class)
+    @ResponseStatus(HttpStatus.FORBIDDEN)
+    public String awsNetworkException(AwsNetworkException e) {
         return e.getMessage();
     }
 }

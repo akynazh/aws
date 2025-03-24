@@ -52,7 +52,7 @@ public class UserService implements UserDetailsService {
 
     public User addUser(UserRegisterVO vo) {
         if (vo == null || UserRole.codesStringNotOK(vo.getRoles())) {
-            throw new AwsArgumentException();
+            throw new AwsArgumentException(AwsArgumentException.USER_ROLE_NOT_EXISTS);
         }
         User user = new User();
         user.setUid(vo.getUid());
@@ -67,13 +67,13 @@ public class UserService implements UserDetailsService {
 
     public User updateUser(UserUpdateVO vo, User originUser) {
         if (vo == null || originUser == null) {
-            throw new AwsArgumentException();
+            throw new AwsArgumentException(AwsArgumentException.ARGUMENT_NULL);
         }
         if (vo.getStatus() != null && !UserStatus.codeExists(vo.getStatus())) {
-            throw new AwsArgumentException();
+            throw new AwsArgumentException(AwsArgumentException.STATUS_USER_NOT_EXISTS);
         }
         if (StringUtils.hasText(vo.getRoles()) && UserRole.codesStringNotOK(vo.getRoles())) {
-            throw new AwsArgumentException();
+            throw new AwsArgumentException(AwsArgumentException.USER_ROLE_NOT_EXISTS);
         }
 
         if (StringUtils.hasText(vo.getUid())) {
@@ -97,13 +97,13 @@ public class UserService implements UserDetailsService {
 
     public User updateMe(UserUpdateMeVO vo, User originUser) {
         if (vo == null) {
-            throw new AwsArgumentException();
+            throw new AwsArgumentException(AwsArgumentException.ARGUMENT_NULL);
         }
         if (originUser == null) {
-            throw new AwsNotFoundException();
+            throw new AwsNotFoundException(AwsNotFoundException.USER_NOT_FOUND);
         }
         if (UserStatus.userNotEnabled(originUser.getStatus())) {
-            throw new AwsForbiddenException(UserStatus.fromCode(originUser.getStatus()).getMessage());
+            throw new AwsForbiddenException(UserStatus.label + UserStatus.fromCode(originUser.getStatus()).getMessage());
         }
         if (StringUtils.hasText(vo.getName())) {
             originUser.setName(vo.getName());
@@ -116,11 +116,15 @@ public class UserService implements UserDetailsService {
     }
 
     public User getUserByUID(String uid) {
-        return userRepository.findByUid(uid).orElseThrow(AwsNotFoundException::new);
+        return userRepository.findByUid(uid).orElseThrow(
+                () -> new AwsNotFoundException(AwsNotFoundException.USER_NOT_FOUND)
+        );
     }
 
     public User getUserByID(Long id) {
-        return userRepository.findById(id).orElseThrow(AwsNotFoundException::new);
+        return userRepository.findById(id).orElseThrow(
+                () -> new AwsNotFoundException(AwsNotFoundException.USER_NOT_FOUND)
+        );
     }
 
     public List<User> getUsers(int page, int size) {

@@ -9,8 +9,10 @@ import lombok.Getter;
  */
 @Getter
 public class AwsForbiddenException extends RuntimeException {
-    private static final String messagePrefix = "FORBIDDEN: ";
+    private static final String messagePrefix = "[操作禁止]: ";
     private final String message;
+
+    public final static String WORK_ALREADY_HAS_PRODUCE_WORK = "系统已经存在对该果实的作业";
 
     public AwsForbiddenException(String message) {
         this.message = messagePrefix + message;

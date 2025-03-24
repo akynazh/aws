@@ -17,6 +17,7 @@ public enum UserStatus {
 
     private final int code;
     private final String message;
+    public static final String label = "用户";
 
     UserStatus(int code, String message) {
         this.code = code;

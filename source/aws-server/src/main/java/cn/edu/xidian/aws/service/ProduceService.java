@@ -26,7 +26,7 @@ public class ProduceService {
 
     public Produce addProduce(ProduceAddVO vo) {
         if (vo == null) {
-            throw new AwsArgumentException();
+            throw new AwsArgumentException(AwsArgumentException.ARGUMENT_NULL);
         }
         Produce produce = new Produce();
         produce.setName(vo.getName());
@@ -38,12 +38,13 @@ public class ProduceService {
 
     public Produce updateProduce(ProduceUpdateVO vo) {
         if (vo == null) {
-            throw new AwsArgumentException();
+            throw new AwsArgumentException(AwsArgumentException.ARGUMENT_NULL);
         }
         if (vo.getStatus() != null && !ProduceStatus.codeExists(vo.getStatus())) {
-            throw new AwsArgumentException();
+            throw new AwsArgumentException(AwsArgumentException.STATUS_PRODUCE_NOT_EXISTS);
         }
-        Produce originProduce = produceRepository.findById(vo.getId()).orElseThrow(AwsNotFoundException::new);
+        Produce originProduce = produceRepository.findById(vo.getId())
+                .orElseThrow(() -> new AwsNotFoundException(AwsNotFoundException.ITEM_NOT_FOUND));
 
         if (StringUtils.hasText(vo.getName())) {
             originProduce.setName(vo.getName());
@@ -56,11 +57,15 @@ public class ProduceService {
     }
 
     public Produce getProduce(Long id) {
-        return produceRepository.findById(id).orElseThrow(AwsNotFoundException::new);
+        return produceRepository.findById(id).orElseThrow(
+                () -> new AwsNotFoundException(AwsNotFoundException.PRODUCE_NOT_FOUND)
+        );
     }
 
     public Produce getProduceByName(String name) {
-        return produceRepository.findByName(name).orElseThrow(AwsNotFoundException::new);
+        return produceRepository.findByName(name).orElseThrow(
+                () -> new AwsNotFoundException(AwsNotFoundException.PRODUCE_NOT_FOUND)
+        );
     }
 
     public List<Produce> getProduces(int page, int size) {

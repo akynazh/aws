@@ -22,6 +22,7 @@ public enum ScaleUnit {
     private final int code;
     private final String message;
     private final long times;
+    public static final String label = "电子秤单位";
 
     ScaleUnit(int code, String message, long times) {
         this.code = code;

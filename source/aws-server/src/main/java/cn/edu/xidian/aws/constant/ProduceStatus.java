@@ -17,6 +17,7 @@ public enum ProduceStatus {
 
     private final int code;
     private final String message;
+    public static final String label = "果实状态";
 
     ProduceStatus(int code, String message) {
         this.code = code;

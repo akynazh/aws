@@ -102,6 +102,6 @@ public class UserController {
         if (auth.isAuthenticated()) {
             return ResponseEntity.ok(jwtService.generateToken(vo.getUid()));
         }
-        throw new AwsNotFoundException();
+        throw new AwsNotFoundException(AwsNotFoundException.USER_AUTH_ERROR);
     }
 }
