@@ -1,6 +1,10 @@
 package cn.edu.xidian.aws.service;
 
+import cn.edu.xidian.aws.config.MqttConfig;
+import cn.edu.xidian.aws.pojo.bo.MqttResult;
+import cn.edu.xidian.aws.pojo.po.Record;
 import cn.edu.xidian.aws.pojo.vo.record.RecordAddVO;
+import com.alibaba.fastjson.JSON;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
@@ -20,15 +24,19 @@ import java.io.IOException;
 public class MqttWeighService {
     @Autowired
     private RecordService recordService;
+    @Autowired
+    private MqttConfig.MqttGateway mqttGateway;
 
     public void handleMessage(Message<?> message) throws IOException {
         Object payload = message.getPayload();
-        try {
-            RecordAddVO data = new ObjectMapper().readValue(payload.toString(), RecordAddVO.class);
-            log.info("Parsed data: {}", data);
-            recordService.addRecord(data);
-        } catch (JsonProcessingException e) {
-            log.error("Failed to parse JSON", e);
-        }
+        RecordAddVO data = new ObjectMapper().readValue(payload.toString(), RecordAddVO.class);
+        log.info("Parsed data: {}", data);
+        Record record = recordService.addRecord(data);
+
+        MqttResult result = new MqttResult();
+        result.setRecord(record);
+        result.setSuccess(1);
+        result.setMessage(message);
+        mqttGateway.sendToMqtt(JSON.toJSONString(result));
     }
 }

@@ -15,7 +15,8 @@ import java.util.Optional;
 @Getter
 public enum UserRole {
     ADMIN("ROLE_ADMIN", "管理员"),
-    EMPLOYEE("ROLE_EMPLOYEE", "员工");
+    EMPLOYEE("ROLE_EMPLOYEE", "员工"),
+    SCALE("ROLE_SCALE", "电子秤");
 
     private final String code;
     private final String name;
@@ -28,14 +29,6 @@ public enum UserRole {
 
     public static boolean codeExists(String code) {
         return Arrays.stream(UserRole.values()).anyMatch(role -> role.getCode().equals(code));
-    }
-
-    public static boolean codesStringNotOK(String roles) {
-        if (!StringUtils.hasText(roles)) {
-            return false;
-        }
-        List<UserRole> lst = getRolesFromCodesString(roles);
-        return lst.isEmpty();
     }
 
     public static Optional<UserRole> getUserRoleFromCode(String code) {

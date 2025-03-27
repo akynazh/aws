@@ -247,8 +247,7 @@ const fetchProduceList = async () => {
             produceList.value.map(produce => [produce.id, produce.name])
         );
     } catch (error) {
-        console.error("获取产品列表失败", error);
-        ElMessage.error('获取产品列表失败');
+        ElMessage.error('获取产品列表失败: ' + error);
     } finally {
         produceLoading.value = false;
     }
@@ -367,8 +366,7 @@ const handleSubmit = async () => {
                 dialogVisible.value = false;
                 fetchWorkList();
             } catch (error) {
-                console.error('操作失败', error);
-                ElMessage.error('操作失败');
+                ElMessage.error('操作失败: ' + error);
             }
         }
     });
@@ -385,8 +383,7 @@ const fetchWorkList = async (resetPage: boolean = false) => {
             total.value = result.count || 0;
         }
     } catch (error) {
-        console.error("获取作业列表失败", error);
-        ElMessage.error('获取作业列表失败');
+        ElMessage.error('获取作业列表失败: ' + error);
     }
 };
 
@@ -409,8 +406,7 @@ const handleSearchSubmit = async () => {
                     ElMessage.success('查询成功');
                 }
             } catch (error) {
-                console.error('查询失败', error);
-                ElMessage.error('查询失败');
+                ElMessage.error('查询失败: ' + error);
             }
         }
     });
@@ -470,8 +466,7 @@ const handleExport = async () => {
 
         ElMessage.success(`成功导出${allWorks.length}条记录`);
     } catch (error) {
-        console.error('导出失败', error);
-        ElMessage.error('导出失败');
+        ElMessage.error('导出失败: ' + error);
     }
 };
 

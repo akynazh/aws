@@ -333,7 +333,7 @@ const handleSubmit = async () => {
                 fetchUserList();
             } catch (error) {
                 console.error('操作失败', error);
-                ElMessage.error('操作失败');
+                ElMessage.error('操作失败: ' + error);
             }
         }
     });
@@ -371,7 +371,7 @@ const handleSearchSubmit = async () => {
                 }
             } catch (error) {
                 console.error('查询失败', error);
-                ElMessage.error('查询失败');
+                ElMessage.error('查询失败: ' + error);
             }
         }
     });
@@ -385,7 +385,7 @@ const fetchUserList = async () => {
         total.value = result?.count || 0;
     } catch (error) {
         console.error("获取用户列表失败", error);
-        ElMessage.error('获取用户列表失败');
+        ElMessage.error('获取用户列表失败: ' + error);
     }
 };
 
@@ -496,7 +496,7 @@ const fetchRecordsList = async () => {
     recordsTotal.value = result?.count || 0;
   } catch (error) {
     console.error("获取称重记录失败", error);
-    ElMessage.error('获取称重记录失败');
+    ElMessage.error('获取称重记录失败: ' + error);
   }
 };
 
@@ -510,7 +510,7 @@ const fetchWorkSummary = async () => {
     }
   } catch (error) {
     console.error('获取作业采摘量失败', error);
-    ElMessage.error('获取作业采摘量失败');
+    ElMessage.error('获取作业采摘量失败: ' + error);
   }
 };
 
@@ -571,7 +571,7 @@ const handleExportRecords = async () => {
     ElMessage.success(`成功导出${allRecords.length}条记录`);
   } catch (error) {
     console.error('导出失败', error);
-    ElMessage.error('导出失败');
+    ElMessage.error('导出失败: ' + error);
   }
 };
 
@@ -598,7 +598,7 @@ const handleExportSummary = () => {
     ElMessage.success('成功导出作业采摘量数据');
   } catch (error) {
     console.error('导出失败', error);
-    ElMessage.error('导出失败');
+    ElMessage.error('导出失败: ' + error);
   }
 };
 </script>

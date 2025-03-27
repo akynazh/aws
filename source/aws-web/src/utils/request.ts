@@ -21,9 +21,9 @@ request.interceptors.response.use(
   (error) => {
     let statusCode = error.response.status;
     let message = error.response.data || `[ERROR]: ${statusCode}`;
-    console.log(message);
+    // console.log(message);
     // ElMessage.error(message);
-    return Promise.reject(error);
+    return Promise.reject(message);
   }
 );
 

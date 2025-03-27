@@ -1,6 +1,7 @@
 package cn.edu.xidian.aws.controller;
 
 import cn.edu.xidian.aws.constant.Constants;
+import cn.edu.xidian.aws.constant.EmqxAuthStatus;
 import cn.edu.xidian.aws.exception.AwsNotFoundException;
 import cn.edu.xidian.aws.pojo.po.User;
 import cn.edu.xidian.aws.pojo.vo.user.*;
@@ -103,5 +104,18 @@ public class UserController {
             return ResponseEntity.ok(jwtService.generateToken(vo.getUid()));
         }
         throw new AwsNotFoundException(AwsNotFoundException.USER_AUTH_ERROR);
+    }
+
+    @Operation(summary = "EMQX 用户认证")
+    @PostMapping("/emqx/auth")
+    public ResponseEntity<EmqxAuthResultVO> emqxAuth(@RequestBody UserLoginVO vo) {
+        Authentication auth = authenticationManager.authenticate(
+                new UsernamePasswordAuthenticationToken(vo.getUid(), vo.getPassword())
+        );
+        if (auth.isAuthenticated()) {
+            return ResponseEntity.ok(new EmqxAuthResultVO(EmqxAuthStatus.ALLOW, false));
+        } else {
+            return ResponseEntity.ok(new EmqxAuthResultVO(EmqxAuthStatus.DENY, false));
+        }
     }
 }

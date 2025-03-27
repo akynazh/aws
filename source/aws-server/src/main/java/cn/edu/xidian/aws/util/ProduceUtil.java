@@ -9,6 +9,7 @@ import com.alibaba.fastjson.JSONObject;
 import lombok.extern.slf4j.Slf4j;
 import okhttp3.*;
 import org.springframework.util.CollectionUtils;
+import org.springframework.util.StringUtils;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -33,10 +34,10 @@ public class ProduceUtil {
     static final OkHttpClient HTTP_CLIENT = new OkHttpClient().newBuilder().build();
 
     public static String rec(String image, String image64) throws IOException {
-        if (image == null && image64 == null) {
+        if (!StringUtils.hasText(image) && !StringUtils.hasText(image64)) {
             throw new AwsArgumentException(AwsArgumentException.PARAM_MISSING);
         }
-        if (image64 == null) {
+        if (!StringUtils.hasText(image64)) {
             image64 = getNetFileContentAsBase64(image);
         }
         MediaType mediaType = MediaType.parse("application/x-www-form-urlencoded");

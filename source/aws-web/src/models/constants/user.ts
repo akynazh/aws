@@ -12,10 +12,12 @@ export const UserStatusMap = {
 
 export const UserRole = {
   ADMIN: "ROLE_ADMIN",
-  EMPLOYEE: "ROLE_EMPLOYEE"
+  EMPLOYEE: "ROLE_EMPLOYEE",
+  SCALE: "ROLE_SCALE",
 } as const;
 
 export const UserRoleMap = {
   [UserRole.ADMIN]: "管理员",
-  [UserRole.EMPLOYEE]: "员工"
+  [UserRole.EMPLOYEE]: "员工",
+  [UserRole.SCALE]: "电子秤",
 } as const;

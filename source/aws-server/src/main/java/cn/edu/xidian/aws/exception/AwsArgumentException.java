@@ -9,7 +9,7 @@ import lombok.Getter;
  */
 @Getter
 public class AwsArgumentException extends RuntimeException {
-    private static final String messagePrefix = "[参数异常]: ";
+    private static final String messagePrefix = "[参数异常] ";
     private final String message;
 
     public final static String ARGUMENT_NULL = "参数为空";

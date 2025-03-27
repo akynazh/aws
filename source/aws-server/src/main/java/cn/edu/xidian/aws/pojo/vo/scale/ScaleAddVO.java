@@ -64,6 +64,6 @@ public class ScaleAddVO {
     /**
      * 通信协议，0 为 MQTT，1 为 HTTP, 2 为 CoAP, 3 为 STOMP
      */
-    @Schema(description = "通信协议，0 为 MQTT，1 为 HTTP, 2 为 CoAP, 3 为 STOMP")
-    private Integer protocol;
+//    @Schema(description = "通信协议，0 为 MQTT，1 为 HTTP, 2 为 CoAP, 3 为 STOMP")
+//    private Integer protocol;
 }

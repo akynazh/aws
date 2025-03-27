@@ -24,6 +24,7 @@ import org.springframework.data.domain.Example;
 import org.springframework.data.domain.ExampleMatcher;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 
 import java.io.IOException;
 import java.math.BigDecimal;
@@ -53,44 +54,48 @@ public class RecordService {
         if (vo == null) {
             throw new AwsArgumentException(AwsArgumentException.ARGUMENT_NULL);
         }
-        if (vo.getUnit() == null) {
-            throw new AwsArgumentException(AwsArgumentException.PARAM_MISSING);
-        }
-        if(!ScaleUnit.codeExists(vo.getUnit())) {
-            throw new AwsArgumentException(AwsArgumentException.SCALE_UNIT_NOT_EXISTS);
-        }
-
-        Record record = new Record();
         String image = vo.getImage();
         String image64 = vo.getImage64();
         Long produceId = vo.getProduceId();
+        String produceName = vo.getProduceName();
+        Long employeeId = vo.getEmployeeId();
+        Long scaleId = vo.getScaleId();
+        Integer unit = vo.getUnit();
+        BigDecimal dataValue = vo.getDataValue();
 
-        if (produceId == null) {
-            if (image == null || image64 == null) {
+        // get produceId
+        if (unit == null) {
+            throw new AwsArgumentException(AwsArgumentException.PARAM_MISSING);
+        }
+        if (!ScaleUnit.codeExists(unit)) {
+            throw new AwsArgumentException(AwsArgumentException.SCALE_UNIT_NOT_EXISTS);
+        }
+        if (produceId == null && !StringUtils.hasText(produceName)) {
+            if (!StringUtils.hasText(image) && !StringUtils.hasText(image64)) {
                 throw new AwsArgumentException(AwsArgumentException.PARAM_MISSING);
             }
-            String produceName = ProduceUtil.rec(image, image64);
+            produceName = ProduceUtil.rec(image, image64);
             Produce produce = produceService.getProduceByName(produceName);
             produceId = produce.getId();
+        } else if (produceId == null) {
+            Produce produce = produceService.getProduceByName(produceName);
+            if (produce == null) {
+                throw new AwsNotFoundException(AwsNotFoundException.PRODUCE_NOT_FOUND);
+            }
+            produceId = produce.getId();
+        } else {
+            Produce produce = produceService.getProduce(produceId);
+            if (produce == null) {
+                throw new AwsNotFoundException(AwsNotFoundException.PRODUCE_NOT_FOUND);
+            }
         }
 
         Work ongoingWork = workService.getProduceWorks(produceId).stream()
                 .filter(work -> work.getStatus() == WorkStatus.ONGOING.getCode())
                 .findFirst()
                 .orElseThrow(() -> new AwsNotFoundException(AwsNotFoundException.WORK_NOT_FOUND));
-
-        BeanUtils.copyProperties(vo, record);
-        Long employeeId = record.getEmployeeId();
-        Long scaleId = record.getScaleId();
-        Integer unit = record.getUnit();
         Scale scale = scaleService.getScale(scaleId);
         User employee = userService.getUserByID(employeeId);
-        if (employee == null) {
-            throw new AwsNotFoundException(AwsNotFoundException.USER_NOT_FOUND);
-        }
-        if (scale == null) {
-            throw new AwsNotFoundException(AwsNotFoundException.SCALE_NOT_FOUND);
-        }
         if (UserStatus.userNotEnabled(employee.getStatus())) {
             throw new AwsForbiddenException(UserStatus.label + UserStatus.fromCode(employee.getStatus()).getMessage());
         }
@@ -101,11 +106,16 @@ public class RecordService {
             throw new AwsForbiddenException(WorkStatus.label + WorkStatus.fromCode(ongoingWork.getStatus()).getMessage());
         }
 
-        BigDecimal dataValue = ScaleUtil.convDataValue(record.getDataValue(), unit, ongoingWork.getUnit());
+
+        BigDecimal workDataValue = ScaleUtil.convDataValue(dataValue, unit, ongoingWork.getUnit());
         WorkUpdateVO workUpdateVO = new WorkUpdateVO();
         workUpdateVO.setId(ongoingWork.getId());
-        workUpdateVO.setDataValue(ongoingWork.getDataValue().add(dataValue));
+        workUpdateVO.setDataValue(ongoingWork.getDataValue().add(workDataValue));
         workService.updateWork(workUpdateVO);
+
+        Record record = new Record();
+        BeanUtils.copyProperties(vo, record);
+        record.setWorkId(ongoingWork.getId());
         return recordRepository.save(record);
     }
 

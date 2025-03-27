@@ -21,15 +21,14 @@ import java.math.BigDecimal;
 @Data
 @Schema(name = "RecordAddVO", description = "新增称重记录表单")
 public class RecordAddVO {
-//    /**
-//     * 采摘作业编号
-//     */
-//    @Schema(description = "采摘作业编号")
-//    private Long workId;
     /**
      * 果实 Id
      */
     private Long produceId;
+    /**
+     * 果实名称
+     */
+    private String produceName;
     /**
      * 采摘作业图片 URL
      */

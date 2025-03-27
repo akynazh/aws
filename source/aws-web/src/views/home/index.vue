@@ -196,7 +196,7 @@ const handleSubmit = async () => {
   } catch (error) {
     ElNotification.error({
       title: '错误',
-      message: '更新失败'
+      message: error
     })
   }
 }

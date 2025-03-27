@@ -52,7 +52,7 @@ public class WeighController {
 
     @Operation(summary = "添加称重记录")
     @PostMapping("/record")
-    @PreAuthorize(Constants.PRE_AUTHORIZE_ADMIN)
+    @PreAuthorize(Constants.PRE_AUTHORIZE_SCALE)
     public ResponseEntity<RecordVO> addRecord(@RequestBody RecordAddVO vo) throws IOException {
         Record record = recordService.addRecord(vo);
         return ResponseEntity.ok(Record.toRecordVO(record));

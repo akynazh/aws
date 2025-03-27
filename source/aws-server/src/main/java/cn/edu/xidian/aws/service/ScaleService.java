@@ -2,11 +2,13 @@ package cn.edu.xidian.aws.service;
 
 import cn.edu.xidian.aws.constant.ScaleProtocol;
 import cn.edu.xidian.aws.constant.ScaleStatus;
+import cn.edu.xidian.aws.constant.UserRole;
 import cn.edu.xidian.aws.exception.AwsArgumentException;
 import cn.edu.xidian.aws.exception.AwsNotFoundException;
 import cn.edu.xidian.aws.pojo.po.Scale;
 import cn.edu.xidian.aws.pojo.vo.scale.ScaleAddVO;
 import cn.edu.xidian.aws.pojo.vo.scale.ScaleUpdateVO;
+import cn.edu.xidian.aws.pojo.vo.user.UserRegisterVO;
 import cn.edu.xidian.aws.repository.ScaleRepository;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,25 +32,37 @@ public class ScaleService {
     private ScaleRepository scaleRepository;
     @Autowired
     private MqttUserService mqttUserService;
+    @Autowired
+    private UserService userService;
 
     @Transactional(propagation = Propagation.REQUIRED)
     public Scale addScale(ScaleAddVO vo) throws NoSuchAlgorithmException {
         if (vo == null) {
             throw new AwsArgumentException(AwsArgumentException.ARGUMENT_NULL);
         }
-        if (!ScaleProtocol.codeExists(vo.getProtocol())) {
-            throw new AwsArgumentException(AwsArgumentException.SCALE_PROTOCOL_NOT_EXISTS);
-        }
+//        if (!ScaleProtocol.codeExists(vo.getProtocol())) {
+//            throw new AwsArgumentException(AwsArgumentException.SCALE_PROTOCOL_NOT_EXISTS);
+//        }
 
         Scale scale = new Scale();
         BeanUtils.copyProperties(vo, scale);
         String sid = UUID.randomUUID().toString();
+        String skey = scale.getSkey();
         scale.setSid(sid);
         scale.setCreateTime(System.currentTimeMillis());
         scale.setUpdateTime(System.currentTimeMillis());
         scale.setStatus(ScaleStatus.ENABLED.getCode());
         Scale savedScale = scaleRepository.save(scale);
-        mqttUserService.createScalePublisher(sid, savedScale.getSkey());
+
+        mqttUserService.createScalePublisher(sid, skey);
+
+        UserRegisterVO userVO = new UserRegisterVO();
+        userVO.setName(sid);
+        userVO.setUid(sid);
+        userVO.setRoles(UserRole.SCALE.getCode());
+        userVO.setPassword(skey);
+        userService.addUser(userVO);
+
         return savedScale;
     }
 

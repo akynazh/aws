@@ -76,7 +76,7 @@
                             {{ `${row.verificationInterval}${ScaleUnitMap[row.unitDv]}` }}
                         </template>
                     </el-table-column>
-                    <el-table-column label="通信协议" width="120">
+                    <!-- <el-table-column label="通信协议" width="120">
                         <template #default="{ row }">
                             {{ 
                                 row.protocol === 0 ? 'MQTT' : 
@@ -85,7 +85,7 @@
                                 row.protocol === 3 ? 'STOMP' : '未知'
                             }}
                         </template>
-                    </el-table-column>
+                    </el-table-column> -->
                     <el-table-column 
                         prop="status" 
                         label="状态" 
@@ -164,14 +164,14 @@
                                     />
                                 </el-select>
                             </el-form-item>
-                            <el-form-item label="通信协议" prop="protocol">
+                            <!-- <el-form-item label="通信协议" prop="protocol">
                                 <el-select v-model="form.protocol">
                                     <el-option label="MQTT" :value="0" />
                                     <el-option label="HTTP" :value="1" />
                                     <el-option label="COAP" :value="2" />
                                     <el-option label="STOMP" :value="3" />
                                 </el-select>
-                            </el-form-item>
+                            </el-form-item> -->
                         </template>
                         <template v-else>
                             <el-form-item label="状态" prop="status">
@@ -296,7 +296,7 @@ const form = reactive({
     verificationInterval: 0,
     displayInterval: 0,
     unitDv: 0,
-    protocol: 0,
+    // protocol: 0,
     status: ScaleStatus.ENABLE
 });
 
@@ -310,7 +310,7 @@ const rules = {
     verificationInterval: [{ required: true, message: '请输入检定分度值', trigger: 'blur' }],
     displayInterval: [{ required: true, message: '请输入显示分度值', trigger: 'blur' }],
     unitDv: [{ required: true, message: '请输入分度值单位', trigger: 'blur' }],
-    protocol: [{ required: true, message: '请选择通信协议', trigger: 'change' }]
+    // protocol: [{ required: true, message: '请选择通信协议', trigger: 'change' }]
 };
 
 // 重置表单
@@ -327,7 +327,7 @@ const resetForm = () => {
     form.verificationInterval = 0;
     form.displayInterval = 0;
     form.unitDv = 0;
-    form.protocol = 0;
+    // form.protocol = 0;
     form.status = ScaleStatus.ENABLE;
 };
 
@@ -367,8 +367,7 @@ const handleSubmit = async () => {
                 dialogVisible.value = false;
                 fetchScaleList();
             } catch (error) {
-                console.error('操作失败', error);
-                ElMessage.error('操作失败');
+                ElMessage.error('操作失败: ' + error);
             }
         }
     });
@@ -381,8 +380,7 @@ const fetchScaleList = async () => {
         tableData.value = result?.scaleList || [];
         total.value = result?.count || 0;
     } catch (error) {
-        console.error("获取电子秤列表失败", error);
-        ElMessage.error('获取电子秤列表失败');
+        ElMessage.error('获取电子秤列表失败: ' + error);
     }
 };
 
@@ -425,7 +423,7 @@ const fetchRecordsList = async () => {
         recordsTotal.value = result?.count || 0;
     } catch (error) {
         console.error("获取称重记录失败", error);
-        ElMessage.error('获取称重记录失败');
+        ElMessage.error('获取称重记录失败: ' + error);
     }
 };
 
@@ -479,7 +477,7 @@ const handleSearchSubmit = async () => {
                 }
             } catch (error) {
                 console.error('查询失败', error);
-                ElMessage.error('查询失败');
+                ElMessage.error('查询失败: ' + error);
             }
         }
     });
@@ -578,7 +576,7 @@ const handleExport = async (scaleId: number) => {
         ElMessage.success(`成功导出${allRecords.length}条记录`);
     } catch (error) {
         console.error('导出失败', error);
-        ElMessage.error('导出失败');
+        ElMessage.error('导出失败: ' + error);
     }
 };
 

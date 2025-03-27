@@ -9,7 +9,7 @@ import lombok.Getter;
  */
 @Getter
 public class AwsNotFoundException extends RuntimeException {
-    private static final String messagePrefix = "[目标不存在]: ";
+    private static final String messagePrefix = "[目标不存在] ";
     private final String message;
 
     public final static String ITEM_NOT_FOUND = "对象不存在";

@@ -298,7 +298,7 @@ const handleSubmit = async () => {
                 fetchProduceList();
             } catch (error) {
                 console.error('操作失败', error);
-                ElMessage.error('操作失败');
+                ElMessage.error('操作失败: ' + error);
             }
         }
     });
@@ -339,7 +339,7 @@ const handleSearchSubmit = async () => {
                 }
             } catch (error) {
                 console.error('查询失败', error);
-                ElMessage.error('查询失败');
+                ElMessage.error('查询失败: ' + error);
             }
         }
     });
@@ -365,7 +365,7 @@ const fetchProduceList = async () => {
         total.value = result?.count || 0;
     } catch (error) {
         console.error("获取果实列表失败", error);
-        ElMessage.error('获取果实列表失败');
+        ElMessage.error('获取果实列表失败: ' + error);
     }
 };
 
@@ -434,7 +434,7 @@ const fetchAnnualOutput = async () => {
         }
     } catch (error) {
         console.error('获取年产量失败', error);
-        ElMessage.error('获取年产量失败');
+        ElMessage.error('获取年产量失败: ' + error);
     }
 };
 
@@ -448,7 +448,7 @@ const fetchWorkOutput = async () => {
         }
     } catch (error) {
         console.error('获取分批产量失败', error);
-        ElMessage.error('获取分批产量失败');
+        ElMessage.error('获取分批产量失败: ' + error);
     }
 };
 
@@ -474,7 +474,7 @@ const handleExportAnnual = () => {
         ElMessage.success('成功导出年产量数据');
     } catch (error) {
         console.error('导出失败', error);
-        ElMessage.error('导出失败');
+        ElMessage.error('导出失败: ' + error);
     }
 };
 
@@ -499,7 +499,7 @@ const handleExportWork = () => {
         ElMessage.success('成功导出分批产量数据');
     } catch (error) {
         console.error('导出失败', error);
-        ElMessage.error('导出失败');
+        ElMessage.error('导出失败: ' + error);
     }
 };
 
@@ -558,7 +558,7 @@ const handleExportAllAnnual = async () => {
         ElMessage.success(`成功导出${allData.length}条记录`);
     } catch (error) {
         console.error('导出失败', error);
-        ElMessage.error('导出失败');
+        ElMessage.error('导出失败: ' + error);
     }
 };
 
@@ -616,7 +616,7 @@ const handleExportAllWork = async () => {
         ElMessage.success(`成功导出${allData.length}条记录`);
     } catch (error) {
         console.error('导出失败', error);
-        ElMessage.error('导出失败');
+        ElMessage.error('导出失败: ' + error);
     }
 };
 
@@ -707,7 +707,7 @@ const downloadChart = (type: 'annual' | 'work') => {
     ElMessage.success('图表下载成功');
   } catch (error) {
     console.error('图表下载失败', error);
-    ElMessage.error('图表下载失败');
+    ElMessage.error('图表下载失败: ' + error);
   }
 };
 </script>

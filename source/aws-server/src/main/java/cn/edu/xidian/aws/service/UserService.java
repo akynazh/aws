@@ -20,6 +20,7 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 
 import java.util.List;
@@ -51,17 +52,33 @@ public class UserService implements UserDetailsService {
     }
 
     public User addUser(UserRegisterVO vo) {
-        if (vo == null || UserRole.codesStringNotOK(vo.getRoles())) {
-            throw new AwsArgumentException(AwsArgumentException.USER_ROLE_NOT_EXISTS);
+        if (vo == null) {
+            throw new AwsArgumentException(AwsArgumentException.ARGUMENT_NULL);
         }
+        String roles = vo.getRoles();
+        String uid = vo.getUid();
+        String name = vo.getName();
+        String password = vo.getPassword();
+        if (!StringUtils.hasText(uid) || !StringUtils.hasText(name)) {
+            throw new AwsArgumentException(AwsArgumentException.PARAM_MISSING);
+        }
+
+        List<UserRole> roleList = UserRole.getRolesFromCodesString(roles);
+        if (CollectionUtils.isEmpty(roleList)) {
+            roles = UserRole.EMPLOYEE.getCode();
+        }
+        if (password == null) {
+            password = Constants.USER_PASSWORD_DEFAULT;
+        }
+
         User user = new User();
-        user.setUid(vo.getUid());
-        user.setName(vo.getName());
-        user.setPassword(encoder.encode(Constants.USER_PASSWORD_DEFAULT));
+        user.setUid(uid);
+        user.setName(name);
+        user.setPassword(encoder.encode(password));
         user.setCreateTime(System.currentTimeMillis());
         user.setUpdateTime(System.currentTimeMillis());
         user.setStatus(UserStatus.ENABLED.getCode());
-        user.setRoles(vo.getRoles());
+        user.setRoles(roles);
         return userRepository.save(user);
     }
 
@@ -72,8 +89,11 @@ public class UserService implements UserDetailsService {
         if (vo.getStatus() != null && !UserStatus.codeExists(vo.getStatus())) {
             throw new AwsArgumentException(AwsArgumentException.STATUS_USER_NOT_EXISTS);
         }
-        if (StringUtils.hasText(vo.getRoles()) && UserRole.codesStringNotOK(vo.getRoles())) {
-            throw new AwsArgumentException(AwsArgumentException.USER_ROLE_NOT_EXISTS);
+        if (StringUtils.hasText(vo.getRoles())) {
+            List<UserRole> roleList = UserRole.getRolesFromCodesString(vo.getRoles());
+            if (CollectionUtils.isEmpty(roleList)) {
+                throw new AwsArgumentException(AwsArgumentException.USER_ROLE_NOT_EXISTS);
+            }
         }
 
         if (StringUtils.hasText(vo.getUid())) {

@@ -21,5 +21,7 @@ public class UserRegisterVO {
     @Schema(description = "员工姓名")
     private String name;
     @Schema(description = "角色，以英文逗号分隔，比如 ROLE_EMPLOYEE,ROLE_ADMIN")
-    private String roles = UserRole.EMPLOYEE.getCode();
+    private String roles;
+    @Schema(description = "密码")
+    private String password;
 }

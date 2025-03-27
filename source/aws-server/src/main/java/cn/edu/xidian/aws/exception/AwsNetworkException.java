@@ -9,7 +9,7 @@ import lombok.Getter;
  */
 @Getter
 public class AwsNetworkException extends RuntimeException {
-    private static final String messagePrefix = "[网络异常]: ";
+    private static final String messagePrefix = "[网络异常] ";
     private final String message;
 
     public final static String IMAGE_REC_ERR = "图片识别失败";
