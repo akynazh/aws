@@ -10,6 +10,7 @@ import cn.edu.xidian.aws.pojo.vo.scale.ScaleAddVO;
 import cn.edu.xidian.aws.pojo.vo.scale.ScaleUpdateVO;
 import cn.edu.xidian.aws.pojo.vo.user.UserRegisterVO;
 import cn.edu.xidian.aws.repository.ScaleRepository;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
@@ -27,6 +28,7 @@ import java.util.UUID;
  * @description
  */
 @Service
+@Slf4j
 public class ScaleService {
     @Autowired
     private ScaleRepository scaleRepository;

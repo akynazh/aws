@@ -1,15 +1,14 @@
 package cn.edu.xidian.aws.service;
 
-import cn.edu.xidian.aws.constant.ScaleStatus;
-import cn.edu.xidian.aws.constant.ScaleUnit;
-import cn.edu.xidian.aws.constant.UserStatus;
-import cn.edu.xidian.aws.constant.WorkStatus;
+import cn.edu.xidian.aws.constant.*;
 import cn.edu.xidian.aws.exception.AwsArgumentException;
 import cn.edu.xidian.aws.exception.AwsForbiddenException;
 import cn.edu.xidian.aws.exception.AwsNotFoundException;
 import cn.edu.xidian.aws.pojo.dto.UserWorkOutputDTO;
 import cn.edu.xidian.aws.pojo.po.*;
 import cn.edu.xidian.aws.pojo.po.Record;
+import cn.edu.xidian.aws.pojo.vo.produce.ProduceAnnualOutputVO;
+import cn.edu.xidian.aws.pojo.vo.produce.ProduceWorkOutputVO;
 import cn.edu.xidian.aws.pojo.vo.record.RecordAddVO;
 import cn.edu.xidian.aws.pojo.vo.record.RecordsGetVO;
 import cn.edu.xidian.aws.pojo.vo.user.UserWorkOutputVO;
@@ -17,14 +16,22 @@ import cn.edu.xidian.aws.pojo.vo.work.WorkUpdateVO;
 import cn.edu.xidian.aws.repository.RecordRepository;
 import cn.edu.xidian.aws.util.ProduceUtil;
 import cn.edu.xidian.aws.util.ScaleUtil;
+import com.alibaba.fastjson.JSON;
+import io.swagger.v3.oas.annotations.Operation;
 import jakarta.transaction.Transactional;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Example;
 import org.springframework.data.domain.ExampleMatcher;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import java.io.IOException;
 import java.math.BigDecimal;
@@ -37,6 +44,7 @@ import java.util.stream.Collectors;
  * @description
  */
 @Service
+@Slf4j
 public class RecordService {
     @Autowired
     private RecordRepository recordRepository;
@@ -48,6 +56,8 @@ public class RecordService {
     private ScaleService scaleService;
     @Autowired
     private ProduceService produceService;
+    @Autowired
+    private RedisTemplate<String, String> redisTemplate;
 
     @Transactional
     public Record addRecord(RecordAddVO vo) throws IOException {
@@ -146,16 +156,56 @@ public class RecordService {
     }
 
     public List<UserWorkOutputVO> getUserWorkSummaryVO(Long id) {
-        List<UserWorkOutputDTO> summaries = recordRepository.getUserWorkSummary(id);
+        Cache CA = Cache.USER_WORK_SUMMARY;
+        String s = redisTemplate.opsForValue().get(CA.getPrefix() + id);
+        if (s != null) {
+            return JSON.parseArray(s, UserWorkOutputVO.class);
+        }
 
-        return summaries.stream().map(summary -> {
+        List<UserWorkOutputDTO> summaries = recordRepository.getUserWorkSummary(id);
+        List<UserWorkOutputVO> result = summaries.stream().map(sm -> {
             UserWorkOutputVO vo = new UserWorkOutputVO();
-            vo.setName(summary.getName());
-            vo.setWorkId(summary.getWorkId());
-            vo.setProduceName(summary.getProduceName());
-            vo.setDataValue(summary.getDataValue());
-            vo.setUnit(ScaleUnit.valueOf(summary.getUnit()).getMessage());
+            vo.setName(sm.getName());
+            vo.setWorkId(sm.getWorkId());
+            vo.setProduceName(sm.getProduceName());
+            vo.setDataValue(sm.getDataValue());
+            vo.setUnit(ScaleUnit.valueOf(sm.getUnit()).getMessage());
             return vo;
         }).collect(Collectors.toList());
+        redisTemplate.opsForValue().set(CA.getPrefix() + id,
+                JSON.toJSONString(result), CA.getDuration(), CA.getUnit());
+        return result;
+    }
+
+    public List<ProduceAnnualOutputVO> getProduceAnnualOutput(Long id) {
+        Cache CA = Cache.PRODUCE_ANNUAL_OUTPUT;
+        String s = redisTemplate.opsForValue().get(CA.getPrefix() + id);
+        if (s != null) {
+            return JSON.parseArray(s, ProduceAnnualOutputVO.class);
+        }
+
+        List<Work> produceWorks = workService.getProduceWorks(id);
+        Produce produce = produceService.getProduce(id);
+        List<ProduceAnnualOutputVO> result = ProduceAnnualOutputVO.build(produce, produceWorks);
+        redisTemplate.opsForValue().set(CA.getPrefix() + id,
+                JSON.toJSONString(result), CA.getDuration(), CA.getUnit());
+        return result;
+    }
+
+    public List<ProduceWorkOutputVO> getProduceWorkOutput(Long id) {
+        Cache CA = Cache.PRODUCE_WORK_OUTPUT;
+        String s = redisTemplate.opsForValue().get(CA.getPrefix() + id);
+        if (s != null) {
+            return JSON.parseArray(s, ProduceWorkOutputVO.class);
+        }
+
+        List<Work> produceWorks = workService.getProduceWorks(id);
+        Produce produce = produceService.getProduce(id);
+        List<ProduceWorkOutputVO> result = produceWorks.stream()
+                .map(work -> ProduceWorkOutputVO.build(produce, work))
+                .collect(Collectors.toList());
+        redisTemplate.opsForValue().set(CA.getPrefix() + id,
+                JSON.toJSONString(result), CA.getDuration(), CA.getUnit());
+        return result;
     }
 }

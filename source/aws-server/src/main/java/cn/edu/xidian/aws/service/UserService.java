@@ -11,6 +11,7 @@ import cn.edu.xidian.aws.pojo.vo.user.UserRegisterVO;
 import cn.edu.xidian.aws.pojo.vo.user.UserUpdateMeVO;
 import cn.edu.xidian.aws.pojo.vo.user.UserUpdateVO;
 import cn.edu.xidian.aws.repository.UserRepository;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Primary;
@@ -35,6 +36,7 @@ import java.util.stream.Collectors;
  */
 @Service
 @Primary
+@Slf4j
 public class UserService implements UserDetailsService {
     @Autowired
     private UserRepository userRepository;

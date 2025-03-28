@@ -1,13 +1,88 @@
 # aws-deploy
 
-## TODO
+## DEPLOY
 
-1. 主从 ip 隔离
-2. 重启之后如何继续执行复制
+```sh
+docker-compose up -d
+```
 
-## MySQL 主从复制
+- mysql-server: 服务端数据库，主库
+- mysql-edge：边端数据库，从库，这里在同一主机下部署，使用不同 hostname 来模拟不同主机
+- redis：服务端 redis 服务
 
-这里使用 8.0 来做，8.4 认证问题比较复杂。
+## MySQL 主从复制（GTID 模式）
+
+### 主库配置
+
+MySQL 配置主库：
+
+```ini
+# my.cnf
+[mysqld]
+server-id = 1
+gtid_mode = ON
+enforce-gtid-consistency = TRUE
+log-bin = mysql-bin
+binlog_format = ROW
+```
+
+重启服务，然后在主库中创建用于复制的专用用户，并授予复制权限：
+
+```sql
+CREATE USER 'replica'@'%' IDENTIFIED with mysql_native_password BY 'replica';
+GRANT REPLICATION SLAVE ON *.* TO 'replica'@'%';
+FLUSH PRIVILEGES;
+
+-- SELECT User, Host, plugin FROM mysql.user;
+-- DROP user 'replica'@'%';
+```
+
+主库同步数据到从库：
+
+```sql
+mysqldump aws -h 127.0.0.1 -P 3306 -uroot -p658766@Jzh --add-drop-table | mysql -h 127.0.0.1 -P 3307 aws -uroot -p658766@Jzh
+```
+
+### 从库配置
+
+```ini
+# my.cnf
+[mysqld]
+server-id = 2
+gtid_mode = ON
+enforce-gtid-consistency = TRUE
+log-bin = mysql-bin
+read-only = 1            
+super-read-only = 1
+```
+
+重启服务，然后在从库中设置复制源：
+
+```sql
+STOP SLAVE;
+
+CHANGE MASTER TO 
+    SOURCE_HOST = 'mysql-server', -- 不可用 127.0.0.1
+    SOURCE_PORT = 3306,
+    SOURCE_USER = 'replica',
+    SOURCE_PASSWORD = 'replica',
+    MASTER_AUTO_POSITION = 1,
+    MASTER_CONNECT_RETRY = 3; -- 每 3s 重试一次连接
+
+START SLAVE;
+
+-- 验证复制状态
+SHOW SLAVE STATUS\G;
+```
+
+对于主从复制的重启恢复，如果使用 `docker-compose restart` 重启服务，主从复制会自动开启，如果使用 `docker-compose down; docker-compose up -d` 来操作，则需要在从库手动执行:
+
+```sh
+mysql -u root -P 3307 -h mysql-edge -uroot -p658766@Jzh
+> reset slave & start slave
+```
+
+## [废弃] MySQL 主从复制（传统模式）
 
 ### 主库配置
 
@@ -79,12 +154,12 @@ mysql> SHOW MASTER STATUS;
 STOP SLAVE;
 
 CHANGE MASTER TO 
-    SOURCE_HOST = '10.198.160.220', -- 不可用 127.0.0.1
+    SOURCE_HOST = 'mysql-server', -- 不可用 127.0.0.1
     SOURCE_PORT = 3306,
     SOURCE_USER = 'replica',
     SOURCE_PASSWORD = 'replica',
-    SOURCE_LOG_FILE = 'mysql-bin.000001',
-    SOURCE_LOG_POS = 443;
+    SOURCE_LOG_FILE = 'mysql-bin.000008',
+    SOURCE_LOG_POS = 157;
 
 START SLAVE;
 

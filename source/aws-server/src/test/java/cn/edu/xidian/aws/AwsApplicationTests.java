@@ -8,11 +8,16 @@ import cn.edu.xidian.aws.repository.UserRepository;
 import cn.edu.xidian.aws.service.MqttUserService;
 import cn.edu.xidian.aws.service.ScaleService;
 import cn.edu.xidian.aws.service.UserService;
+import jakarta.annotation.Resource;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.data.redis.core.ListOperations;
+import org.springframework.data.redis.core.RedisOperations;
+import org.springframework.data.redis.core.RedisTemplate;
 
+import java.net.URL;
 import java.security.NoSuchAlgorithmException;
 import java.util.List;
 import java.util.UUID;
@@ -28,10 +33,10 @@ class AwsApplicationTests {
     private ScaleService scaleService;
     @Autowired
     private UserService userService;
-
+    @Autowired
+    private RedisTemplate<String, String> redisTemplate;
 
     @Test
-    void test() throws Exception {
-
+    void test() {
     }
 }

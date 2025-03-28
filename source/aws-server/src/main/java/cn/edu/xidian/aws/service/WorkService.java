@@ -10,8 +10,13 @@ import cn.edu.xidian.aws.pojo.po.Work;
 import cn.edu.xidian.aws.pojo.vo.work.WorkAddVO;
 import cn.edu.xidian.aws.pojo.vo.work.WorkUpdateVO;
 import cn.edu.xidian.aws.repository.WorkRepository;
+import jakarta.annotation.Resource;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.redis.core.ListOperations;
+import org.springframework.data.redis.core.RedisOperations;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
@@ -23,6 +28,7 @@ import java.util.List;
  * @description
  */
 @Service
+@Slf4j
 public class WorkService {
 
     @Autowired

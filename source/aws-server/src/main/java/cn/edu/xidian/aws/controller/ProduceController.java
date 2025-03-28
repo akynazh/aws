@@ -5,6 +5,7 @@ import cn.edu.xidian.aws.pojo.po.Produce;
 import cn.edu.xidian.aws.pojo.po.Work;
 import cn.edu.xidian.aws.pojo.vo.produce.*;
 import cn.edu.xidian.aws.service.ProduceService;
+import cn.edu.xidian.aws.service.RecordService;
 import cn.edu.xidian.aws.service.WorkService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -32,6 +33,8 @@ public class ProduceController {
     private ProduceService produceService;
     @Autowired
     private WorkService workService;
+    @Autowired
+    private RecordService recordService;
 
     @Operation(summary = "添加果实")
     @PostMapping
@@ -82,17 +85,13 @@ public class ProduceController {
     @GetMapping("/summary/year")
     @PreAuthorize(Constants.PRE_AUTHORIZE_EMPLOYEE)
     public ResponseEntity<List<ProduceAnnualOutputVO>> getProduceAnnualOutput(@RequestParam Long id) {
-        List<Work> produceWorks = workService.getProduceWorks(id);
-        Produce produce = produceService.getProduce(id);
-        return ResponseEntity.ok(ProduceAnnualOutputVO.build(produce, produceWorks));
+        return ResponseEntity.ok(recordService.getProduceAnnualOutput(id));
     }
 
     @Operation(summary = "获取果实分批产量")
     @GetMapping("/summary/work")
     @PreAuthorize(Constants.PRE_AUTHORIZE_EMPLOYEE)
     public ResponseEntity<List<ProduceWorkOutputVO>> getProduceWorkOutput(@RequestParam Long id) {
-        List<Work> produceWorks = workService.getProduceWorks(id);
-        Produce produce = produceService.getProduce(id);
-        return ResponseEntity.ok(produceWorks.stream().map(work -> ProduceWorkOutputVO.build(produce, work)).collect(Collectors.toList()));
+        return ResponseEntity.ok(recordService.getProduceWorkOutput(id));
     }
 }

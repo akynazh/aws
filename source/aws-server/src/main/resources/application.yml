@@ -8,6 +8,9 @@ spring:
     url: jdbc:mysql://localhost:3306/aws
     username: root
     password: 658766@Jzh
+    hikari:
+      maximum-pool-size: 8
+      minimum-idle: 4
   jpa:
     hibernate:
       ddl-auto: update
@@ -18,6 +21,13 @@ spring:
     scheduling:
       pool:
         size: 5
+  data:
+    redis:
+      host: 127.0.0.1
+      port: 6379
+      password: 658766@Jzh
+      database: 0
+      client-type: lettuce
 
 aws:
   name: Agricultural Weighing System

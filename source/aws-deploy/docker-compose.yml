@@ -3,6 +3,7 @@ services:
   mysql-server:
     image: mysql:8.0
     container_name: mysql-server
+    hostname: mysql-server
     restart: unless-stopped
     ports:
       - 3306:3306
@@ -16,6 +17,7 @@ services:
   mysql-edge:
     image: mysql:8.0
     container_name: mysql-edge
+    hostname: mysql-edge
     restart: unless-stopped
     ports:
       - 3307:3306
@@ -25,6 +27,8 @@ services:
     volumes:
       - ./.dep/mysql-edge/data:/var/lib/mysql
       - ./.dep/mysql-edge/conf:/etc/mysql/conf.d
+    depends_on:
+      - mysql-server
 
   redis:
     image: redis:alpine

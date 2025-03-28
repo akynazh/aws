@@ -7,6 +7,7 @@ import cn.edu.xidian.aws.pojo.po.Produce;
 import cn.edu.xidian.aws.pojo.vo.produce.ProduceAddVO;
 import cn.edu.xidian.aws.pojo.vo.produce.ProduceUpdateVO;
 import cn.edu.xidian.aws.repository.ProduceRepository;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
@@ -20,6 +21,7 @@ import java.util.List;
  * @description
  */
 @Service
+@Slf4j
 public class ProduceService {
     @Autowired
     private ProduceRepository produceRepository;

@@ -7,7 +7,6 @@ import org.springframework.stereotype.Component;
  * @date 2025/1/16
  * @description
  */
-@Component
 public interface Constants {
     String TOKEN_HEADER = "Authorization";
     String TOKEN_PREFIX = "Bearer ";
