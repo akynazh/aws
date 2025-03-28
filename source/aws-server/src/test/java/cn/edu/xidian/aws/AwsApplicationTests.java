@@ -1,42 +1,23 @@
 package cn.edu.xidian.aws;
 
 import cn.edu.xidian.aws.constant.UserRole;
-import cn.edu.xidian.aws.pojo.po.MqttUser;
-import cn.edu.xidian.aws.pojo.po.Scale;
 import cn.edu.xidian.aws.pojo.vo.user.UserRegisterVO;
-import cn.edu.xidian.aws.repository.UserRepository;
-import cn.edu.xidian.aws.service.MqttUserService;
-import cn.edu.xidian.aws.service.ScaleService;
 import cn.edu.xidian.aws.service.UserService;
-import jakarta.annotation.Resource;
-import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.data.redis.core.ListOperations;
-import org.springframework.data.redis.core.RedisOperations;
-import org.springframework.data.redis.core.RedisTemplate;
-
-import java.net.URL;
-import java.security.NoSuchAlgorithmException;
-import java.util.List;
-import java.util.UUID;
 
 @SpringBootTest
-@Slf4j
 class AwsApplicationTests {
     @Autowired
-    private UserRepository userRepository;
-    @Autowired
-    private MqttUserService mqttUserService;
-    @Autowired
-    private ScaleService scaleService;
-    @Autowired
     private UserService userService;
-    @Autowired
-    private RedisTemplate<String, String> redisTemplate;
-
     @Test
     void test() {
+        UserRegisterVO userVO = new UserRegisterVO();
+        userVO.setName("aws-server");
+        userVO.setUid("aws-server");
+        userVO.setRoles(UserRole.EMPLOYEE.getCode());
+        userVO.setPassword("123456");
+        userService.addUser(userVO);
     }
 }

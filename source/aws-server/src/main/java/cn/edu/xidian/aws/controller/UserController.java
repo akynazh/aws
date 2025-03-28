@@ -105,17 +105,4 @@ public class UserController {
         }
         throw new AwsNotFoundException(AwsNotFoundException.USER_AUTH_ERROR);
     }
-
-    @Operation(summary = "EMQX 用户认证")
-    @PostMapping("/emqx/auth")
-    public ResponseEntity<EmqxAuthResultVO> emqxAuth(@RequestBody UserLoginVO vo) {
-        Authentication auth = authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(vo.getUid(), vo.getPassword())
-        );
-        if (auth.isAuthenticated()) {
-            return ResponseEntity.ok(new EmqxAuthResultVO(EmqxAuthStatus.ALLOW, false));
-        } else {
-            return ResponseEntity.ok(new EmqxAuthResultVO(EmqxAuthStatus.DENY, false));
-        }
-    }
 }

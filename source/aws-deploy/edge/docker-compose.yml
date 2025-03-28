@@ -1,0 +1,20 @@
+version: "3"
+services:
+  mysql-edge:
+    image: mysql:8.0
+    container_name: mysql-edge
+    networks:
+      - aws
+    hostname: mysql-edge
+    restart: unless-stopped
+    ports:
+      - 3307:3306
+    environment:
+      - MYSQL_ROOT_PASSWORD=658766@Jzh
+      - MYSQL_DATABASE=aws
+    volumes:
+      - ./.dep/mysql-edge/data:/var/lib/mysql
+      - ./.dep/mysql-edge/conf:/etc/mysql/conf.d
+networks:
+  aws:
+    external: true

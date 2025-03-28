@@ -108,14 +108,6 @@ public class WeighController {
         return ResponseEntity.ok(Scale.toScaleVO(scale));
     }
 
-    @Operation(summary = "根据 key 获取电子秤")
-    @GetMapping("/scale")
-    @PreAuthorize(Constants.PRE_AUTHORIZE_EMPLOYEE)
-    public ResponseEntity<ScaleVO> getScaleByKey(@RequestParam String key) {
-        Scale scale = scaleService.getScaleByKey(key);
-        return ResponseEntity.ok(Scale.toScaleVO(scale));
-    }
-
     @Operation(summary = "获取员工各作业采摘量")
     @GetMapping("/summary")
     @PreAuthorize(Constants.PRE_AUTHORIZE_EMPLOYEE)

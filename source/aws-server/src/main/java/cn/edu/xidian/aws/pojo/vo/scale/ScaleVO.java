@@ -26,11 +26,6 @@ public class ScaleVO {
     @Schema(description = "MQTT CLIENT")
     private String sid;
     /**
-     * 电子秤密钥
-     */
-    @Schema(description = "电子秤密钥")
-    private String skey;
-    /**
      * 型号
      */
     @Schema(description = "型号")

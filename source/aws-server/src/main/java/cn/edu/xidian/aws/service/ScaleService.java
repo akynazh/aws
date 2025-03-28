@@ -1,6 +1,5 @@
 package cn.edu.xidian.aws.service;
 
-import cn.edu.xidian.aws.constant.ScaleProtocol;
 import cn.edu.xidian.aws.constant.ScaleStatus;
 import cn.edu.xidian.aws.constant.UserRole;
 import cn.edu.xidian.aws.exception.AwsArgumentException;
@@ -18,7 +17,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.security.NoSuchAlgorithmException;
 import java.util.List;
 import java.util.UUID;
 
@@ -33,30 +31,26 @@ public class ScaleService {
     @Autowired
     private ScaleRepository scaleRepository;
     @Autowired
-    private MqttUserService mqttUserService;
+    private MqttAclService mqttAclService;
     @Autowired
     private UserService userService;
 
     @Transactional(propagation = Propagation.REQUIRED)
-    public Scale addScale(ScaleAddVO vo) throws NoSuchAlgorithmException {
+    public Scale addScale(ScaleAddVO vo) {
         if (vo == null) {
             throw new AwsArgumentException(AwsArgumentException.ARGUMENT_NULL);
         }
-//        if (!ScaleProtocol.codeExists(vo.getProtocol())) {
-//            throw new AwsArgumentException(AwsArgumentException.SCALE_PROTOCOL_NOT_EXISTS);
-//        }
+
+        String sid = UUID.randomUUID().toString();
+        String skey = vo.getSkey();
 
         Scale scale = new Scale();
         BeanUtils.copyProperties(vo, scale);
-        String sid = UUID.randomUUID().toString();
-        String skey = scale.getSkey();
         scale.setSid(sid);
         scale.setCreateTime(System.currentTimeMillis());
         scale.setUpdateTime(System.currentTimeMillis());
         scale.setStatus(ScaleStatus.ENABLED.getCode());
         Scale savedScale = scaleRepository.save(scale);
-
-        mqttUserService.createScalePublisher(sid, skey);
 
         UserRegisterVO userVO = new UserRegisterVO();
         userVO.setName(sid);
@@ -64,6 +58,8 @@ public class ScaleService {
         userVO.setRoles(UserRole.SCALE.getCode());
         userVO.setPassword(skey);
         userService.addUser(userVO);
+
+        mqttAclService.createScalePublisher(sid);
 
         return savedScale;
     }
@@ -88,12 +84,6 @@ public class ScaleService {
 
     public Scale getScale(Long id) {
         return scaleRepository.findById(id).orElseThrow(
-                () -> new AwsNotFoundException(AwsNotFoundException.SCALE_NOT_FOUND)
-        );
-    }
-
-    public Scale getScaleByKey(String key) {
-        return scaleRepository.findBySkey(key).orElseThrow(
                 () -> new AwsNotFoundException(AwsNotFoundException.SCALE_NOT_FOUND)
         );
     }

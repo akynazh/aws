@@ -1,13 +1,14 @@
 server:
-  port: 8080
+  port: 9090
+
 spring:
   application:
-    name: aws-server
+    name: aws-edge
   main:
     allow-circular-references: true
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://mysql-server:3306/aws
+    url: jdbc:mysql://mysql-edge:3307/aws
     username: root
     password: 658766@Jzh
     hikari:
@@ -19,10 +20,6 @@ spring:
       naming.physical-strategy: org.hibernate.boot.model.naming.CamelCaseToUnderscoresNamingStrategy
     properties:
       hibernate.dialect: org.hibernate.dialect.MySQLDialect
-  task:
-    scheduling:
-      pool:
-        size: 5
   data:
     redis:
       host: 127.0.0.1

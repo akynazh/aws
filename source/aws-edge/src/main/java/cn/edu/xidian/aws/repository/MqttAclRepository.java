@@ -1,10 +1,8 @@
 package cn.edu.xidian.aws.repository;
 
-import cn.edu.xidian.aws.pojo.po.MqttUser;
+import cn.edu.xidian.aws.pojo.MqttAcl;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
-
-import java.util.Optional;
 
 /**
  * @author akynazh@gmail.com
@@ -12,6 +10,5 @@ import java.util.Optional;
  * @description
  */
 @Repository
-public interface MqttUserRepository extends JpaRepository<MqttUser, Integer> {
-    Optional<MqttUser> findByUsername(String username);
+public interface MqttAclRepository extends JpaRepository<MqttAcl, Integer> {
 }

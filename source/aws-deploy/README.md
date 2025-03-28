@@ -3,11 +3,13 @@
 ## DEPLOY
 
 ```sh
-docker-compose up -d
+docker network create aws
+cd server && docker-compose up -d
+cd edge && docker-compose up -d
 ```
 
 - mysql-server: 服务端数据库，主库
-- mysql-edge：边端数据库，从库，这里在同一主机下部署，使用不同 hostname 来模拟不同主机
+- mysql-edge：边端数据库，从库，这里在同一主机下部署，使用不同 hostname 来模拟不同主机，在桥接网络 aws 下通过 hostname 来访问主库
 - redis：服务端 redis 服务
 
 ## MySQL 主从复制（GTID 模式）

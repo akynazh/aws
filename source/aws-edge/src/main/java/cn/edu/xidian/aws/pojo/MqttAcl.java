@@ -1,11 +1,9 @@
-package cn.edu.xidian.aws.pojo.po;
+package cn.edu.xidian.aws.pojo;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-
-import java.time.LocalDateTime;
 
 /**
  * @author akynazh@gmail.com
@@ -13,17 +11,18 @@ import java.time.LocalDateTime;
  * @description
  */
 @Entity
-@Table(name = "t_mqtt_user")
+@Table(name = "t_mqtt_acl")
 @NoArgsConstructor
 @AllArgsConstructor
 @Data
-public class MqttUser {
+public class MqttAcl {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
     private String username;
-    private String passwordHash;
-    private String salt;
-    private Integer isSuperuser;
-    private LocalDateTime created;
+    private String permission;
+    private String action;
+    private String topic;
+    private Integer qos;
+    private Integer retain;
 }

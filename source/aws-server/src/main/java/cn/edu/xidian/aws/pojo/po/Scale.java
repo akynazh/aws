@@ -29,11 +29,6 @@ public class Scale {
      */
     private String sid;
     /**
-     * 电子秤密钥 mqtt client password
-     */
-    @Column(unique = true)
-    private String skey;
-    /**
      * 型号
      */
     private String model;

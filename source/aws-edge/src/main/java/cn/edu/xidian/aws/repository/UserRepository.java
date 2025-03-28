@@ -1,8 +1,6 @@
 package cn.edu.xidian.aws.repository;
 
-import cn.edu.xidian.aws.pojo.po.Produce;
-import cn.edu.xidian.aws.pojo.po.Scale;
-import org.springframework.data.domain.Page;
+import cn.edu.xidian.aws.pojo.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
@@ -14,5 +12,6 @@ import java.util.Optional;
  * @description
  */
 @Repository
-public interface ScaleRepository extends JpaRepository<Scale, Long> {
+public interface UserRepository extends JpaRepository<User, Long> {
+    Optional<User> findByUid(String uid);
 }
