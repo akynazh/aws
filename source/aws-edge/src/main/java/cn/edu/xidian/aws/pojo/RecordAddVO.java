@@ -1,10 +1,9 @@
-package cn.edu.xidian.aws.pojo.vo.record;
+package cn.edu.xidian.aws.pojo;
 
+import com.alibaba.fastjson.annotation.JSONField;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.v3.oas.annotations.media.Schema;
-import jakarta.persistence.Column;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -21,6 +20,13 @@ import java.math.BigDecimal;
 @Data
 @Schema(name = "RecordAddVO", description = "新增称重记录表单")
 public class RecordAddVO {
+    @Schema(description = "uid")
+    @JSONField(serialize = false)
+    private String username;
+    @Schema(description = "用户密码")
+    @JSONField(serialize = false)
+    private String password;
+
     /**
      * 果实 Id
      */

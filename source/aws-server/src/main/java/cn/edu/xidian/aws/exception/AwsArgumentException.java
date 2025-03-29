@@ -19,7 +19,6 @@ public class AwsArgumentException extends RuntimeException {
     public final static String STATUS_SCALE_NOT_EXISTS = "电子秤状态不存在";
     public final static String USER_ROLE_NOT_EXISTS = "用户角色不存在";
     public final static String SCALE_UNIT_NOT_EXISTS = "电子秤称重单位不存在";
-    public final static String SCALE_PROTOCOL_NOT_EXISTS = "电子秤称重协议不存在";
     public final static String PARAM_MISSING = "缺少参数";
     public final static String TIME_ERROR = "时间参数错误";
 

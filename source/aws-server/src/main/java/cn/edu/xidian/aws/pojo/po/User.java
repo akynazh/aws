@@ -63,9 +63,6 @@ public class User {
         }
         UserVO userVO = new UserVO();
         BeanUtils.copyProperties(user, userVO);
-//        Set<String> roles = UserRole.getRolesFromCodesString(user.getRoles()).stream()
-//                .map(UserRole::getName).collect(Collectors.toSet());
-//        userVO.setRoles(StringUtils.collectionToCommaDelimitedString(roles));
         return userVO;
     }
 }

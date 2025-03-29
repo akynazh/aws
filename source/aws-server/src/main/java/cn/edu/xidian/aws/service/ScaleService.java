@@ -1,13 +1,11 @@
 package cn.edu.xidian.aws.service;
 
 import cn.edu.xidian.aws.constant.ScaleStatus;
-import cn.edu.xidian.aws.constant.UserRole;
 import cn.edu.xidian.aws.exception.AwsArgumentException;
 import cn.edu.xidian.aws.exception.AwsNotFoundException;
 import cn.edu.xidian.aws.pojo.po.Scale;
 import cn.edu.xidian.aws.pojo.vo.scale.ScaleAddVO;
 import cn.edu.xidian.aws.pojo.vo.scale.ScaleUpdateVO;
-import cn.edu.xidian.aws.pojo.vo.user.UserRegisterVO;
 import cn.edu.xidian.aws.repository.ScaleRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
@@ -31,7 +29,7 @@ public class ScaleService {
     @Autowired
     private ScaleRepository scaleRepository;
     @Autowired
-    private MqttAclService mqttAclService;
+    private MqttUserService mqttUserService;
     @Autowired
     private UserService userService;
 
@@ -52,15 +50,7 @@ public class ScaleService {
         scale.setStatus(ScaleStatus.ENABLED.getCode());
         Scale savedScale = scaleRepository.save(scale);
 
-        UserRegisterVO userVO = new UserRegisterVO();
-        userVO.setName(sid);
-        userVO.setUid(sid);
-        userVO.setRoles(UserRole.SCALE.getCode());
-        userVO.setPassword(skey);
-        userService.addUser(userVO);
-
-        mqttAclService.createScalePublisher(sid);
-
+        mqttUserService.createScalePublisher(sid, skey);
         return savedScale;
     }
 

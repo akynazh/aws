@@ -138,8 +138,7 @@ class MainWindow(QMainWindow):
             elif protocol == "stomp":
                 scale_stomp.send(username, password, payload, topic)
             elif protocol == "http":
-                record = scale_http.send(username, password, payload)
-                self.result_display.append(f"\nSuccess: {record}\n")
+                scale_http.send(username, password, payload)
         except Exception as e:
             self.result_display.append(f"Fail: {str(e)}")
 

@@ -18,6 +18,6 @@ public class SpringDocConfig {
                 .info(new Info()
                         .title("Agricultural Weighing System")
                         .version("1.0.0")
-                        .description("AWS"));
+                        .description("aws-server"));
     }
 }

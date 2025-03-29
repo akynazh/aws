@@ -20,32 +20,13 @@ spring:
       naming.physical-strategy: org.hibernate.boot.model.naming.CamelCaseToUnderscoresNamingStrategy
     properties:
       hibernate.dialect: org.hibernate.dialect.MySQLDialect
-  data:
-    redis:
-      host: 127.0.0.1
-      port: 6379
-      password: 658766@Jzh
-      database: 0
-      client-type: lettuce
-
-aws:
-  name: Agricultural Weighing System
-  farmName: XDU FARM
-  jwt:
-    secret: 5367566B59703373367639792F423F4528482B4D6251655468576D5A71347437
-    validTime: 24
-  admin:
-    uid: 659811
-    password: 123456
 
 mqtt:
   broker:
     url: tcp://127.0.0.1:1883
-  username: aws-server
+  username: aws-edge
   password: 123456
 
-springdoc:
-  api-docs:
-    path: /docs
-  swagger-ui:
-    enabled: false
+aws:
+  jwt:
+    validTime: 24

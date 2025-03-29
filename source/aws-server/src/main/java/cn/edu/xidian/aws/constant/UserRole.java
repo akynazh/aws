@@ -16,11 +16,13 @@ import java.util.Optional;
 public enum UserRole {
     ADMIN("ROLE_ADMIN", "管理员"),
     EMPLOYEE("ROLE_EMPLOYEE", "员工"),
-    SCALE("ROLE_SCALE", "电子秤");
+    SCALE("ROLE_SCALE", "电子秤"),
+    SYS("ROLE_SYS", "系统用户");
 
     private final String code;
     private final String name;
-    public static final String label = "用户角色";
+    public static final String LABEL = "用户角色";
+    public static final String SPLITTER = ",";
 
     UserRole(String code, String name) {
         this.code = code;
@@ -38,10 +40,21 @@ public enum UserRole {
     }
 
     public static List<UserRole> getRolesFromCodesString(String roles) {
-        return Arrays.stream(roles.split(Constants.ROLE_SPLITTER))
+        return Arrays.stream(roles.split(SPLITTER))
                 .map(UserRole::getUserRoleFromCode)
                 .filter(Optional::isPresent)
                 .map(Optional::get)
                 .toList();
+    }
+
+    public static boolean canLogin(String codesString) {
+        List<UserRole> roles = UserRole.getRolesFromCodesString(codesString);
+        for (UserRole role : roles) {
+            String code = role.getCode();
+            if (StringUtils.hasText(code) && (code.equals(ADMIN.getCode()) || code.equals(EMPLOYEE.getCode()))) {
+                return true;
+            }
+        }
+        return false;
     }
 }

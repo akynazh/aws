@@ -1,20 +1,21 @@
 package cn.edu.xidian.aws.service;
 
-import cn.edu.xidian.aws.pojo.User;
+import cn.edu.xidian.aws.pojo.UserLoginVO;
+import cn.edu.xidian.aws.pojo.UserPO;
 import cn.edu.xidian.aws.repository.UserRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.context.annotation.Primary;
-import org.springframework.data.domain.PageRequest;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
-import java.util.Map;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 /**
  * @author akynazh@gmail.com
@@ -27,23 +28,23 @@ import java.util.stream.Collectors;
 public class UserService implements UserDetailsService {
     @Autowired
     private UserRepository userRepository;
+    @Autowired
+    @Lazy
+    private AuthenticationManager authenticationManager;
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        Optional<User> user = userRepository.findByUid(username);
+        Optional<UserPO> user = userRepository.findByUid(username);
         return user.map(cn.edu.xidian.aws.pojo.UserDetails::new).orElseThrow(() -> new UsernameNotFoundException(username));
     }
 
-    public List<User> getUsers(int page, int size) {
-        PageRequest pr = PageRequest.of(page, size);
-        return userRepository.findAll(pr).getContent();
+    public UserPO getUserByUID(String uid) {
+        return userRepository.findByUid(uid).orElseThrow(() -> new UsernameNotFoundException(uid));
     }
 
-    public long getUserCount() {
-        return userRepository.count();
-    }
-
-    public Map<Long, String> getUsersByIds(List<Long> ids) {
-        return userRepository.findAllById(ids).stream().collect(Collectors.toMap(User::getId, User::getName));
+    public boolean authUser(String username, String password) {
+        return authenticationManager.authenticate(
+                new UsernamePasswordAuthenticationToken(username, password)
+        ).isAuthenticated();
     }
 }

@@ -17,9 +17,6 @@ def send(username, password, payload, topic):
 
 
 if __name__ == "__main__":
-    username = "30ac4feb-b672-457d-b937-dad0db312855"
-    password = "xyzzzxy"
-    topic = "t/scale"
     import data
 
-    send(username, password, data.gen(), topic)
+    send("30ac4feb-b672-457d-b937-dad0db312855", "xyzzzxy", data.gen(), "t/scale")

@@ -3,18 +3,16 @@ import json
 
 
 def send(username, password, payload):
-    resp = requests.post(
-        "http://127.0.0.1:8080/user/login",
-        json={"uid": username, "password": password},
-    )
-    if resp.status_code != 200:
-        raise Exception(f"Login failed: {resp.text}")
-    token = resp.text
-    resp = requests.post(
-        "http://127.0.0.1:8080/weigh/record",
-        json=json.loads(payload),
-        headers={"Authorization": f"Bearer {token}"},
-    )
+    payload = json.loads(payload)
+    payload["username"] = username
+    payload["password"] = password
+    print(payload)
+    resp = requests.post("http://127.0.0.1:9090/weigh/record", json=payload)
     if resp.status_code != 200:
         raise Exception(f"Failed to send data: {resp.text}")
-    return json.dumps(resp.json(), separators=(",", ": "), indent=4, ensure_ascii=False)
+
+
+if __name__ == "__main__":
+    import data
+
+    send("30ac4feb-b672-457d-b937-dad0db312855", "xyzzzxy", data.gen())

@@ -68,6 +68,21 @@ CREATE TABLE t_work
     CONSTRAINT pk_t_work PRIMARY KEY (id)
 );
 
+CREATE TABLE `t_mqtt_acl` (
+  `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
+  `username` varchar(100) NOT NULL,
+  `permission` varchar(5) NOT NULL, -- 用于指定操作权限，可选值有 allow 和 deny。
+  `action` varchar(9) NOT NULL, -- 用于指定当前规则适用于哪些操作，可选值有 publish、subscribe 和 all。
+  `topic` varchar(100) NOT NULL, -- 用于指定当前规则适用的主题，可以使用主题过滤器和主题占位符。(# 代表所有)
+  `qos` tinyint(1), -- (可选)用于指定规则适用的消息 QoS，可选值为 0、1、2，也可以用 , 分隔的字符串指定多个 QoS，例如 0,1。默认为全部 QoS。
+  `retain` tinyint(1), -- （可选）用于指定当前规则是否支持发布保留消息，可选值有 0、1，默认允许保留消息。
+  INDEX username_idx(username),
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+-- emqx dashboard 配置 SQL
+-- SELECT permission, action, topic, qos, retain FROM t_mqtt_acl WHERE username = ${username}
+
 ALTER TABLE t_produce
     ADD CONSTRAINT uc_t_produce_name UNIQUE (name);
 

@@ -1,8 +1,7 @@
 package cn.edu.xidian.aws.controller;
 
-import cn.edu.xidian.aws.constant.Constants;
+import cn.edu.xidian.aws.constant.Security;
 import cn.edu.xidian.aws.pojo.po.Produce;
-import cn.edu.xidian.aws.pojo.po.Work;
 import cn.edu.xidian.aws.pojo.vo.produce.*;
 import cn.edu.xidian.aws.service.ProduceService;
 import cn.edu.xidian.aws.service.RecordService;
@@ -15,7 +14,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -38,7 +36,7 @@ public class ProduceController {
 
     @Operation(summary = "添加果实")
     @PostMapping
-    @PreAuthorize(Constants.PRE_AUTHORIZE_ADMIN)
+    @PreAuthorize(Security.PRE_AUTHORIZE_ADMIN)
     public ResponseEntity<ProduceVO> addProduce(@RequestBody ProduceAddVO vo) {
         Produce produce = produceService.addProduce(vo);
         return ResponseEntity.ok(Produce.toProduceVO(produce));
@@ -46,7 +44,7 @@ public class ProduceController {
 
     @Operation(summary = "更新果实")
     @PutMapping
-    @PreAuthorize(Constants.PRE_AUTHORIZE_ADMIN)
+    @PreAuthorize(Security.PRE_AUTHORIZE_ADMIN)
     public ResponseEntity<ProduceVO> updateProduce(@RequestBody ProduceUpdateVO vo) {
         Produce produce = produceService.updateProduce(vo);
         return ResponseEntity.ok(Produce.toProduceVO(produce));
@@ -54,7 +52,7 @@ public class ProduceController {
 
     @Operation(summary = "获取果实列表")
     @GetMapping("/list")
-    @PreAuthorize(Constants.PRE_AUTHORIZE_EMPLOYEE)
+    @PreAuthorize(Security.PRE_AUTHORIZE_EMPLOYEE)
     public ResponseEntity<ProduceListVO> getProduces(@RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "10") int size) {
         List<Produce> produces = produceService.getProduces(page, size);
         List<ProduceVO> produceVOS = produces.stream().map(Produce::toProduceVO).collect(Collectors.toList());
@@ -67,7 +65,7 @@ public class ProduceController {
 
     @Operation(summary = "获取果实")
     @GetMapping("/{id}")
-    @PreAuthorize(Constants.PRE_AUTHORIZE_EMPLOYEE)
+    @PreAuthorize(Security.PRE_AUTHORIZE_EMPLOYEE)
     public ResponseEntity<ProduceVO> getProduce(@PathVariable Long id) {
         Produce produce = produceService.getProduce(id);
         return ResponseEntity.ok(Produce.toProduceVO(produce));
@@ -75,7 +73,7 @@ public class ProduceController {
 
     @Operation(summary = "根据名称获取果实")
     @GetMapping
-    @PreAuthorize(Constants.PRE_AUTHORIZE_EMPLOYEE)
+    @PreAuthorize(Security.PRE_AUTHORIZE_EMPLOYEE)
     public ResponseEntity<ProduceVO> getProduceByName(@RequestParam String name) {
         Produce produce = produceService.getProduceByName(name);
         return ResponseEntity.ok(Produce.toProduceVO(produce));
@@ -83,14 +81,14 @@ public class ProduceController {
 
     @Operation(summary = "获取果实年产量")
     @GetMapping("/summary/year")
-    @PreAuthorize(Constants.PRE_AUTHORIZE_EMPLOYEE)
+    @PreAuthorize(Security.PRE_AUTHORIZE_EMPLOYEE)
     public ResponseEntity<List<ProduceAnnualOutputVO>> getProduceAnnualOutput(@RequestParam Long id) {
         return ResponseEntity.ok(recordService.getProduceAnnualOutput(id));
     }
 
     @Operation(summary = "获取果实分批产量")
     @GetMapping("/summary/work")
-    @PreAuthorize(Constants.PRE_AUTHORIZE_EMPLOYEE)
+    @PreAuthorize(Security.PRE_AUTHORIZE_EMPLOYEE)
     public ResponseEntity<List<ProduceWorkOutputVO>> getProduceWorkOutput(@RequestParam Long id) {
         return ResponseEntity.ok(recordService.getProduceWorkOutput(id));
     }

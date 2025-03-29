@@ -1,7 +1,7 @@
 package cn.edu.xidian.aws.service;
 
 
-import cn.edu.xidian.aws.constant.Constants;
+import cn.edu.xidian.aws.constant.Security;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
@@ -33,12 +33,12 @@ public class JwtService {
 
     public String extractToken(HttpServletRequest request) {
         // Retrieve the Authorization header
-        String authHeader = request.getHeader(Constants.TOKEN_HEADER);
+        String authHeader = request.getHeader(Security.TOKEN_HEADER);
         String token = null;
 
         // Check if the header starts with "Bearer "
-        if (authHeader != null && authHeader.startsWith(Constants.TOKEN_PREFIX)) {
-            token = authHeader.substring(Constants.TOKEN_PREFIX.length());
+        if (authHeader != null && authHeader.startsWith(Security.TOKEN_PREFIX)) {
+            token = authHeader.substring(Security.TOKEN_PREFIX.length());
         }
         return token;
     }

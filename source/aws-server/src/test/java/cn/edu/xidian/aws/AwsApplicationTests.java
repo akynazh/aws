@@ -13,11 +13,5 @@ class AwsApplicationTests {
     private UserService userService;
     @Test
     void test() {
-        UserRegisterVO userVO = new UserRegisterVO();
-        userVO.setName("aws-server");
-        userVO.setUid("aws-server");
-        userVO.setRoles(UserRole.EMPLOYEE.getCode());
-        userVO.setPassword("123456");
-        userService.addUser(userVO);
     }
 }

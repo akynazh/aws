@@ -1,6 +1,6 @@
 package cn.edu.xidian.aws.service;
 
-import cn.edu.xidian.aws.constant.Constants;
+import cn.edu.xidian.aws.constant.Security;
 import cn.edu.xidian.aws.constant.UserRole;
 import cn.edu.xidian.aws.constant.UserStatus;
 import cn.edu.xidian.aws.exception.AwsArgumentException;
@@ -14,8 +14,11 @@ import cn.edu.xidian.aws.repository.UserRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.context.annotation.Primary;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -46,11 +49,20 @@ public class UserService implements UserDetailsService {
     private String adminUID;
     @Value("${aws.admin.password}")
     private String adminPassword;
+    @Autowired
+    @Lazy
+    private AuthenticationManager authenticationManager;
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         Optional<User> user = userRepository.findByUid(username);
         return user.map(cn.edu.xidian.aws.pojo.bo.UserDetails::new).orElseThrow(() -> new UsernameNotFoundException(username));
+    }
+
+    public boolean authUser(String username, String password) {
+        return authenticationManager.authenticate(
+                new UsernamePasswordAuthenticationToken(username, password)
+        ).isAuthenticated();
     }
 
     public User addUser(UserRegisterVO vo) {
@@ -70,7 +82,7 @@ public class UserService implements UserDetailsService {
             roles = UserRole.EMPLOYEE.getCode();
         }
         if (password == null) {
-            password = Constants.USER_PASSWORD_DEFAULT;
+            password = Security.USER_PASSWORD_DEFAULT;
         }
 
         User user = new User();
@@ -163,7 +175,7 @@ public class UserService implements UserDetailsService {
         user.setUid(adminUID);
         user.setName(adminUID);
         user.setPassword(encoder.encode(adminPassword));
-        user.setRoles(UserRole.ADMIN.getCode() + Constants.ROLE_SPLITTER + UserRole.EMPLOYEE.getCode());
+        user.setRoles(UserRole.ADMIN.getCode() + UserRole.SPLITTER + UserRole.EMPLOYEE.getCode());
         user.setCreateTime(System.currentTimeMillis());
         user.setUpdateTime(System.currentTimeMillis());
         user.setStatus(UserStatus.ENABLED.getCode());

@@ -1,6 +1,5 @@
 package cn.edu.xidian.aws.util;
 
-import cn.edu.xidian.aws.constant.ScaleStatus;
 import cn.edu.xidian.aws.constant.ScaleUnit;
 
 import java.math.BigDecimal;

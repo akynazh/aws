@@ -11,4 +11,5 @@ import org.springframework.stereotype.Repository;
  */
 @Repository
 public interface MqttAclRepository extends JpaRepository<MqttAcl, Integer> {
+    boolean existsByUsername(String username);
 }

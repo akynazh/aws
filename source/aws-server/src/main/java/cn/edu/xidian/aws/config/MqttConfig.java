@@ -2,8 +2,10 @@ package cn.edu.xidian.aws.config;
 
 import cn.edu.xidian.aws.constant.Mqtt;
 import cn.edu.xidian.aws.pojo.bo.MqttResult;
+import cn.edu.xidian.aws.service.MqttUserService;
 import cn.edu.xidian.aws.service.MqttWeighService;
 import com.alibaba.fastjson.JSON;
+import jakarta.annotation.PostConstruct;
 import lombok.extern.slf4j.Slf4j;
 import org.eclipse.paho.client.mqttv3.MqttConnectOptions;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,12 +24,10 @@ import org.springframework.integration.mqtt.outbound.MqttPahoMessageHandler;
 import org.springframework.integration.mqtt.support.DefaultPahoMessageConverter;
 import org.springframework.messaging.MessageChannel;
 import org.springframework.messaging.MessageHandler;
-import org.springframework.messaging.MessagingException;
 import org.springframework.retry.backoff.ExponentialBackOffPolicy;
 import org.springframework.retry.policy.SimpleRetryPolicy;
 import org.springframework.retry.support.RetryTemplate;
 
-import java.io.IOException;
 import java.util.UUID;
 
 /**
@@ -40,12 +40,28 @@ import java.util.UUID;
 public class MqttConfig {
     @Value("${mqtt.broker.url}")
     private String brokerUrl;
-    @Value("${mqtt.username}")
+    @Value("${mqtt.server.username}")
     private String username;
-    @Value("${mqtt.password}")
+    @Value("${mqtt.server.password}")
     private String password;
+    @Value("${mqtt.edge.username}")
+    private String usernameEdge;
+    @Value("${mqtt.edge.password}")
+    private String passwordEdge;
     @Autowired
     private MqttWeighService weighService;
+    @Autowired
+    private MqttUserService mqttUserService;
+
+    @PostConstruct
+    public void init() {
+        if (mqttUserService.userNotExists(username)) {
+            mqttUserService.createScaleSubscriberAndResultPublisher(username, password);
+        }
+        if (mqttUserService.userNotExists(usernameEdge)) {
+            mqttUserService.createScalePublisher(usernameEdge, passwordEdge);
+        }
+    }
 
     @Bean
     public MqttPahoClientFactory mqttClientFactory() {

@@ -47,6 +47,10 @@ public class JwtAuthFilter extends OncePerRequestFilter {
                         userDetails.getAuthorities()
                 );
                 authToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
+                /**
+                 * 后续过滤器依赖 SecurityContextHolder 中的认证信息来判断用户是否有访问某个资源的权限。
+                 * 在 JWT 验证通过后，Spring Security 会认为用户已经通过认证，因此后续的认证相关过滤器会跳过认证步骤，直接使用 SecurityContextHolder 中的认证信息。
+                 */
                 SecurityContextHolder.getContext().setAuthentication(authToken);
             }
         }
