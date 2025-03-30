@@ -1,10 +1,12 @@
 # Source
 
-- aws-deploy: 通过 docker 一键部署应用
-- aws-jmeter: 通过 Jmeter 完成压力测试
-- aws-server: aws 后台应用服务
-- aws-simulator: aws 终端模拟器
-- aws-web: aws 前台界面
+- aws-deploy: 部署模块
+- aws-test: 测试模块
+- aws-server: 后台服务
+- aws-edge: 边端服务
+- aws-web: 前台服务
+- aws-simulator: 电子秤模拟器
+- aws-img: 果蔬识别服务
 
 # Todo
 
@@ -23,3 +25,10 @@
 - [ ] 压力测试
 - [ ] 功能测试
 - [ ] 总结前端开发流程，书写博客
+
+# Doc
+
+1. EMQX 官方文档：https://docs.emqx.com/zh/emqx/v5.8/
+2. MQTTX CLI 文档：https://mqttx.app/zh/docs/cli
+3. 文章：[EMQX 5.0 全新网关框架：轻松实现多物联网协议接入](https://www.emqx.com/zh/blog/emqx-connects-multiple-iot-protocols)
+4. 文章：[主流物联网协议选择：MQTT、CoAP 还是 LwM2M？](https://www.emqx.com/zh/blog/iot-protocols-mqtt-coap-lwm2m)

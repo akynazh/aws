@@ -12,6 +12,7 @@ from PyQt5.QtWidgets import (
     QButtonGroup,
 )
 from PyQt5.QtCore import Qt, QThread, pyqtSignal
+from PyQt5.QtGui import QIcon
 import sys
 import data
 import json
@@ -20,6 +21,15 @@ import scale_coap
 import scale_stomp
 import scale_http
 import paho.mqtt.client as mqtt
+import os
+
+TOPIC_RESULT = "t/result"
+TOPIC_SCALE = "t/scale"
+BROKER_URL = "node1.emqx.io:1883"
+USERNAME_RESULT = "result"
+PASSWORD_RESULT = "result"
+USERNAME_SCALE = "30ac4feb-b672-457d-b937-dad0db312855"
+PASSWORD_SCALE = "xyzzzxy"
 
 
 class ResultListener(QThread):
@@ -28,10 +38,11 @@ class ResultListener(QThread):
     def __init__(self):
         super().__init__()
         self.mqttc = mqtt.Client(mqtt.CallbackAPIVersion.VERSION2)
-        self.mqttc.username_pw_set("result", "result")
+        self.mqttc.username_pw_set(USERNAME_RESULT, PASSWORD_RESULT)
         self.mqttc.on_message = self.on_message
-        self.mqttc.connect(host="127.0.0.1", port=2883)
-        self.mqttc.subscribe(topic="t/result")
+        t = BROKER_URL.split(":")
+        self.mqttc.connect(host=t[0], port=int(t[1]))
+        self.mqttc.subscribe(topic=TOPIC_RESULT)
 
     def on_message(self, client, userdata, message):
         self.result_received.emit(message.payload.decode())
@@ -47,7 +58,7 @@ class ResultListener(QThread):
 class MainWindow(QMainWindow):
     def __init__(self):
         super().__init__()
-        self.setWindowTitle("Scale Simulator")
+        self.setWindowTitle("电子秤模拟器")
         self.setMinimumSize(800, 600)
 
         main_widget = QWidget()
@@ -56,11 +67,11 @@ class MainWindow(QMainWindow):
 
         # Credentials
         cred_layout = QVBoxLayout()
-        self.username = QLineEdit("30ac4feb-b672-457d-b937-dad0db312855")
-        self.password = QLineEdit("xyzzzxy")
-        cred_layout.addWidget(QLabel("Username:"))
+        self.username = QLineEdit(USERNAME_SCALE)
+        self.password = QLineEdit(PASSWORD_SCALE)
+        cred_layout.addWidget(QLabel("电子秤编号:"))
         cred_layout.addWidget(self.username)
-        cred_layout.addWidget(QLabel("Password:"))
+        cred_layout.addWidget(QLabel("电子秤密钥:"))
         cred_layout.addWidget(self.password)
         layout.addLayout(cred_layout)
 
@@ -77,7 +88,7 @@ class MainWindow(QMainWindow):
         layout.addLayout(proto_layout)
 
         # Send button
-        self.send_btn = QPushButton("Generate and Send Data")
+        self.send_btn = QPushButton("生成数据并提交")
         self.send_btn.clicked.connect(self.send_data)
         layout.addWidget(self.send_btn)
 
@@ -86,7 +97,7 @@ class MainWindow(QMainWindow):
 
         # Left column - Generated Payload
         left_column = QVBoxLayout()
-        left_column.addWidget(QLabel("Generated Payload:"))
+        left_column.addWidget(QLabel("生成的数据"))
         self.payload_display = QTextEdit()
         self.payload_display.setReadOnly(True)
         left_column.addWidget(self.payload_display)
@@ -94,7 +105,7 @@ class MainWindow(QMainWindow):
 
         # Right column - Results
         right_column = QVBoxLayout()
-        right_column.addWidget(QLabel("Results:"))
+        right_column.addWidget(QLabel("提交结果"))
         self.result_display = QTextEdit()
         self.result_display.setReadOnly(True)
         right_column.addWidget(self.result_display)
@@ -104,9 +115,9 @@ class MainWindow(QMainWindow):
 
         # Clear buttons
         clear_layout = QHBoxLayout()
-        self.clear_payload_btn = QPushButton("Clear Payload")
+        self.clear_payload_btn = QPushButton("清除生成的数据")
         self.clear_payload_btn.clicked.connect(self.payload_display.clear)
-        self.clear_result_btn = QPushButton("Clear Results")
+        self.clear_result_btn = QPushButton("清除提交结果")
         self.clear_result_btn.clicked.connect(self.result_display.clear)
         clear_layout.addWidget(self.clear_payload_btn)
         clear_layout.addWidget(self.clear_result_btn)
@@ -119,16 +130,16 @@ class MainWindow(QMainWindow):
 
     def send_data(self):
         payload = data.gen()
-        self.payload_display.append(f"\nGenerated data:\n{payload}\n")
+        self.payload_display.append(f"\n生成数据:\n{payload}\n")
 
         protocol_map = {0: "mqtt", 1: "coap", 2: "stomp", 3: "http"}
         protocol = protocol_map[self.protocol_group.checkedId()]
 
         username = self.username.text()
         password = self.password.text()
-        topic = "t/scale"
+        topic = TOPIC_SCALE
 
-        self.result_display.append(f"Sending via {protocol.upper()}...")
+        self.result_display.append(f"通过 {protocol.upper()} 协议提交数据......")
 
         try:
             if protocol == "mqtt":
@@ -140,7 +151,7 @@ class MainWindow(QMainWindow):
             elif protocol == "http":
                 scale_http.send(username, password, payload)
         except Exception as e:
-            self.result_display.append(f"Fail: {str(e)}")
+            self.result_display.append(f"提交失败: {str(e)}")
 
     def handle_result(self, result):
         result = json.loads(result)
@@ -149,9 +160,9 @@ class MainWindow(QMainWindow):
             record = json.dumps(
                 result["record"], separators=(",", ": "), indent=4, ensure_ascii=False
             )
-            self.result_display.append(f"\nSuccess: {record}\n")
+            self.result_display.append(f"\提交成功: {record}\n")
         else:
-            self.result_display.append(f"\nFail: {result['reason']}\n")
+            self.result_display.append(f"\提交失败: {result['reason']}\n")
 
     def closeEvent(self, event):
         self.result_listener.stop()
