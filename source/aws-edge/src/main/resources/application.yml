@@ -23,7 +23,7 @@ spring:
 
 mqtt:
   broker:
-    url: tcp://127.0.0.1:1883
+    urls: tcp://node1.emqx.io:1883,tcp://node2.emqx.io:2883,tcp://node3.emqx.io:3883
   username: aws-edge
   password: 123456
 

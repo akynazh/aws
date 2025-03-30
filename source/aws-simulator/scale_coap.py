@@ -5,7 +5,7 @@ import uuid
 
 def send(username, password, payload, topic):
     clientid = str(uuid.uuid4())
-    baseUrl = "coap://127.0.0.1"
+    baseUrl = "coap://127.0.0.1:5683"
     qos = 2
     auth_url = f"{baseUrl}/mqtt/connection?clientid={clientid}&username={username}&password={password}"
 
@@ -17,6 +17,8 @@ def send(username, password, payload, topic):
 
 
 if __name__ == "__main__":
-    import data
+    import data, time
 
-    send("30ac4feb-b672-457d-b937-dad0db312855", "xyzzzxy", data.gen(), "t/scale")
+    while True:
+        send("30ac4feb-b672-457d-b937-dad0db312855", "xyzzzxy", data.gen(), "t/scale")
+        time.sleep(1)

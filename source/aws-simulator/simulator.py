@@ -30,7 +30,7 @@ class ResultListener(QThread):
         self.mqttc = mqtt.Client(mqtt.CallbackAPIVersion.VERSION2)
         self.mqttc.username_pw_set("result", "result")
         self.mqttc.on_message = self.on_message
-        self.mqttc.connect(host="127.0.0.1", port=1883)
+        self.mqttc.connect(host="127.0.0.1", port=2883)
         self.mqttc.subscribe(topic="t/result")
 
     def on_message(self, client, userdata, message):

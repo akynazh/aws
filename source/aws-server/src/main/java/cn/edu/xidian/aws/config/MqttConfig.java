@@ -28,6 +28,8 @@ import org.springframework.retry.backoff.ExponentialBackOffPolicy;
 import org.springframework.retry.policy.SimpleRetryPolicy;
 import org.springframework.retry.support.RetryTemplate;
 
+import java.util.Arrays;
+import java.util.List;
 import java.util.UUID;
 
 /**
@@ -38,8 +40,8 @@ import java.util.UUID;
 @Configuration
 @Slf4j
 public class MqttConfig {
-    @Value("${mqtt.broker.url}")
-    private String brokerUrl;
+    @Value("${mqtt.broker.urls}")
+    private String[] brokerUrls;
     @Value("${mqtt.server.username}")
     private String username;
     @Value("${mqtt.server.password}")
@@ -67,9 +69,10 @@ public class MqttConfig {
     public MqttPahoClientFactory mqttClientFactory() {
         DefaultMqttPahoClientFactory factory = new DefaultMqttPahoClientFactory();
         MqttConnectOptions options = new MqttConnectOptions();
-        options.setServerURIs(new String[]{brokerUrl});
+        options.setServerURIs(brokerUrls);
         options.setUserName(username);
         options.setPassword(password.toCharArray());
+        options.setAutomaticReconnect(true);
         factory.setConnectionOptions(options);
         return factory;
     }
@@ -113,6 +116,7 @@ public class MqttConfig {
         return message -> retryTemplate.execute(
                 context -> {
                     try {
+                        log.info("Consume message: {}", message);
                         weighService.handleMessage(message);
                     } catch (Exception e) {
                         log.error("Fail to consume message: {}, error: {}", message, e.getMessage());
