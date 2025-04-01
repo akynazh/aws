@@ -1,22 +1,3 @@
-# backup
-
-```sh
-cd $code/aws
-loc='/Users/zh/Library/Mobile Documents/com~apple~CloudDocs/Backups/Codes/aws/'
-
-git push origin-github master
-
-git archive -o aws.tar HEAD
-mv aws.tar $loc
-
-mysqldump -h mysql-server -uroot -p658766@Jzh --all-databases | gzip > mysql-server.sql.gz
-mv mysql-server.sql.gz $loc
-
-t=source/aws-deploy/edge/.dep
-tar -zcvf emqx.tar.gz $t/emqx1 $t/emqx2 $t/emqx3
-mv emqx.tar.gz $loc
-```
-
 # Source
 
 - aws-deploy: 部署模块
