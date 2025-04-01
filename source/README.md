@@ -4,6 +4,8 @@
 cd $code/aws
 loc='/Users/zh/Library/Mobile Documents/com~apple~CloudDocs/Backups/Codes/aws/'
 
+git push origin-github master
+
 git archive -o aws.tar HEAD
 mv aws.tar $loc
 
