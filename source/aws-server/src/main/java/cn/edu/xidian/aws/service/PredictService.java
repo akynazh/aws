@@ -1,13 +1,18 @@
-package cn.edu.xidian.aws.util;
+package cn.edu.xidian.aws.service;
 
+import cn.edu.xidian.aws.constant.Produces;
 import cn.edu.xidian.aws.exception.AwsArgumentException;
 import cn.edu.xidian.aws.exception.AwsNetworkException;
 import cn.edu.xidian.aws.exception.AwsNotFoundException;
-import cn.edu.xidian.aws.pojo.bo.ProduceRecResult;
+import cn.edu.xidian.aws.pojo.bo.PredictForm;
+import cn.edu.xidian.aws.pojo.bo.PredictResult;
+import cn.edu.xidian.aws.pojo.bo.PredictResultBody;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import lombok.extern.slf4j.Slf4j;
 import okhttp3.*;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Component;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 
@@ -27,13 +32,54 @@ import java.util.Objects;
  * @description
  */
 @Slf4j
-public class ProduceUtil {
-    public static final String API_KEY = "vUbXMbteYyjWCg1IKJpcaYoD";
-    public static final String SECRET_KEY = "DXGjvxUPfjcjSn3LEE0bsJPLZoAx6CjA";
+@Component
+public class PredictService {
+    @Value("${aws.predict.baidu.key}")
+    private String BAIDU_PREDICT_KEY;
+    @Value("${aws.predict.baidu.secret}")
+    private String BAIDU_PREDICT_SECRET;
+    @Value("${aws.predict.baidu.url}")
+    private String BAIDU_PREDICT_URL;
+    @Value("${aws.predict.self.url}")
+    private String SELF_PREDICT_URL;
 
     static final OkHttpClient HTTP_CLIENT = new OkHttpClient().newBuilder().build();
 
-    public static String rec(String image, String image64) throws IOException {
+    private static String resolve(Request request) {
+        try (Response response = HTTP_CLIENT.newCall(request).execute()) {
+            ResponseBody body = response.body();
+            PredictResult result = JSON.parseObject(Objects.requireNonNull(body).string(),
+                    PredictResult.class);
+            log.info("result: {}", result);
+            if (result.getResultNum() == 0 || CollectionUtils.isEmpty(result.getResult())) {
+                throw new AwsNotFoundException(AwsNetworkException.IMAGE_REC_ERR);
+            }
+            PredictResultBody bestPredictResult = result.getResult().get(0);
+            return Produces.get(Math.toIntExact(bestPredictResult.getClazz())).getName();
+        } catch (Exception e) {
+            throw new AwsNetworkException(AwsNetworkException.REQ_ERR);
+        }
+    }
+
+    public String predict(String image, String image64) {
+        if (!StringUtils.hasText(image) && !StringUtils.hasText(image64)) {
+            throw new AwsArgumentException(AwsArgumentException.PARAM_MISSING);
+        }
+        PredictForm form = new PredictForm();
+        form.setImage(image);
+        form.setImage64(image64);
+        MediaType mediaType = MediaType.parse("application/json");
+        RequestBody body = RequestBody.create(JSON.toJSONString(form), mediaType);
+        Request request = new Request.Builder()
+                .url(SELF_PREDICT_URL)
+                .method("POST", body)
+                .addHeader("Content-Type", "application/json")
+                .addHeader("Accept", "application/json")
+                .build();
+        return resolve(request);
+    }
+
+    public String predict3(String image, String image64) throws IOException {
         if (!StringUtils.hasText(image) && !StringUtils.hasText(image64)) {
             throw new AwsArgumentException(AwsArgumentException.PARAM_MISSING);
         }
@@ -44,22 +90,12 @@ public class ProduceUtil {
         RequestBody body = RequestBody.create("image="
                 + URLEncoder.encode(image64, StandardCharsets.UTF_8), mediaType);
         Request request = new Request.Builder()
-                .url("https://aip.baidubce.com/rest/2.0/image-classify/v1/classify/ingredient?access_token=" + getAccessToken())
+                .url(BAIDU_PREDICT_URL + getAccessToken())
                 .method("POST", body)
                 .addHeader("Content-Type", "application/x-www-form-urlencoded")
                 .addHeader("Accept", "application/json")
                 .build();
-        try (Response response = HTTP_CLIENT.newCall(request).execute()) {
-            ProduceRecResult result = JSON.parseObject(Objects.requireNonNull(response.body()).string(),
-                    ProduceRecResult.class);
-            log.info("result: {}", result);
-            if (result.getResultNum() == 0 || CollectionUtils.isEmpty(result.getResult())) {
-                throw new AwsNotFoundException(AwsNetworkException.IMAGE_REC_ERR);
-            }
-            return result.getResult().get(0).getName();
-        } catch (Exception e) {
-            throw new AwsNetworkException(AwsNetworkException.REQ_ERR);
-        }
+        return resolve(request);
     }
 
     /**
@@ -67,10 +103,10 @@ public class ProduceUtil {
      *
      * @return 鉴权签名（Access Token）
      */
-    private static String getAccessToken() {
+    private String getAccessToken() {
         MediaType mediaType = MediaType.get("application/x-www-form-urlencoded");
-        RequestBody body = RequestBody.create("grant_type=client_credentials&client_id=" + API_KEY
-                + "&client_secret=" + SECRET_KEY, mediaType);
+        RequestBody body = RequestBody.create("grant_type=client_credentials&client_id=" + BAIDU_PREDICT_KEY
+                + "&client_secret=" + BAIDU_PREDICT_SECRET, mediaType);
         Request request = new Request.Builder()
                 .url("https://aip.baidubce.com/oauth/2.0/token")
                 .method("POST", body)
@@ -109,10 +145,6 @@ public class ProduceUtil {
             return Base64.getEncoder().encodeToString(bytes);
         }
     }
-
-//    public static void main(String[] args) throws IOException {
-//        System.out.println(rec("https://akynazh.site/images/pub/apples_cd1cda61-5610-4c10-92f1-5485a7d9892a.jpg", null));
-//    }
 }
 
 

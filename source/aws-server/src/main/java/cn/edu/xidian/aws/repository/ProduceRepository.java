@@ -2,6 +2,7 @@ package cn.edu.xidian.aws.repository;
 
 import cn.edu.xidian.aws.pojo.po.Produce;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 import java.util.Optional;
@@ -14,4 +15,7 @@ import java.util.Optional;
 @Repository
 public interface ProduceRepository extends JpaRepository<Produce, Long> {
     Optional<Produce> findByName(String name);
+
+    @Query(value = "SELECT MAX(id) FROM t_produce", nativeQuery = true)
+    Long findMaxId();
 }

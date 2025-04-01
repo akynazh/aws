@@ -19,6 +19,8 @@ public class ProduceUpdateVO {
     private Long id;
     @Schema(description = "农产品名称")
     private String name;
+    @Schema(description = "农产品英文名称")
+    private String nameEn;
     @Schema(description = "状态，0 为未种植，1 为在种植，2 为已删除")
     private Integer status;
 }

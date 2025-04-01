@@ -1,8 +1,5 @@
 version: "3"
 services:
-  # aws-edge:
-
-
   mysql-edge:
     image: mysql:8.0
     container_name: mysql-edge

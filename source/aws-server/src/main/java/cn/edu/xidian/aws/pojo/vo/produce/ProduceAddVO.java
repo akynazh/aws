@@ -17,4 +17,6 @@ import lombok.NoArgsConstructor;
 public class ProduceAddVO {
     @Schema(description = "农产品名称")
     private String name;
+    @Schema(description = "农产品英文名称")
+    private String nameEn;
 }

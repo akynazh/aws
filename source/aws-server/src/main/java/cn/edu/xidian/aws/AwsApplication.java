@@ -1,5 +1,6 @@
 package cn.edu.xidian.aws;
 
+import cn.edu.xidian.aws.service.ProduceService;
 import cn.edu.xidian.aws.service.UserService;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -13,6 +14,7 @@ public class AwsApplication {
     public static void main(String[] args) {
         ConfigurableApplicationContext context = SpringApplication.run(AwsApplication.class, args);
         context.getBean(UserService.class).initAdmin();
+        context.getBean(ProduceService.class).initProduces();
     }
 
 }

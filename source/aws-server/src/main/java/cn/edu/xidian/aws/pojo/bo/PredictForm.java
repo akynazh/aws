@@ -12,7 +12,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
-public class ProduceRecScoreAndName {
-    private Double score;
-    private String name;
+public class PredictForm {
+    private String image;
+    private String image64;
 }

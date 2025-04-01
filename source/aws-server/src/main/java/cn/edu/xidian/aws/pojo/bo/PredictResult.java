@@ -15,9 +15,9 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
-public class ProduceRecResult {
+public class PredictResult {
     @JsonProperty("result_num")
     private Long resultNum;
     @JsonProperty("result")
-    private List<ProduceRecScoreAndName> result;
+    private List<PredictResultBody> result;
 }

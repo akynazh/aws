@@ -2,6 +2,13 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 import uvicorn
 import yolov8_best as yolo
+from pydantic import BaseModel
+
+
+class Form(BaseModel):
+    image: str
+    image64: str
+
 
 APP = FastAPI()
 APP.add_middleware(
@@ -14,9 +21,8 @@ APP.add_middleware(
 
 
 @APP.post("/predict")
-def predict(image="", image_url="") -> dict:
-    predictions = yolo.predict(image=image, image_url=image_url)
-    return {"result": predictions}
+def predict(form: Form) -> dict:
+    return yolo.predict(image_url=form.image, image_base64=form.image64)
 
 
 if __name__ == "__main__":

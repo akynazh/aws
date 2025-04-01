@@ -1,20 +1,30 @@
+import base64
 from PIL import Image
+import io
 import requests
-from io import BytesIO
 from ultralytics import YOLO
 
 # 加载 YOLO 模型
 model = YOLO("yolov8_best.pt")
 
 
-def predict(image="", image_url=""):
-    if not image and not image_url:
+def predict(image_local="", image_url="", image_base64=""):
+    if not image_local and not image_url and not image_base64:
         return []
-    if not image:
+
+    if image_base64:
+        # 解码 Base64 编码的图像
+        img_data = base64.b64decode(image_base64)
+        image = Image.open(io.BytesIO(img_data))
+
+    elif image_url:
+        # 从 URL 加载图片
         response = requests.get(image_url)
-        image = Image.open(BytesIO(response.content))
+        image = Image.open(io.BytesIO(response.content))
+
     else:
-        image = Image.open(image)
+        # 从本地路径加载图片
+        image = Image.open(image_local)
 
     # 进行推理
     results = model(image)
@@ -28,15 +38,28 @@ def predict(image="", image_url=""):
 
         # 解析每个目标的标签和置信度
         for _, row in df.iterrows():
-            label = row["name"]  # 类别名称
-            confidence = row["confidence"]  # 置信度
-            predictions.append({"label": label, "confidence": float(confidence)})
+            print(row)
+            name = row["name"]
+            clazz = row["class"]
+            confidence = row["confidence"]
+            predictions.append(
+                {"clazz": clazz, "name": name, "score": float(confidence)}
+            )
 
     # 返回结果
-    return predictions
+    return {"result": predictions, "result_num": len(predictions)}
 
 
 if __name__ == "__main__":
-    # 输入图片路径
-    predictions = predict("./sample/watermelon.png")
+    predictions = predict(image_local="./sample/watermelon.png")
     print(predictions)
+
+    # predictions = predict(
+    #     image_url="https://akynazh.site/images/pub/watermelon_d79dab34-ddf3-41fd-b6b6-8149bedc4670.png"
+    # )
+    # print(predictions)
+
+    # with open("./sample/watermelon.png", "rb") as f:
+    #     image_base64 = base64.b64encode(f.read()).decode("utf-8")
+    # predictions = predict(image_base64=image_base64)
+    # print(predictions)

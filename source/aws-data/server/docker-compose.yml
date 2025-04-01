@@ -1,7 +1,5 @@
 version: "3"
 services:
-  # aws-server:
-
   mysql-server:
     image: mysql:8.0
     container_name: mysql-server

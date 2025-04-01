@@ -20,13 +20,18 @@ import org.springframework.beans.BeanUtils;
 public class Produce {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+//    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    /**
+     * 用户自己添加的农作物，id 从 1000000 开始，其他系统自带的从 0 开始（继承于 Predict 系统提供的农作物）
+     */
     private Long id;
     /**
      * 果实名称
      */
     @Column(unique = true)
     private String name;
+    @Column(unique = true)
+    private String nameEn;
     /**
      * 创建时间，毫秒级时间戳
      */

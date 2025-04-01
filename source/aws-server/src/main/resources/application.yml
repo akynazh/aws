@@ -38,6 +38,13 @@ aws:
   admin:
     uid: 659811
     password: 123456
+  predict:
+    self:
+      url: http://127.0.0.1:8000/predict
+    baidu:
+      url: https://aip.baidubce.com/rest/2.0/image-classify/v1/classify/ingredient?access_token=
+      key: vUbXMbteYyjWCg1IKJpcaYoD
+      secret: DXGjvxUPfjcjSn3LEE0bsJPLZoAx6CjA
 
 mqtt:
   broker:

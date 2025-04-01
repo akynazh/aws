@@ -2,3 +2,5 @@ out/
 .venv
 *.pt
 Fruits-and-Vegetables-1
+run
+__pycache__

@@ -14,10 +14,8 @@ import cn.edu.xidian.aws.pojo.vo.record.RecordsGetVO;
 import cn.edu.xidian.aws.pojo.vo.user.UserWorkOutputVO;
 import cn.edu.xidian.aws.pojo.vo.work.WorkUpdateVO;
 import cn.edu.xidian.aws.repository.RecordRepository;
-import cn.edu.xidian.aws.util.ProduceUtil;
 import cn.edu.xidian.aws.util.ScaleUtil;
 import com.alibaba.fastjson.JSON;
-import io.swagger.v3.oas.annotations.Operation;
 import jakarta.transaction.Transactional;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
@@ -26,12 +24,8 @@ import org.springframework.data.domain.Example;
 import org.springframework.data.domain.ExampleMatcher;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.redis.core.RedisTemplate;
-import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 
 import java.io.IOException;
 import java.math.BigDecimal;
@@ -58,6 +52,8 @@ public class RecordService {
     private ProduceService produceService;
     @Autowired
     private RedisTemplate<String, String> redisTemplate;
+    @Autowired
+    private PredictService produceUtil;
 
     @Transactional
     public Record addRecord(RecordAddVO vo) throws IOException {
@@ -84,7 +80,7 @@ public class RecordService {
             if (!StringUtils.hasText(image) && !StringUtils.hasText(image64)) {
                 throw new AwsArgumentException(AwsArgumentException.PARAM_MISSING);
             }
-            produceName = ProduceUtil.rec(image, image64);
+            produceName = produceUtil.predict(image, image64);
             Produce produce = produceService.getProduceByName(produceName);
             produceId = produce.getId();
         } else if (produceId == null) {
