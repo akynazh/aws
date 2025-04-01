@@ -1,6 +1,6 @@
 # Source
 
-test
+test2
 
 - aws-deploy: 部署模块
 - aws-test: 测试模块
