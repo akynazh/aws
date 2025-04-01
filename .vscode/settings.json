@@ -1,7 +1,7 @@
 {
     "files.exclude": {
         "paper/build": true,
-        ".git": true,
+        // ".git": true,
 
         "paper/xdufont.sty": true,
         "paper/xduts.dtx": true,
