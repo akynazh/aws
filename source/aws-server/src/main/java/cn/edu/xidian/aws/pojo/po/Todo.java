@@ -1,6 +1,6 @@
 package cn.edu.xidian.aws.pojo.po;
 
-import cn.edu.xidian.aws.pojo.vo.record.RecordVO;
+import cn.edu.xidian.aws.pojo.vo.todo.TodoVO;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -11,40 +11,32 @@ import java.math.BigDecimal;
 
 /**
  * @author akynazh@gmail.com
- * @date 2025/1/10
- * @description 称重记录
+ * @date 2025/4/2
+ * @description 待处理称重记录
  */
 @Entity
-@Table(name = "t_record", indexes = {
-        @Index(columnList = "workId"),
-        @Index(columnList = "employeeId"),
-        @Index(columnList = "scaleId"),
-        @Index(columnList = "employeeId, workId"),
-        @Index(columnList = "scaleId, employeeId, dataTime", unique = true)
-})
+@Table(name = "t_todo")
 @NoArgsConstructor
 @AllArgsConstructor
 @Data
-public class Record {
-
+public class Todo {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    // RecordAddVO START
     /**
-     * 采摘作业编号
+     * 果实 Id
      */
-    @Column(nullable = false)
-    private Long workId;
-
-    /**
-     * 农作物编号
-     */
-    @Column(nullable = false)
     private Long produceId;
 
     /**
-     * 农作物图片地址
+     * 果实名称
+     */
+    private String produceName;
+
+    /**
+     * 采摘作业图片 URL
      */
     private String image;
 
@@ -69,7 +61,7 @@ public class Record {
     /**
      * 称量结果误差范围，正负多少
      */
-    @Column(precision = 10, scale = 2, nullable = true)
+    @Column(precision = 10, scale = 2)
     private BigDecimal dataErrorMargin;
 
     /**
@@ -84,12 +76,9 @@ public class Record {
     @Column(nullable = false)
     private Long dataTime;
 
-    public static RecordVO toRecordVO(Record record) {
-        if (record == null) {
-            return null;
-        }
-        RecordVO vo = new RecordVO();
-        BeanUtils.copyProperties(record, vo);
-        return vo;
+    public TodoVO toTodoVO() {
+        TodoVO todoVO = new TodoVO();
+        BeanUtils.copyProperties(this, todoVO);
+        return todoVO;
     }
 }

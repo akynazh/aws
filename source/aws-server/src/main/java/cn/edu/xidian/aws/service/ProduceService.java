@@ -31,7 +31,7 @@ public class ProduceService {
     private ProduceRepository produceRepository;
     private static final long USER_DEFINED_START_ID = 1000000;
 
-    private synchronized long genNextId() {
+    private long genNextId() {
         long maxId = produceRepository.findMaxId();
         return maxId >= USER_DEFINED_START_ID ? maxId + 1 : USER_DEFINED_START_ID;
     }

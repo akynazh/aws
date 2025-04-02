@@ -1,4 +1,4 @@
-package cn.edu.xidian.aws.pojo.vo.record;
+package cn.edu.xidian.aws.pojo.vo.todo;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
@@ -9,14 +9,16 @@ import java.math.BigDecimal;
 
 /**
  * @author akynazh@gmail.com
- * @date 2025/1/16
+ * @date 2025/4/2
  * @description
  */
 @NoArgsConstructor
 @AllArgsConstructor
 @Data
-@Schema(name = "RecordAddVO", description = "新增称重记录表单")
-public class RecordAddVO {
+@Schema(name = "TodoVO", description = "待处理称重记录")
+public class TodoVO {
+    private Long id;
+
     /**
      * 果实 Id
      */

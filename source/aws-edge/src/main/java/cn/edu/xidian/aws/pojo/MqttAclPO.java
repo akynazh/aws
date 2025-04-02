@@ -1,4 +1,4 @@
-package cn.edu.xidian.aws.pojo.po;
+package cn.edu.xidian.aws.pojo;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -8,9 +8,7 @@ import lombok.NoArgsConstructor;
 /**
  * @author akynazh@gmail.com
  * @date 2/25/25
- * @description
- *
- * -- 还需要在 emqx dashboard 配置 SQL
+ * @description -- 还需要在 emqx dashboard 配置 SQL
  * -- SELECT permission, action, topic, qos, retain FROM t_mqtt_acl WHERE username = ${username}
  */
 @Entity
@@ -18,7 +16,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Data
-public class MqttAcl {
+public class MqttAclPO {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;

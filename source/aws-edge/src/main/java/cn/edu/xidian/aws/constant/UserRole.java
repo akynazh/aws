@@ -1,8 +1,6 @@
 package cn.edu.xidian.aws.constant;
 
-import cn.edu.xidian.aws.pojo.UserAuthResult;
 import lombok.Getter;
-import org.springframework.http.ResponseEntity;
 import org.springframework.util.StringUtils;
 
 import java.util.Arrays;

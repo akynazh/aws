@@ -13,12 +13,12 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Data
-public class UserAuthResult {
+public class UserAuthResultVO {
     private String result;
     @JsonProperty("is_superuser")
     private Boolean isSuperuser = Boolean.FALSE;
 
-    public UserAuthResult(String result) {
+    public UserAuthResultVO(String result) {
         this.result = result;
     }
 }

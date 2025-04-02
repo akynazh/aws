@@ -25,4 +25,6 @@ public interface RecordRepository extends JpaRepository<Record, Long> {
             "group by r.work_id, r.unit;",
             nativeQuery = true)
     List<UserWorkOutputDTO> getUserWorkSummary(@Param("id") Long id);
+
+    Record getRecordByScaleIdAndEmployeeIdAndDataTime(Long scaleId, Long employeeId, Long dataTime);
 }

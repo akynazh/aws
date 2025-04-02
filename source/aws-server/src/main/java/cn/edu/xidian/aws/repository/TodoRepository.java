@@ -1,14 +1,15 @@
 package cn.edu.xidian.aws.repository;
 
-import cn.edu.xidian.aws.pojo.MqttAclPO;
+import cn.edu.xidian.aws.pojo.po.Record;
+import cn.edu.xidian.aws.pojo.po.Todo;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 /**
  * @author akynazh@gmail.com
- * @date 2/25/25
+ * @date 2025/4/2
  * @description
  */
 @Repository
-public interface MqttAclRepository extends JpaRepository<MqttAclPO, Integer> {
+public interface TodoRepository extends JpaRepository<Todo, Long> {
 }

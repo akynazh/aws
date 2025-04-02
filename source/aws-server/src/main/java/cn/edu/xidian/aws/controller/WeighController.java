@@ -11,6 +11,9 @@ import cn.edu.xidian.aws.pojo.vo.scale.ScaleAddVO;
 import cn.edu.xidian.aws.pojo.vo.scale.ScaleListVO;
 import cn.edu.xidian.aws.pojo.vo.scale.ScaleUpdateVO;
 import cn.edu.xidian.aws.pojo.vo.scale.ScaleVO;
+import cn.edu.xidian.aws.pojo.vo.todo.TodoListVO;
+import cn.edu.xidian.aws.pojo.vo.todo.TodoVO;
+import cn.edu.xidian.aws.pojo.vo.todo.TodosGetVO;
 import cn.edu.xidian.aws.pojo.vo.user.UserWorkOutputVO;
 import cn.edu.xidian.aws.service.*;
 import io.swagger.v3.oas.annotations.Operation;
@@ -21,7 +24,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
-import java.io.IOException;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -41,6 +43,8 @@ public class WeighController {
     private RecordService recordService;
     @Autowired
     private MqttUserService mqttUserService;
+    @Autowired
+    private TodoService todoService;
 
     @Operation(summary = "添加称重记录")
     @PostMapping("/record")
@@ -50,17 +54,26 @@ public class WeighController {
         return ResponseEntity.ok(Record.toRecordVO(record));
     }
 
+    @Operation(summary = "提交待处理称重记录")
+    @PostMapping("/record/todo")
+    @PreAuthorize(Security.PRE_AUTHORIZE_ADMIN)
+    public ResponseEntity<String> handleTodoRecord(@RequestBody TodoVO vo) {
+        recordService.handleTodo(vo);
+        return ResponseEntity.ok().build();
+    }
+
     @Operation(summary = "获取称重记录")
     @PostMapping("/record/list")
     @PreAuthorize(Security.PRE_AUTHORIZE_EMPLOYEE)
     public ResponseEntity<RecordListVO> getRecords(@RequestBody RecordsGetVO vo) {
-        List<Record> records = recordService.getRecords(vo);
-        List<RecordVO> vos = records.stream().map(Record::toRecordVO).collect(Collectors.toList());
-        long recordCount = recordService.getRecordCount(vo);
-        RecordListVO recordListVO = new RecordListVO();
-        recordListVO.setCount(recordCount);
-        recordListVO.setRecordList(vos);
-        return ResponseEntity.ok(recordListVO);
+        return ResponseEntity.ok(recordService.getRecords(vo));
+    }
+
+    @Operation(summary = "获取待处理称重记录")
+    @PostMapping("/record/todo/list")
+    @PreAuthorize(Security.PRE_AUTHORIZE_EMPLOYEE)
+    public ResponseEntity<TodoListVO> getTodos(@RequestBody TodosGetVO vo) {
+        return ResponseEntity.ok(todoService.getTodos(vo));
     }
 
     @Operation(summary = "添加电子秤")

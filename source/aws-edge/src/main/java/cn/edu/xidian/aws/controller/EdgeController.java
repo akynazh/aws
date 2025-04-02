@@ -4,7 +4,7 @@ import cn.edu.xidian.aws.config.MqttConfig;
 import cn.edu.xidian.aws.constant.Mqtt;
 import cn.edu.xidian.aws.constant.UserRole;
 import cn.edu.xidian.aws.pojo.RecordAddVO;
-import cn.edu.xidian.aws.pojo.UserAuthResult;
+import cn.edu.xidian.aws.pojo.UserAuthResultVO;
 import cn.edu.xidian.aws.pojo.UserLoginVO;
 import cn.edu.xidian.aws.pojo.UserPO;
 import cn.edu.xidian.aws.service.UserService;
@@ -25,14 +25,14 @@ public class EdgeController {
     private MqttConfig.MqttGateway mqttGateway;
 
     @PostMapping("/user/auth")
-    public ResponseEntity<UserAuthResult> userAuth(@RequestBody UserLoginVO vo) {
+    public ResponseEntity<UserAuthResultVO> userAuth(@RequestBody UserLoginVO vo) {
         if (userService.authUser(vo.getUsername(), vo.getPassword())) {
             UserPO user = userService.getUserByUID(vo.getUsername());
             if (UserRole.canAccessMqtt(user.getRoles())) {
-                return ResponseEntity.ok(new UserAuthResult(Mqtt.AUTH_ALLOW));
+                return ResponseEntity.ok(new UserAuthResultVO(Mqtt.AUTH_ALLOW));
             }
         }
-        return ResponseEntity.ok(new UserAuthResult(Mqtt.AUTH_DENY));
+        return ResponseEntity.ok(new UserAuthResultVO(Mqtt.AUTH_DENY));
     }
 
     @PostMapping("/weigh/record")

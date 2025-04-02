@@ -4,16 +4,21 @@ import cn.edu.xidian.aws.constant.*;
 import cn.edu.xidian.aws.exception.AwsArgumentException;
 import cn.edu.xidian.aws.exception.AwsForbiddenException;
 import cn.edu.xidian.aws.exception.AwsNotFoundException;
+import cn.edu.xidian.aws.exception.AwsRecordDupException;
 import cn.edu.xidian.aws.pojo.dto.UserWorkOutputDTO;
 import cn.edu.xidian.aws.pojo.po.*;
 import cn.edu.xidian.aws.pojo.po.Record;
 import cn.edu.xidian.aws.pojo.vo.produce.ProduceAnnualOutputVO;
 import cn.edu.xidian.aws.pojo.vo.produce.ProduceWorkOutputVO;
 import cn.edu.xidian.aws.pojo.vo.record.RecordAddVO;
+import cn.edu.xidian.aws.pojo.vo.record.RecordListVO;
+import cn.edu.xidian.aws.pojo.vo.record.RecordVO;
 import cn.edu.xidian.aws.pojo.vo.record.RecordsGetVO;
+import cn.edu.xidian.aws.pojo.vo.todo.TodoVO;
 import cn.edu.xidian.aws.pojo.vo.user.UserWorkOutputVO;
 import cn.edu.xidian.aws.pojo.vo.work.WorkUpdateVO;
 import cn.edu.xidian.aws.repository.RecordRepository;
+import cn.edu.xidian.aws.repository.TodoRepository;
 import cn.edu.xidian.aws.util.ScaleUtil;
 import com.alibaba.fastjson.JSON;
 import jakarta.transaction.Transactional;
@@ -23,13 +28,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Example;
 import org.springframework.data.domain.ExampleMatcher;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.redis.core.Cursor;
 import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.data.redis.core.ScanOptions;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
-import java.io.IOException;
 import java.math.BigDecimal;
-import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -54,11 +60,23 @@ public class RecordService {
     private RedisTemplate<String, String> redisTemplate;
     @Autowired
     private PredictService produceUtil;
+    @Autowired
+    private TodoService todoService;
+
+    private boolean isDuplicateRecord(RecordAddVO vo) {
+        Record record = recordRepository.getRecordByScaleIdAndEmployeeIdAndDataTime(
+                vo.getScaleId(), vo.getEmployeeId(), vo.getDataTime()
+        );
+        return record != null;
+    }
 
     @Transactional
     public Record addRecord(RecordAddVO vo) {
         if (vo == null) {
             throw new AwsArgumentException(AwsArgumentException.ARGUMENT_NULL);
+        }
+        if (isDuplicateRecord(vo)) {
+            throw new AwsRecordDupException();
         }
         String image = vo.getImage();
 //        String image64 = vo.getImage64();
@@ -125,10 +143,13 @@ public class RecordService {
         return recordRepository.save(record);
     }
 
-    public void addTempRecord(RecordAddVO vo) {
-        redisTemplate.opsForValue().append(Cache.RECORD_TEMP.getPrefix(), JSON.toJSONString(vo));
+    @Transactional
+    public void handleTodo(TodoVO todoVO) {
+        RecordAddVO recordAddVO = new RecordAddVO();
+        BeanUtils.copyProperties(todoVO, recordAddVO);
+        addRecord(recordAddVO);
+        todoService.delTodo(todoVO.getId());
     }
-
 
     public Record getRecord(Long id) {
         return recordRepository.findById(id).orElseThrow(
@@ -136,14 +157,17 @@ public class RecordService {
         );
     }
 
-    public List<Record> getRecords(RecordsGetVO vo) {
+    public RecordListVO getRecords(RecordsGetVO vo) {
         PageRequest pr = PageRequest.of(vo.getPage(), vo.getSize());
         Example<Record> example = getRecordExample(vo);
-        return recordRepository.findAll(example, pr).getContent();
-    }
+        List<Record> recordList = recordRepository.findAll(example, pr).getContent();
+        long count = recordRepository.count(example);
 
-    public long getRecordCount(RecordsGetVO vo) {
-        return recordRepository.count(getRecordExample(vo));
+        List<RecordVO> recordVOList = recordList.stream().map(Record::toRecordVO).collect(Collectors.toList());
+        RecordListVO recordListVO = new RecordListVO();
+        recordListVO.setCount(count);
+        recordListVO.setRecordList(recordVOList);
+        return recordListVO;
     }
 
     private Example<Record> getRecordExample(RecordsGetVO vo) {

@@ -1,109 +1,120 @@
-CREATE TABLE t_produce
+create table t_mqtt_acl
 (
-    id          BIGINT AUTO_INCREMENT NOT NULL,
-    name        VARCHAR(255)          NULL,
-    type        INT                   NULL,
-    create_time BIGINT                NOT NULL,
-    update_time BIGINT                NOT NULL,
-    status      INT                   NOT NULL,
-    CONSTRAINT pk_t_produce PRIMARY KEY (id)
+    id         int auto_increment
+        primary key,
+    action     varchar(255) not null,
+    permission varchar(255) not null,
+    qos        int          null,
+    retain     int          null,
+    topic      varchar(255) not null,
+    username   varchar(255) not null
 );
 
-CREATE TABLE t_record
+create table t_produce
 (
-    id                BIGINT AUTO_INCREMENT NOT NULL,
-    work_id           BIGINT                NOT NULL,
-    employee_id       BIGINT                NOT NULL,
-    scale_id          BIGINT                NOT NULL,
-    data_value        DECIMAL(10, 2)        NULL,
-    data_error_margin DECIMAL(10, 2)        NULL,
-    unit              INT                   NOT NULL,
-    data_time         BIGINT                NOT NULL,
-    CONSTRAINT pk_t_record PRIMARY KEY (id)
+    id          bigint       not null
+        primary key,
+    create_time bigint       not null,
+    name        varchar(255) not null,
+    name_en     varchar(255) null,
+    status      int          not null,
+    update_time bigint       not null,
+    constraint UKeiu0gl8n19ntvbgc5i5ukaej2
+        unique (name_en),
+    constraint UKq8an6fogth2xm1mo7e7pgndav
+        unique (name)
 );
 
-CREATE TABLE t_scale
+create table t_record
 (
-    id                    BIGINT AUTO_INCREMENT NOT NULL,
-    skey                  VARCHAR(255)          NULL,
-    model                 VARCHAR(255)          NULL,
-    max_capacity          DECIMAL(10, 2)        NULL,
-    min_capacity          DECIMAL(10, 2)        NULL,
-    unit                  INT                   NOT NULL,
-    verification_interval INT                   NOT NULL,
-    display_interval      INT                   NOT NULL,
-    unit_dv               INT                   NOT NULL,
-    protocol              INT                   NOT NULL,
-    create_time           BIGINT                NOT NULL,
-    update_time           BIGINT                NOT NULL,
-    status                INT                   NOT NULL,
-    CONSTRAINT pk_t_scale PRIMARY KEY (id)
+    id                bigint auto_increment
+        primary key,
+    data_error_margin decimal(10, 2) null,
+    data_time         bigint         not null,
+    data_value        decimal(10, 2) not null,
+    employee_id       bigint         not null,
+    image             varchar(255)   null,
+    produce_id        bigint         not null,
+    scale_id          bigint         not null,
+    unit              int            not null,
+    work_id           bigint         not null,
+    constraint UKlgtm88ducdt1scborhio1r6ky
+        unique (scale_id, employee_id, data_time)
 );
 
-CREATE TABLE t_user
+create index IDX3isox1oymsuxkdpccqc31tich
+    on t_record (scale_id);
+
+create index IDX5biju9bncs9erljyh31w58vv1
+    on t_record (employee_id);
+
+create index IDX91np2r95e23t6hoyswukn3r3f
+    on t_record (employee_id, work_id);
+
+create index IDXq6ryn6hugk5ny4rtrltxyuexa
+    on t_record (work_id);
+
+create table t_scale
 (
-    id          BIGINT AUTO_INCREMENT NOT NULL,
-    uid         VARCHAR(255)          NULL,
-    cid         VARCHAR(255)          NULL,
-    name        VARCHAR(255)          NULL,
-    password    VARCHAR(255)          NULL,
-    roles       VARCHAR(255)          NULL,
-    create_time BIGINT                NOT NULL,
-    update_time BIGINT                NOT NULL,
-    status      INT                   NOT NULL,
-    CONSTRAINT pk_t_user PRIMARY KEY (id)
+    id                    bigint auto_increment
+        primary key,
+    create_time           bigint         not null,
+    display_interval      int            null,
+    max_capacity          decimal(10, 2) not null,
+    min_capacity          decimal(10, 2) not null,
+    model                 varchar(255)   null,
+    protocol              varchar(255)   null,
+    sid                   varchar(255)   not null,
+    status                int            not null,
+    unit                  int            not null,
+    unit_dv               int            null,
+    update_time           bigint         not null,
+    verification_interval int            null
 );
 
-CREATE TABLE t_work
+create table t_todo
 (
-    id          BIGINT AUTO_INCREMENT NOT NULL,
-    produce_id  BIGINT                NOT NULL,
-    start_time  BIGINT                NOT NULL,
-    end_time    BIGINT                NOT NULL,
-    data_value  DECIMAL(10, 2)        NULL,
-    unit        INT                   NOT NULL,
-    create_time BIGINT                NOT NULL,
-    update_time BIGINT                NOT NULL,
-    status      INT                   NOT NULL,
-    CONSTRAINT pk_t_work PRIMARY KEY (id)
+    id                bigint auto_increment
+        primary key,
+    data_error_margin decimal(10, 2) null,
+    data_time         bigint         not null,
+    data_value        decimal(10, 2) not null,
+    employee_id       bigint         not null,
+    image             varchar(255)   null,
+    produce_id        bigint         null,
+    produce_name      varchar(255)   null,
+    scale_id          bigint         not null,
+    unit              int            not null
 );
 
-CREATE TABLE `t_mqtt_acl` (
-  `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
-  `username` varchar(100) NOT NULL,
-  `permission` varchar(5) NOT NULL, -- 用于指定操作权限，可选值有 allow 和 deny。
-  `action` varchar(9) NOT NULL, -- 用于指定当前规则适用于哪些操作，可选值有 publish、subscribe 和 all。
-  `topic` varchar(100) NOT NULL, -- 用于指定当前规则适用的主题，可以使用主题过滤器和主题占位符。(# 代表所有)
-  `qos` tinyint(1), -- (可选)用于指定规则适用的消息 QoS，可选值为 0、1、2，也可以用 , 分隔的字符串指定多个 QoS，例如 0,1。默认为全部 QoS。
-  `retain` tinyint(1), -- （可选）用于指定当前规则是否支持发布保留消息，可选值有 0、1，默认允许保留消息。
-  INDEX username_idx(username),
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+create table t_user
+(
+    id          bigint auto_increment
+        primary key,
+    create_time bigint       not null,
+    name        varchar(255) not null,
+    password    varchar(255) not null,
+    roles       varchar(255) null,
+    status      int          not null,
+    uid         varchar(255) not null,
+    update_time bigint       not null,
+    constraint UKcc1ycrtpjpjnkjsfml72vj5op
+        unique (uid)
+);
 
--- emqx dashboard 配置 SQL
--- SELECT permission, action, topic, qos, retain FROM t_mqtt_acl WHERE username = ${username}
+create table t_work
+(
+    id          bigint auto_increment
+        primary key,
+    create_time bigint         not null,
+    data_value  decimal(10, 2) null,
+    end_time    bigint         not null,
+    produce_id  bigint         not null,
+    start_time  bigint         not null,
+    status      int            not null,
+    unit        int            null,
+    update_time bigint         not null
+);
 
-ALTER TABLE t_produce
-    ADD CONSTRAINT uc_t_produce_name UNIQUE (name);
-
-ALTER TABLE t_produce
-    ADD CONSTRAINT uc_t_produce_type UNIQUE (type);
-
-ALTER TABLE t_scale
-    ADD CONSTRAINT uc_t_scale_skey UNIQUE (skey);
-
-ALTER TABLE t_user
-    ADD CONSTRAINT uc_t_user_cid UNIQUE (cid);
-
-ALTER TABLE t_user
-    ADD CONSTRAINT uc_t_user_uid UNIQUE (uid);
-
-CREATE INDEX idx_853a0d80741b5033f24de6623 ON t_record (employee_id, work_id);
-
-CREATE INDEX idx_9d65f7f0ba74b613b48315934 ON t_record (work_id);
-
-CREATE INDEX idx_c8f83c4cdd003e5fb42b2ae65 ON t_record (employee_id);
-
-CREATE INDEX idx_e65c826206e0bf0f5d4f8351e ON t_work (produce_id);
-
-CREATE INDEX idx_f89fb714a035eaa647eeb53ef ON t_record (scale_id);
+create index IDXdcmwaouoa9603wafnf9iwr8dg
+    on t_work (produce_id);

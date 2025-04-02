@@ -25,24 +25,35 @@ public class Produce {
      * 用户自己添加的农作物，id 从 1000000 开始，其他系统自带的从 0 开始（继承于 Predict 系统提供的农作物）
      */
     private Long id;
+
     /**
      * 果实名称
      */
-    @Column(unique = true)
+    @Column(unique = true, nullable = false)
     private String name;
+
+    /**
+     * 果实英文名称
+     */
     @Column(unique = true)
     private String nameEn;
+
     /**
      * 创建时间，毫秒级时间戳
      */
+    @Column(nullable = false)
     private Long createTime;
+
     /**
      * 更新时间，毫秒级时间戳
      */
+    @Column(nullable = false)
     private Long updateTime;
+
     /**
      * 状态，0 为未种植，1 为在种植，2 为已删除
      */
+    @Column(nullable = false)
     private Integer status;
 
     public static ProduceVO toProduceVO(Produce produce) {

@@ -1,4 +1,4 @@
-package cn.edu.xidian.aws.pojo;
+package cn.edu.xidian.aws.pojo.vo.todo;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
@@ -7,13 +7,14 @@ import lombok.NoArgsConstructor;
 
 /**
  * @author akynazh@gmail.com
- * @date 2025/1/13
+ * @date 2025/4/2
  * @description
  */
 @NoArgsConstructor
 @AllArgsConstructor
 @Data
-public class UserLoginVO {
-    private String username;
-    private String password;
+@Schema(name = "TodoDelVO", description = "完成待处理称重记录表单")
+public class TodoDelVO {
+    @Schema(description = "待处理称重记录编号")
+    private Long id;
 }

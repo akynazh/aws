@@ -2,9 +2,13 @@ package cn.edu.xidian.aws.config;
 
 import cn.edu.xidian.aws.constant.Mqtt;
 import cn.edu.xidian.aws.pojo.bo.MqttResult;
+import cn.edu.xidian.aws.pojo.vo.record.RecordAddVO;
 import cn.edu.xidian.aws.service.MqttUserService;
 import cn.edu.xidian.aws.service.MqttWeighService;
+import cn.edu.xidian.aws.service.RecordService;
+import cn.edu.xidian.aws.service.TodoService;
 import com.alibaba.fastjson.JSON;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.annotation.PostConstruct;
 import lombok.extern.slf4j.Slf4j;
 import org.eclipse.paho.client.mqttv3.MqttConnectOptions;
@@ -54,6 +58,8 @@ public class MqttConfig {
     private MqttWeighService weighService;
     @Autowired
     private MqttUserService mqttUserService;
+    @Autowired
+    private TodoService todoService;
 
     @PostConstruct
     public void init() {
@@ -127,6 +133,9 @@ public class MqttConfig {
                 context -> {
                     // 超过最大重试次数，触发这个回调
                     log.error("Fail to consume message after retry: {}", message);
+                    Object payload = message.getPayload();
+                    RecordAddVO data = new ObjectMapper().readValue(payload.toString(), RecordAddVO.class);
+                    todoService.addTodo(data);
                     Throwable e = context.getLastThrowable();
                     MqttResult result = new MqttResult();
                     result.setSuccess(0);
