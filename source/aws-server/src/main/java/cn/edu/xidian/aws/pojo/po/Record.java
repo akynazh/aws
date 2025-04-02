@@ -35,6 +35,14 @@ public class Record {
      */
     private Long workId;
     /**
+     * 农作物编号
+     */
+    private Long produceId;
+    /**
+     * 农作物图片地址
+     */
+    private String image;
+    /**
      * 员工编号
      */
     private Long employeeId;

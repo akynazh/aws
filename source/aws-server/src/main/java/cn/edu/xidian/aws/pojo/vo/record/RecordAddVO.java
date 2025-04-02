@@ -36,11 +36,11 @@ public class RecordAddVO {
      */
     @Schema(description = "采摘作业图片 URL")
     private String image;
-    /**
-     * 采摘作业图片 base64 编码
-     */
-    @Schema(description = "采摘作业图片 base64 编码")
-    private String image64;
+//    /**
+//     * 采摘作业图片 base64 编码
+//     */
+//    @Schema(description = "采摘作业图片 base64 编码")
+//    private String image64;
     /**
      * 员工编号
      */

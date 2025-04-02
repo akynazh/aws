@@ -30,6 +30,12 @@ public class RecordVO {
     @Schema(description = "采摘作业编号")
     private Long workId;
 
+    @Schema(description = "农作物编号")
+    private Long produceId;
+
+    @Schema(description = "农作物图片地址")
+    private String image;
+
     /**
      * 员工编号
      */

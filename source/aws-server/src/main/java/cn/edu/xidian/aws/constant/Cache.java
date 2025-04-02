@@ -16,7 +16,8 @@ import java.util.concurrent.TimeUnit;
 public enum Cache {
     USER_WORK_SUMMARY("user:work:summary:", 1L, TimeUnit.HOURS),
     PRODUCE_ANNUAL_OUTPUT("produce:annual:output:", 7L, TimeUnit.DAYS),
-    PRODUCE_WORK_OUTPUT("produce:work:output:", 1L, TimeUnit.DAYS);
+    PRODUCE_WORK_OUTPUT("produce:work:output:", 1L, TimeUnit.DAYS),
+    RECORD_TEMP("record:temp:", null, null);
 
     private final String prefix;
     private final Long duration;

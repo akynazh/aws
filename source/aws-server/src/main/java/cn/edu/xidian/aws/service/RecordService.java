@@ -56,12 +56,12 @@ public class RecordService {
     private PredictService produceUtil;
 
     @Transactional
-    public Record addRecord(RecordAddVO vo) throws IOException {
+    public Record addRecord(RecordAddVO vo) {
         if (vo == null) {
             throw new AwsArgumentException(AwsArgumentException.ARGUMENT_NULL);
         }
         String image = vo.getImage();
-        String image64 = vo.getImage64();
+//        String image64 = vo.getImage64();
         Long produceId = vo.getProduceId();
         String produceName = vo.getProduceName();
         Long employeeId = vo.getEmployeeId();
@@ -77,10 +77,10 @@ public class RecordService {
             throw new AwsArgumentException(AwsArgumentException.SCALE_UNIT_NOT_EXISTS);
         }
         if (produceId == null && !StringUtils.hasText(produceName)) {
-            if (!StringUtils.hasText(image) && !StringUtils.hasText(image64)) {
+            if (!StringUtils.hasText(image)) {
                 throw new AwsArgumentException(AwsArgumentException.PARAM_MISSING);
             }
-            produceName = produceUtil.predict(image, image64);
+            produceName = produceUtil.predict(image, null);
             Produce produce = produceService.getProduceByName(produceName);
             produceId = produce.getId();
         } else if (produceId == null) {
@@ -124,6 +124,11 @@ public class RecordService {
         record.setWorkId(ongoingWork.getId());
         return recordRepository.save(record);
     }
+
+    public void addTempRecord(RecordAddVO vo) {
+        redisTemplate.opsForValue().append(Cache.RECORD_TEMP.getPrefix(), JSON.toJSONString(vo));
+    }
+
 
     public Record getRecord(Long id) {
         return recordRepository.findById(id).orElseThrow(

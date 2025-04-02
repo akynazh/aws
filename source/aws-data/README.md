@@ -3,14 +3,13 @@
 ## DEPLOY
 
 ```sh
-docker network create aws
-cd server && docker-compose up -d
-cd edge && docker-compose up -d
+docker-compose up -d
 ```
 
 - mysql-server: 服务端数据库，主库
 - mysql-edge：边端数据库，从库
 - redis：服务端 redis 服务
+- emqx1,emqx2,emqx3: emqx 静态集群
 
 ## MySQL 主从复制（GTID 模式）
 

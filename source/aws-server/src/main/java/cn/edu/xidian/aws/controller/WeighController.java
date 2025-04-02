@@ -3,6 +3,7 @@ package cn.edu.xidian.aws.controller;
 import cn.edu.xidian.aws.constant.Security;
 import cn.edu.xidian.aws.pojo.po.Record;
 import cn.edu.xidian.aws.pojo.po.Scale;
+import cn.edu.xidian.aws.pojo.vo.record.RecordAddVO;
 import cn.edu.xidian.aws.pojo.vo.record.RecordListVO;
 import cn.edu.xidian.aws.pojo.vo.record.RecordVO;
 import cn.edu.xidian.aws.pojo.vo.record.RecordsGetVO;
@@ -20,6 +21,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
+import java.io.IOException;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -40,13 +42,13 @@ public class WeighController {
     @Autowired
     private MqttUserService mqttUserService;
 
-//    @Operation(summary = "添加称重记录")
-//    @PostMapping("/record")
-//    @PreAuthorize(Security.PRE_AUTHORIZE_SCALE)
-//    public ResponseEntity<RecordVO> addRecord(@RequestBody RecordAddVO vo) throws IOException {
-//        Record record = recordService.addRecord(vo);
-//        return ResponseEntity.ok(Record.toRecordVO(record));
-//    }
+    @Operation(summary = "添加称重记录")
+    @PostMapping("/record")
+    @PreAuthorize(Security.PRE_AUTHORIZE_SCALE)
+    public ResponseEntity<RecordVO> addRecord(@RequestBody RecordAddVO vo) {
+        Record record = recordService.addRecord(vo);
+        return ResponseEntity.ok(Record.toRecordVO(record));
+    }
 
     @Operation(summary = "获取称重记录")
     @PostMapping("/record/list")

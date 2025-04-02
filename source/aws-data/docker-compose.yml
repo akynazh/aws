@@ -1,5 +1,22 @@
 version: "3"
 services:
+  mysql-server:
+    image: mysql:8.0
+    container_name: mysql-server
+    networks:
+      aws:
+        aliases:
+          - mysql-server
+    restart: unless-stopped
+    ports:
+      - 3306:3306
+    environment:
+      - MYSQL_ROOT_PASSWORD=658766@Jzh
+      - MYSQL_DATABASE=aws
+    volumes:
+      - ./.dep/mysql-server/data:/var/lib/mysql
+      - ./.dep/mysql-server/conf:/etc/mysql/conf.d
+
   mysql-edge:
     image: mysql:8.0
     container_name: mysql-edge
@@ -13,9 +30,25 @@ services:
     environment:
       - MYSQL_ROOT_PASSWORD=658766@Jzh
       - MYSQL_DATABASE=aws
+    command: --init-file=/docker-entrypoint-initdb.d/slave.sql
     volumes:
       - ./.dep/mysql-edge/data:/var/lib/mysql
       - ./.dep/mysql-edge/conf:/etc/mysql/conf.d
+      - ./.dep/mysql-edge/init:/docker-entrypoint-initdb.d
+
+  redis:
+    image: redis:alpine
+    container_name: redis
+    networks:
+      aws:
+        aliases:
+          - redis
+    ports:
+      - "6379:6379"
+    restart: unless-stopped
+    command: "redis-server --requirepass 658766@Jzh"
+    volumes:
+      - ./.dep/redis/data:/data
 
   emqx1:
     image: emqx:5.8.6
@@ -98,4 +131,4 @@ services:
       
 networks:
   aws:
-    external: true
+    driver: bridge
