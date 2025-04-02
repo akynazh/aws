@@ -83,7 +83,23 @@ mysql -u root -P 3307 -h mysql-edge -uroot -p658766@Jzh
 > reset slave & start slave
 ```
 
-## [废弃] MySQL 主从复制（传统模式）
+使用初始化脚本来自动化这一过程：
+
+```sql
+-- mysql-edge/init/slave.sql
+RESET SLAVE;
+START SLAVE;
+```
+
+配置 Docker，每次启动容器，都自动执行初始化脚本：
+
+```yml
+command: --init-file=/docker-entrypoint-initdb.d/slave.sql
+volumes:
+    - ./.dep/mysql-edge/init:/docker-entrypoint-initdb.d
+```
+
+<!-- ## [废弃] MySQL 主从复制（传统模式）
 
 ### 主库配置
 
@@ -166,4 +182,4 @@ START SLAVE;
 
 -- 验证复制状态
 SHOW SLAVE STATUS\G;
-```
+``` -->

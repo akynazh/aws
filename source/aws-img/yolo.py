@@ -5,7 +5,8 @@ import requests
 from ultralytics import YOLO
 
 # 加载 YOLO 模型
-model = YOLO("yolov8_best.pt")
+# model = YOLO("yolov8/best.pt")
+model = YOLO("yolov11/best.pt")
 
 
 def predict(image_local="", image_url="", image_base64=""):

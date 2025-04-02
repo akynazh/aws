@@ -14,7 +14,7 @@
 3. Compile: `xelatex main.tex && biber main && xelatex main.tex`
 4. Auto Compile: `latexmk -pdf -xelatex -pvc main.tex` (Or use: Vsce-latexWorkshop)
 
-## Word
+<!-- ## WORD
 
 ```sh
 # brew install pandoc-crossref
@@ -29,7 +29,7 @@ pandoc main.tex \
 -t docx+native_numbering \
 --number-sections \
 -o main.docx
-```
+``` -->
 
 ## NOTE
 

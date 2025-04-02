@@ -1,6 +1,12 @@
 # aws-img
 
-## 训练
+## API
+
+```sh
+.venv/bin/python api.py
+```
+
+## TRAIN
 
 1. 从 kaggle 获取到 fruits-360 数据集（已完成数据标注）
 2. 将数据集上传到 roboflow
@@ -18,19 +24,10 @@ S3: 在本地训练
 
 类似 S1，修改对应参数。太卡了，放弃。
 
-## 推理
+## PREDICT
 
 ```sh
 pip install ultralytics
-yolo task=detect mode=predict model=yolov8_best.pt source=./sample/carrot.png project=./out
-```
-
-## 准确率
-
-模型准确率应该要在论文中体现。混淆矩阵重点关注下。
-
-## API
-
-```sh
-.venv/bin/python api.py
+yolo task=detect mode=predict model=yolov8/best.pt source=./sample/carrot.png project=./yolov8/out
+yolo task=detect mode=predict model=yolov11/best.pt source=./sample/carrot.png project=./yolov11/out
 ```

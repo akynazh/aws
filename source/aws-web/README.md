@@ -13,6 +13,10 @@ pnpm install
 pnpm run dev
 ```
 
+## PUBLISH
+
+TODO
+
 ## NOTE
 
 ### Template

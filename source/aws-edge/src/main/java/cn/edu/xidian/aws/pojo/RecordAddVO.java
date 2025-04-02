@@ -1,5 +1,6 @@
 package cn.edu.xidian.aws.pojo;
 
+import com.alibaba.fastjson.annotation.JSONField;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -17,6 +18,15 @@ import java.math.BigDecimal;
 @Data
 @Schema(name = "RecordAddVO", description = "新增称重记录表单")
 public class RecordAddVO {
+
+    @Schema(description = "uid")
+    @JSONField(serialize = false)
+    private String username;
+
+    @Schema(description = "用户密码")
+    @JSONField(serialize = false)
+    private String password;
+
     /**
      * 果实 Id
      */

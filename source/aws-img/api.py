@@ -1,7 +1,7 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 import uvicorn
-import yolov8_best as yolo
+import yolo
 from pydantic import BaseModel
 
 

@@ -1,14 +1,24 @@
-# Source
+# source
 
-- aws-deploy: 部署模块
-- aws-test: 测试模块
-- aws-server: 后台服务
+## START
+
+```sh
+cd aws-data && docker-compose up -d
+cd aws-server && mvn package -DskipTests && java -jar target/aws-server-1.0.0.jar
+cd aws-edge && mvn package -DskipTests && java -jar target/aws-edge-1.0.0.jar
+```
+
+## MODULE
+
+- aws-data: 数据模块
 - aws-edge: 边端服务
-- aws-web: 前台服务
-- aws-simulator: 电子秤模拟器
 - aws-img: 果蔬识别服务
+- aws-server: 后台服务
+- aws-simulator: 电子秤模拟器
+- aws-test: 测试模块
+- aws-web: 前台服务
 
-# Todo
+## TODO
 
 - [x] QOS 和 ACK 问题
 - [x] 电子秤模拟器初步完成
@@ -19,15 +29,18 @@
 - [x] EMQX Docker Deploy
 - [x] 解决 MQTT 重连卡住的问题
 - [x] 果蔬图片识别自部署并替换 API
-- [ ] 后台管理添加手动处理称重数据的功能
-- [ ] 模型准确度计算
+- [x] 后台管理添加手动处理称重数据的功能
+- [x] 模型准确度计算
+- [ ] 前台优化并添加处理称重数据的功能
+- [ ] 前台打包部署问题
+- [ ] 模拟器结果输出优化
 - [ ] 部署图
 - [ ] 完善论文
 - [ ] 压力测试
 - [ ] 功能测试
 - [ ] 总结前端开发流程，书写博客
 
-# Doc
+## DOC
 
 1. EMQX 官方文档：https://docs.emqx.com/zh/emqx/v5.8/
 2. MQTTX CLI 文档：https://mqttx.app/zh/docs/cli

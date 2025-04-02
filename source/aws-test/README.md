@@ -1,1 +1,4 @@
 # aws-test
+
+- func
+- jmeter
