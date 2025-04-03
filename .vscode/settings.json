@@ -1,4 +1,5 @@
 {
+    "editor.fontSize": 30,
     "files.exclude": {
         "paper/build": true,
         // ".git": true,
