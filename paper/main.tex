@@ -5,7 +5,14 @@
 \usepackage{graphicx}
 \usepackage{longtable}
 
-\AtBeginDocument{\ctexset{subsection/format+=\centering}}
+\usepackage{titlesec}
+
+\titleformat{\subsection}
+{\normalfont\zihao{4}\centering}
+{\thesubsection}
+{1em}
+{}
+
 \xdusetup{
 style = { 
     cjk-font = fandol, 
@@ -22,8 +29,8 @@ info = {
     student-id = {20009100359},
     abstract = {abs_zh.tex},
     abstract* = {abs_en.tex},
-    keywords = {智慧农业, 称重系统, Spring Boot, Vue, MQTT, YOLO, 物联网, 信息管理系统},
-    keywords* = {Smart agriculture, Weighing System, Spring Boot, Vue, MQTT, YOLO, IoT, Information management system},
+    keywords = {智慧农业, 物联网, Spring Boot, Vue, YOLO},
+    keywords* = {Smart agriculture, IoT, Spring Boot, Vue, YOLO},
     bib-resource = {reference.bib},
 }
 }

@@ -1,28 +1,81 @@
 \chapter{软件相关技术概述}
 
-\section{MVC/MVVM 设计模式}
+\section{Spring 技术栈}
 
-在农业果实称重云端软件中，基于前后端分离的开发思想，采用了 Spring + Vue 的技术栈，基于 MVC(Model-View-Controller) 和 MVVM(Model-View-ViewModel) 的设计模式来完成开发。下面对这两种设计模式进行具体阐述。
+农业果实称重云端软件使用 Spring 技术栈来构建整个后台服务，技术栈包括了核心的 Spring 框架，以及两个重要的基于 Spring 的框架：Spring Security 和 Spring Boot。
 
-在现代 Web 开发中，前后端分离已成为一种主流的架构模式。传统的 Web 开发通常采用服务端渲染（SSR）的方式，前端和后端集成在一起，由后端生成 HTML 页面并返回给浏览器，浏览器仅负责解析和展示页面内容。然而，随着 Web 技术的发展和前端框架（如 React、Vue.js、Angular）的广泛应用，前后端分离的架构逐渐成为主流。
+Spring 框架主要提供了七大模块的功能，分别是数据访问/集成模块、WEB服务模块、切面模块、工具模块、消息模块、核心模块以及测试模块，如图\ref{fig:Spring}所示；Spring Security 框架则为系统提供了强大的安全保障，确保了用户数据和操作的安全性；Spring Boot 框架提供了简化应用开发和配置的能力，帮助快速构建和部署云端应用。
 
-在前后端分离架构下，前端和后端的开发、部署和运行环境是独立的，二者通过 API 进行通信。前端专注于页面的展示和交互，通过调用后端的接口获取数据和提交操作；后端则专注于业务逻辑的处理、数据存储和安全管理。通过这种分离，前后端可以独立开发、测试和部署，提高了开发效率和系统的扩展性。
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.8\linewidth]{../design/Spring.png}
+    \caption{Spring 七大模块}
+    \label{fig:Spring}
+\end{figure}
 
-在前后端分离的架构模式下，MVC 设计模式依然存在，但它的角色和应用场景发生了一些变化。前后端分离的架构通常意味着前端和后端的职责和运行环境是分开的，前端通过 API（通常是 RESTful 或 GraphQL）与后端进行通信。
+Spring 框架中的核心模块提供了 IOC (控制反转)和 DI (依赖注入)这两大功能；切面模块提供了 AOP (面向切面编程)支持；数据访问/集成模块主要提供了对象关系映射、事务、数据库连接、Java 消息服务以及对象 XML 映射这五个功能；Web 服务模块为应用提供了编解码、过滤器、跨域、WebFlux(响应式 Web 编程)、WebMVC(模型-视图-控制器模式)等功能；工具模块则为应用提供了服务监控、日志记录等扩展功能；消息模块提供了丰富易用的消息队列集成；测试模块则为应用提供了强大的单元测试支持\cite{Spring-框架概述}。
 
-后端依然可以使用 MVC 模式来处理请求和响应。具体来说，后端的 MVC 主要处理以下内容：
-1、Model：表示业务逻辑层或数据模型，通常是数据库实体或服务层中的数据对象。它负责处理数据存取、验证和计算等操作。
-2、View：在传统的 MVC 中，View 是用户界面部分，负责显示数据。而在前后端分离架构中，后端的 View 主要是指服务器端生成的 JSON 或 XML 数据，它不是直接渲染页面，而是以 API 的形式将数据返回给前端。
-3、Controller：处理客户端请求、调用相应的业务逻辑（Model），并最终返回一个响应。Controller 将从 Model 中获取数据，通常会将其转化为 JSON 格式并返回给前端。
+Spring Security 是 Spring 框架的安全扩展，专门用于解决应用的安全需求，通过与 Spring 的各个模块的集成，提供了一种高度灵活且易于配置的安全方案。Spring Security 提供了强大而灵活的安全过滤器，用于对用户进行认证和授权，其请求过滤流程如图\ref{fig:Spring-Security}所示。
 
-在这种情况下，后端的 MVC 模式 用于接收和处理 API 请求，完成业务逻辑并返回数据，而不直接负责页面渲染。后端的 Controller 负责接收前端发送的 HTTP 请求，调用 Model 层进行数据处理，然后通过 API 将数据返回给前端。
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.8\linewidth]{../design/Spring-Security.png}
+    \caption{Spring Security 请求过滤流程}
+    \label{fig:Spring-Security}
+\end{figure}
 
-前后端分离架构中的前端通常使用 MVVM（Model-View-ViewModel）或类似的设计模式，而不完全遵循传统的 MVC 模式。前端通常不负责数据的存储与计算，而是通过 API 从后端获取数据并展示。
+图\ref{fig:Spring-Security}中左侧的请求链是 Servlet 定义的过滤器链，右侧的请求链是 Spring Security 定义的安全过滤器链。客户端发起一个 HTTP 请求，请求首先到达 Servlet 过滤器链，其中过滤器0至过滤器n是普通的 Servlet 过滤器，通常用于执行非安全相关的任务如日志记录、性能监控、数据压缩等。Spring Security 所提供的过滤器代理委托者将会在 Servlet 过滤器链中拦截到该请求，将请求委托给过滤器代理，过滤器代理将根据请求的特征选择一个匹配的安全过滤器链，依次对请求进行处理(例如身份验证、授权等)。如果所有过滤器都允许该请求通过，则请求最终到达 Servlet 进行业务逻辑处理。Servlet 生成响应，响应同样会经过滤器链返回给客户端。如果在安全过滤器链的任何阶段，请求未能通过安全检查(例如身份验证失败或未授权)，则会根据配置返回相应的错误响应\cite{Spring-Security-架构设计}。
 
-1、Model：在前端中，Model 主要指代数据模型，通常通过 API 获取的数据。例如，前端通过 HTTP 请求从后端获取的 JSON 数据。
-2、View：表示用户界面（UI），前端的页面、组件或视图，由前端框架（如 React、Vue、Angular）渲染。
-3、ViewModel：前端的 ViewModel 是将 Model 和 View 连接起来的部分，负责将数据处理成适合显示的格式，并监听用户的交互操作。前端框架（如 React、Vue）通常在这个层次进行数据绑定与更新。
+Spring Boot 是一个基于 Spring 的框架，旨在简化应用程序的开发过程。Spring Boot 提供了自动化配置和内嵌服务器支持，极大地减少了 Spring 应用程序所需的配置工作。它通过预设的默认配置和自动化机制，使得开发者能够专注于业务逻辑，而无需关心复杂的底层设置\cite{Spring-Boot-概述}。
 
-在前后端分离的架构中，前端不直接处理数据存储或计算，而是依赖后端提供 API 接口来获取数据。前端通过调用后端 API，获取数据并根据这些数据更新 View（页面）。
+综上所述，农业果实称重云端软件采用的 Spring 技术栈通过 Spring、Spring Security 和 Spring Boot 的紧密结合，提供了强大的功能支持和灵活的扩展性。Spring 框架 提供了多种模块的支持，涵盖了从数据访问、Web 服务到测试等各个方面，确保了系统的高效开发和运行。Spring Security 作为安全扩展，确保了系统在处理用户数据和操作时的安全性，保护了敏感信息免受潜在威胁。同时，Spring Boot 通过自动化配置和内嵌服务器支持，大大简化了系统的开发和部署过程，提升了开发效率和系统的可维护性。
 
-对于本项目，在 Spring 后端项目中，采用 MVC 模式来设计 RESTful API。后端 Controller 接收前端的 HTTP 请求，调用 Service 层（Model）处理数据，返回一个包含数据的 JSON 响应。在 Vue 前端项目中，使用 MVVM 模式，Model 是从后端 API 获取的 JSON 数据，View 是用户界面，ViewModel 是控制数据展示和用户交互的逻辑代码。
+\section{YOLO 目标检测算法}
+
+YOLO(You Only Look Once)目标检测算法是一种高效的目标检测算法，在计算机视觉领域得到了广泛的应用\cite{Lin2019}。在农业果实称重云端软件中，应用 YOLOv8 来训练果实图像检测模型，实现果实种类的检测与识别。YOLOv8 的检测原理可以从图像划分、目标预测、损失函数和后处理四个方面阐述。
+
+1、图像划分：YOLOv8 将输入图像划分成多个网格单元。每个网格单元负责预测中心点落在该单元内的目标。这种划分方式使得算法能够快速定位目标的大致位置，提高检测效率。
+
+2、目标预测：对于每个网格单元，YOLOv8 预测多个边界框和对应的类别概率。边界框包含了目标的位置信息，通常用四个坐标值表示。类别概率表示该边界框内目标属于各个类别的可能性。
+
+3、损失函数：YOLOv8 使用一种特定的损失函数来优化模型的参数。损失函数通常由分类损失和回归损失组成。分类损失用于衡量模型对目标类别的预测准确性，回归损失用于衡量模型对目标边界框的预测准确性。
+
+4、后处理：在预测完成后，YOLOv8 通常采用一些后处理方法，如非极大值抑制（Non-Maximum Suppression，NMS）或软非极大值抑制（Soft-NMS）\cite{SuperYOLO8}，来去除重复的检测结果，提高检测的准确性。
+
+\section{EMQX 网关框架}
+
+在农业果实称重云端软件中，为了在低成本的情况下，支持更多电子秤协议的接入，采用了 EMQX 所提供的网络框架，将多种不同物联网应用层协议在网关处转换为 MQTT 协议，使用 MQTT 协议继续进行后续的通信。
+
+EMQX 提供了统一的用户层接口和会话/连接管理。各个协议的客户端有独立的认证器和监控器\cite{EMQX-Gateway}。其整体的架构如图\ref{fig:EMQX-Gateway}所示。
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.8\linewidth]{../design/EMQX-Gateway.png}
+    \caption{EMQX 网关框架架构}
+    \label{fig:EMQX-Gateway}
+\end{figure}
+
+在图\ref{fig:EMQX-Gateway}中，左侧展现了 EMQX 网关的分层架构，右侧展现的是 MQTT 发布/订阅核心组成。在 EMQX 网关分层架构中，左下角显示了包括 MQTT-SN、Stomp、CoAP、LwM2M、JT/T 808 在内的多种协议，这些协议有着独立的认证器来完成认证和监控器来进行客户端级别的指标统计功能。
+
+不同协议的消息进入网关后，首先完成认证，认证通过后将会进行消息模型的转换，将消息内容转换成为 MQTT 格式的内容，并以 MQTT 协议进行后续的通信。通过 MQTT 授权器完成授权功能，最后执行发布和订阅动作。
+
+\section{基于 GTID 的主从复制技术}
+
+在农业果实称重云端软件中，使用了 MySQL 数据库来存储大量数据，包含主库和从库，主库完成数据的读写，而从库只进行数据的读取。为实现主从库数据的一致性，采用了基于 GTID(Global Transaction Identifier, 即全局事务标识符) 的主从复制技术来完成数据同步操作。
+
+基于 GTID 的主从复制技术是一种在数据库系统中广泛应用的重要技术，它在提高数据的可用性、可靠性和可扩展性方面发挥着关键作用。GTID 是一个在 MySQL 数据库中用于唯一标识一个事务的标识符。GTID 由服务器 UUID(Universally Unique Identifier, 即全局唯一标识符) 和事务编号组成，通过这种方式可以在不同的数据库服务器之间唯一地标识一个事务。GTID 的引入使得主从复制更加灵活和可靠，同时也简化了复制的配置和管理。其主从复制的流程如图\ref{fig:GTID-Replication}所示。
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.8\linewidth]{../design/GTID-Replication.png}
+    \caption{主从复制流程}
+    \label{fig:GTID-Replication}
+\end{figure}
+
+图\ref{fig:GTID-Replication}中左侧为主库，右侧为从库，具体执行解释如下：
+
+1、主库在执行事务时，会为每个事务分配一个唯一的 GTID，并将该 GTID 记录在二进制日志中。
+
+2、从库连接到主库后，读取主库二进制日志并将其写入本地的中继日志。根据其中的 GTID 来判断哪些事务已经执行过，哪些事务需要执行。如果一个事务的 GTID 不在从库的已执行事务集合中，从库就会执行该事务。
+
+3、从库在执行事务时，也会为每个事务分配一个 GTID，并将其记录在自己的二进制日志中。这样，从库也可以作为其他从库的主库，实现级联复制。

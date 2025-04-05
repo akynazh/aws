@@ -1,0 +1,34 @@
+<mxfile host="65bd71144e">
+    <diagram id="FNlCPJacId-yfFkSHzyv" name="Page-1">
+        <mxGraphModel dx="674" dy="553" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" math="0" shadow="0">
+            <root>
+                <mxCell id="0"/>
+                <mxCell id="1" parent="0"/>
+                <mxCell id="15" value="" style="rounded=0;whiteSpace=wrap;html=1;fontFamily=Songti SC;fontSize=16;" parent="1" vertex="1">
+                    <mxGeometry x="20" y="80" width="520" height="440" as="geometry"/>
+                </mxCell>
+                <mxCell id="2" value="核心模块" style="rounded=1;whiteSpace=wrap;html=1;fontFamily=Songti SC;fontSize=16;" parent="1" vertex="1">
+                    <mxGeometry x="50" y="370" width="460" height="50" as="geometry"/>
+                </mxCell>
+                <mxCell id="3" value="切面模块" style="rounded=1;whiteSpace=wrap;html=1;fontFamily=Songti SC;fontSize=16;" parent="1" vertex="1">
+                    <mxGeometry x="50" y="250" width="220" height="100" as="geometry"/>
+                </mxCell>
+                <mxCell id="4" value="消息模块" style="rounded=1;whiteSpace=wrap;html=1;fontFamily=Songti SC;fontSize=16;" parent="1" vertex="1">
+                    <mxGeometry x="410" y="250" width="100" height="100" as="geometry"/>
+                </mxCell>
+                <mxCell id="8" value="工具模块" style="rounded=1;whiteSpace=wrap;html=1;fontFamily=Songti SC;fontSize=16;" parent="1" vertex="1">
+                    <mxGeometry x="290" y="250" width="100" height="100" as="geometry"/>
+                </mxCell>
+                <mxCell id="10" value="测试模块" style="rounded=1;whiteSpace=wrap;html=1;fontFamily=Songti SC;fontSize=16;" parent="1" vertex="1">
+                    <mxGeometry x="50" y="440" width="460" height="50" as="geometry"/>
+                </mxCell>
+                <mxCell id="12" value="数据访问/集成模块" style="rounded=1;whiteSpace=wrap;html=1;fontFamily=Songti SC;fontSize=16;" parent="1" vertex="1">
+                    <mxGeometry x="50" y="110" width="220" height="120" as="geometry"/>
+                </mxCell>
+                <mxCell id="13" value="WEB 服务模块" style="rounded=1;whiteSpace=wrap;html=1;fontFamily=Songti SC;fontSize=16;" parent="1" vertex="1">
+                    <mxGeometry x="290" y="110" width="220" height="120" as="geometry"/>
+                </mxCell>
+            </root>
+        </mxGraphModel>
+    </diagram>
+</mxfile>
