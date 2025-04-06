@@ -154,6 +154,17 @@
 
 \section{关键功能设计}
 
+针对以上需求背景，本研究从分析称重流程出发，逐步介绍系统所需要实现的功能点。下面开始模拟并分析称重的流程。
+
+对于整个称重流程，有几个关键的判断节点需要注意。首先是员工认证，如果后台认证失败，员工不可进入果实选择界面；接着是称重数据的提交，在后台完成相关动作之后，需要返回给前台相应的提示信息；最后是提示员工是否继续称重，如果不继续称重，需要登出帐号，以确保数据安全，否则退回到果实选择界面。具体的称重流程活动图如图\ref{fig:称重流程活动图}所示。
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.8\linewidth]{../design/out/称重流程活动图.png}
+    \caption{称重流程活动图}
+    \label{fig:称重流程活动图}
+\end{figure}
+
 \section{通信流程设计}
 
 市面上的电子秤支持多种通信协议。对于支持 TCP/IP 的物联网设备，可以通过 WIFI、蜂窝网络以及以太网，使用 HTTP、MQTT、CoAP、LwM2M 以及 XMPP 等应用层协议协议接入云端。
@@ -264,7 +275,7 @@ MQTT 客户端 - 设备授权 & 一对多（1:N） & 一个 MQTT 客户端可以
 
 \begin{figure}[H]
     \centering
-    \includegraphics[width=0.8\linewidth]{../design/数据库概念模型设计.png}
+    \includegraphics[width=0.8\linewidth]{../design/out/数据库概念模型设计.png}
     \caption{数据库概念模型设计}
     \label{fig:数据库概念模型设计}
 \end{figure}
