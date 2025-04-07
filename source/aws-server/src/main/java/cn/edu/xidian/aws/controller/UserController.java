@@ -26,12 +26,12 @@ import java.util.stream.Collectors;
 /**
  * @author akynazh@gmail.com
  * @date 2025/1/13
- * @description 用户服务模块
+ * @description 用户模块
  */
 @RestController
 @Slf4j
 @RequestMapping("/user")
-@Tag(name = "用户管理模块")
+@Tag(name = "用户模块")
 public class UserController {
     @Autowired
     private UserService userService;

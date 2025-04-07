@@ -1,295 +1,59 @@
 \chapter{软件设计与分析}
 
-\section{软件架构设计}
+\section{软件架构设计}\label{sec:architecture}
 
-农业果实称重云端软件的架构设计采用分层的设计思想，将系统抽象为展示层、通信层、服务层和数据层。如图\ref{fig:软件分层架构图}所示。
-
-\begin{figure}[H]
-    \centering
-    \includegraphics[width=0.8\linewidth]{../design/out/软件分层架构图.png}
-    \caption{软件分层架构图}
-    \label{fig:软件分层架构图}
-\end{figure}
-
-展示层包含了电子秤终端和网页端两个部分。其中电子秤终端是果实称重功能的具体表现，本系统将提供一个电子秤终端的模拟软件，来实现对称重流程的模拟。网页端则用于农场的信息管理和可视化，包括员工、电子秤、果实和采摘作业等。
-
-通信层包含各类可以和系统进行通信的协议。展示层通过通信层所提供的协议和其它规则来完成和后台服务的数据通信。其中对于电子秤称重数据的提交，可以通过 HTTP/HTTPS、MQTT、CoAP、STOMP 等多种物联网通信协议来完成，其它信息管理和可视化相关接口则只支持 HTTP/HTTPS 协议。
-
-服务层包含六个模块，用于实现具体的业务。各个模块等功能描述如下：
-
-1、用户管理模块：实现农场用户的认证、信息管理、可视化相关功能。
-2、果实模块：实现农场果实的信息管理、可视化相关功能。
-3、工作服务模块：实现采摘作业的信息管理、可视化相关功能。
-4、称重服务模块：实现电子秤的信息管理、称重数据的处理及可视化相关功能。
-5、MQTT 服务模块：即 MQTT Broker，作为 MQTT 生产者和消费者的通信桥梁。
-6、EMQX 服务模块：EMQX 提供了物联网网关功能，可以接收 CoAP、STOMP 等通信协议等消息，将其转换为 MQTT 消息与 MQTT Broker 通信。
-
-数据层包含三个模块，MySQL 用于数据的持久化存储和迁移；Redis 作为一个缓存组件，存储一些读多写少的数据，以提高数据获取性能；MQTT 用于存储 MQTT 消息，主要服务于电子秤称重功能。
-
-\section{服务接口设计}
-
-本系统服务接口包含四个部分，分别是用户管理模块、果实模块、工作服务模块和称重服务模块。具体接口功能和路径设计如表格\ref{tab:用户管理模块接口设计}、表格\ref{tab:果实模块接口设计}、表格\ref{tab:工作服务模块接口设计}和表格\ref{tab:工作服务模块接口设计}所示。
-
-% 用户管理模块表格
-\begin{table}[H]
-\centering
-% \resizebox{\textwidth}{!}{%
-\begin{tabular}{|c|c|c|}
-\hline
-\textbf{接口名称} & \textbf{HTTP方法} & \textbf{接口路径} \\
-\hline
-用户登录 & POST & /user/login \\
-\hline
-获取个人信息 & GET & /user \\
-\hline
-更新个人信息 & PUT & /user/me \\
-\hline
-获取用户列表 & GET & /user/list \\
-\hline
-获取用户信息 & GET & /user/{uid} \\
-\hline
-添加用户 & POST & /user \\
-\hline
-更新用户 & PUT & /user \\
-\hline
-\end{tabular}%
-
-    % }
-\caption{用户管理模块接口设计}
-\label{tab:用户管理模块接口设计}
-\end{table}
-
-% 果实模块表格
-\begin{table}[H]
-\centering
-% \resizebox{\textwidth}{!}{%
-\begin{tabular}{|c|c|c|}
-\hline
-\textbf{接口名称} & \textbf{HTTP方法} & \textbf{接口路径} \\
-\hline
-获取果实列表 & GET & /produce/list \\
-\hline
-获取果实 & GET & /produce/{id} \\
-\hline
-根据名称获取果实 & GET & /produce \\
-\hline
-添加果实 & POST & /produce \\
-\hline
-更新果实 & PUT & /produce \\
-\hline
-获取果实年产量 & GET & /produce/summary/year \\
-\hline
-获取果实分批产量 & GET & /produce/summary/work \\
-\hline
-\end{tabular}%
-
-% }
-\caption{果实模块接口设计}
-\label{tab:果实模块接口设计}
-\end{table}
-
-% 工作服务模块表格
-\begin{table}[H]
-\centering
-% \resizebox{\textwidth}{!}{%
-\begin{tabular}{|c|c|c|}
-\hline
-\textbf{接口名称} & \textbf{HTTP方法} & \textbf{接口路径} \\
-\hline
-获取采摘工作列表 & GET & /work/list \\
-\hline
-获取采摘工作 & GET & /work/{id} \\
-\hline
-获取果实的采摘工作列表 & GET & /work/produce/{id} \\
-\hline
-添加采摘工作 & POST & /work \\
-\hline
-更新采摘工作 & PUT & /work \\
-\hline
-获取采摘作业的分配情况 & GET & /work/{id}/assignments \\
-\hline
-获取我被分配的工作 & GET & /work/assignments/me \\
-\hline
-分配工作 & POST & /work/assign \\
-\hline
-重新分配工作 & PUT & /work/assign \\
-\hline
-\end{tabular}%
-
-% }
-\caption{工作服务模块接口设计}
-\label{tab:工作服务模块接口设计}
-\end{table}
-
-% 称重服务模块表格
-\begin{table}[H]
-\centering
-% \resizebox{\textwidth}{!}{%
-\begin{tabular}{|c|c|c|}
-\hline
-\textbf{接口名称} & \textbf{HTTP方法} & \textbf{接口路径} \\
-\hline
-获取电子秤列表 & GET & /weigh/scale/list \\
-\hline
-获取电子秤 & GET & /weigh/scale/{id} \\
-\hline
-根据key获取电子秤 & GET & /weigh/scale \\
-\hline
-添加电子秤 & POST & /weigh/scale \\
-\hline
-更新电子秤信息 & PUT & /weigh/scale \\
-\hline
-添加称重记录 & POST & /weigh/record \\
-\hline
-获取称重记录 & POST & /weigh/record/list \\
-\hline
-获取员工各作业采摘量 & GET & /weigh/summary \\
-\hline
-\end{tabular}%
-
-% }
-\caption{称重服务模块接口设计}
-\label{tab:称重服务模块接口设计}
-\end{table}
-
-\section{关键功能设计}
-
-针对以上需求背景，本研究从分析称重流程出发，逐步介绍系统所需要实现的功能点。下面开始模拟并分析称重的流程。
-
-对于整个称重流程，有几个关键的判断节点需要注意。首先是员工认证，如果后台认证失败，员工不可进入果实选择界面；接着是称重数据的提交，在后台完成相关动作之后，需要返回给前台相应的提示信息；最后是提示员工是否继续称重，如果不继续称重，需要登出帐号，以确保数据安全，否则退回到果实选择界面。具体的称重流程活动图如图\ref{fig:称重流程活动图}所示。
-
-\begin{figure}[H]
-    \centering
-    \includegraphics[width=0.8\linewidth]{../design/out/称重流程活动图.png}
-    \caption{称重流程活动图}
-    \label{fig:称重流程活动图}
-\end{figure}
-
-\section{通信流程设计}
-
-市面上的电子秤支持多种通信协议。对于支持 TCP/IP 的物联网设备，可以通过 WIFI、蜂窝网络以及以太网，使用 HTTP、MQTT、CoAP、LwM2M 以及 XMPP 等应用层协议协议接入云端。
-
-\begin{figure}[H]
-    \centering
-    \includegraphics[width=0.8\linewidth]{../design/IoT1.png}
-    \caption{IoT1}
-    \label{fig:IoT1}
-\end{figure}
-
-网关协议是适用于短距通信无法直接上云的协议，比如蓝牙、ZigBee、LoRa 等。此类设备需要接入网关转换之后，通过 TCP/IP 协议进行上云。
-
-\begin{figure}[H]
-    \centering
-    \includegraphics[width=0.8\linewidth]{../design/IoT2.png}
-    \caption{IoT2}
-    \label{fig:IoT2}
-\end{figure}
-
-本系统不考虑网关协议，只考虑应用层协议。系统将支持不同种类的电子秤，支持包含 HTTP、MQTT、MQTT-SN、CoAP、STOMP 在内的多种物联网通信协议。
-
-为了降低开发成本，除了 HTTP、MQTT 这两种通信协议，其它物联网协议采用网关转换的方法来提供支持，网关将对各类协议转换成 MQTT 协议与 MQTT Broker 进行通信，认证规则和消息的持久化规则遵循 MQTT 协议标准。
-
-这里主要分析两种协议：HTTP 和 MQTT。
-
-HTTP（HyperText Transfer Protocol）即超文本传输协议，是一种用于分布式、协作式和超媒体信息系统的应用层协议。在电子秤系统中，通过调用 HTTP 接口上传称重信息具有以下特点：
-
-一、稳定性和通用性：HTTP 是互联网上广泛使用的协议，具有很高的稳定性和通用性。几乎所有的网络设备和软件都支持 HTTP 协议，这使得电子秤可以很容易地与各种不同的系统进行集成。无论是传统的服务器架构，还是现代的云服务平台，都可以通过 HTTP 接口接收电子秤上传的称重信息。例如，许多企业的内部管理系统、电商平台的库存管理系统等都可以通过 HTTP 接口与电子秤进行数据交互，实现实时的库存更新和物流跟踪\cite{Zhao2016}。
-
-二、易于开发和调试：HTTP 协议的开发和调试工具非常丰富。开发人员可以使用常见的编程语言和开发框架，如 Java、Python、Node.js 等，轻松地实现 HTTP 接口的调用和数据处理。同时，各种网络调试工具，如 Postman、Fiddler 等，可以帮助开发人员快速地测试和调试电子秤与服务器之间的通信，确保数据的准确传输。
-
-三、支持多种数据格式：HTTP 协议支持多种数据格式的传输，如 JSON、XML 等。这使得电子秤可以根据不同的应用需求，选择合适的数据格式上传称重信息。例如，对于需要与第三方系统进行数据集成的场景，可以选择使用 JSON 格式，因为 JSON 格式具有简洁、易读、易于解析等优点，被广泛应用于 Web 开发和数据交换领域。
-
-MQTT（Message Queuing Telemetry Transport）即消息队列遥测传输协议，是一种轻量级的发布/订阅模式的消息传输协议。在电子秤系统中，发送 MQTT 消息上传称重信息具有以下优势：
-
-一、低带宽和低功耗：MQTT 协议非常适合在低带宽和低功耗的环境下使用。对于电子秤等物联网设备来说，通常需要在有限的网络资源和电池电量下进行数据传输。MQTT 协议通过采用轻量级的消息格式和高效的发布/订阅模式，可以大大降低网络带宽的占用和设备的功耗。例如，在一些偏远地区或者移动环境下，网络带宽可能非常有限，此时使用 MQTT 协议可以确保电子秤能够及时上传称重信息，同时不会对网络造成过大的负担\cite{Jia2015}。
-
-二、实时性和可靠性：MQTT 协议支持 QoS（Quality of Service）级别，可以根据不同的应用需求，选择不同的消息传输质量级别。在 MQTT 协议中，QoS 有三种级别\cite{Jia2015}，分别是：
-
-1、QoS0 – “最多一次”：消息最多传送一次，不保证消息到达目标。适用于实时性要求非常高，但对消息丢失容忍的场景。
-
-2、QoS1 – “至少一次”：保证消息至少传送一次，但可能会重复。适用于需要消息可靠到达，但不介意重复接收的情况。
-
-3、QoS2 – “只有一次”：确保每条消息只会传送一次，且无重复。适用于对消息的唯一性和可靠性有较高要求的场景。
-
-对于需要实时上传称重信息的场景，可以选择 QoS1 或 QoS2 级别，确保消息的可靠传输。同时，MQTT 协议的发布/订阅模式可以实现实时的数据推送，当电子秤上传称重信息后，订阅了该主题的客户端可以立即收到消息，实现实时的数据更新。
-
-三、易于扩展和集成：MQTT 协议具有良好的扩展性和集成性。可以很容易地与其他物联网协议和技术进行集成，如 CoAP、HTTP、WebSocket 等。同时，MQTT 协议的发布/订阅模式可以支持大规模的设备连接和数据传输，适用于构建物联网应用平台。例如，在智慧农业大棚测控系统中，采用 MQTT 协议将智慧大棚测控系统和阿里云物联网平台结合在一起，通过手机 APP 或 PC 软件访问阿里云服务器数据库，实现了移动终端对农业大棚实时监测和控制\cite{Liang2020}。
-
-\section{数据库设计}
+\section{数据库设计}\label{sec:database}
 
 本软件数据库设计分为三个阶段：概念模型设计、逻辑模型设计和物理模型设计，下面进行具体阐述。
 
 \subsection{概念模型设计}
 
-农业果实称重云端软件中，可以抽象出七个实体对象，分别是果实、员工、电子秤、采摘作业、称重记录、MQTT客户端、MQTT授权信息，具体分析如下：
-
-1、果实（Fruit）：代表农场中的果实，具有编号（ID）属性。
-
-2、员工（Employee）：代表农场中的员工，具有编号（ID）属性。
-
-3、电子秤（Electronic Scale）：代表用于称重果实的电子秤，具有编号（ID）和密钥（Key）属性。
-
-4、MQTT 客户端（MQTT Client）：代表用于连接 MQTT 服务器的客户端，具有编号（ID）和密码（Password）属性。
-
-5、采摘作业（Picking Task）：代表员工采摘果实的作业，具有开始时间、结束时间和采摘结果属性。
-
-6、称重记录（Weighing Record）：代表电子秤记录的果实重量，具有称重结果和称重时间属性。
-
-7、MQTT 授权信息（MQTT Authorization Info）：代表 MQTT 客户端的授权信息，具有权限信息属性。
-
-针对上述对象，根据实际的业务场景，可以得到如下关系：
+农业果实称重云端软件中，可以抽象出果实、称重记录、电子秤、采摘作业、用户、待办记录这六个实体对象，结合实际的业务场景，可以得到如下实体关系：
 
 \begin{table}[H]
 \centering
 \resizebox{\textwidth}{!}{%
 \begin{tabular}{|c|c|c|}
 \hline
-\textbf{关系名称} & \textbf{关系类型} & \textbf{描述} \\
-\hline
-果实 - 采摘关系 & 一对多（1:N） & 一个果实可以被多次采摘，与多个采摘作业相关联。 \\
-\hline
-员工 - 员工称重记录 & 一对多（1:N） & 一个员工可以进行多次称重记录。  \\
-\hline
-员工 - 采摘作业 & 一对多（1:N） & 一个员工可以执行多个采摘作业。  \\
-\hline
-电子秤 - 电子秤称重记录 & 一对多（1:N） & 一个电子秤可以记录多个称重记录。  \\
-\hline
-电子秤 - 称重记录 & 一对多（1:N） & 一个电子秤可以记录多个称重记录。\\
-\hline
-采摘作业 - 称重记录 & 一对多（1:N） & 一个采摘作业可以产生多个称重记录（例如，在不同时间多次称重）。  \\
-\hline
-MQTT 客户端 - 设备认证 & 一对一（1:1） & 每个 MQTT 客户端都必须进行设备认证。 \\
-\hline
-MQTT 客户端 - 设备授权 & 一对多（1:N） & 一个 MQTT 客户端可以拥有多个授权信息。  \\
-\hline
-员工 - 称重记录 & 一对多（1:N） & 一个员工可以产生多个称重记录。\\
-\hline
-电子秤 - 设备认证 & 一对一（1:1） & 每个电子秤都必须进行设备认证。  \\
-\hline
+关系名称 & 关系类型 & 描述 \\ \hline
+
+采摘目标 & 1:N & 一个果实可以出现在多个采摘作业中，而任一采摘作业对应一个果实。 \\ \hline
+
+称重目标 & 1:N & 一个果实会出现在多个称重记录中，而任一称重记录对应一个果实。\\ \hline
+
+称重人员 & 1:N & 一个员工可以产生多个称重记录，而任一称重记录对应一个员工  \\ \hline
+
+记录来源 & 1:N & 一个电子秤可以产生多个称重记录，而任一称重记录对应一个电子秤 \\ \hline
+
+待办人员 & 1:N & 一个员工可以产生多个待办记录，而任一待办记录对应一个员工 \\ \hline
+
+待办来源 & 1:N & 一个电子秤可以产生多个待办记录，而任一待办记录对应一个电子秤 \\ \hline
+
 \end{tabular}%
 }
-\caption{实体关系及属性表}
+\caption{实体关系表}
 \end{table}
 
-将上述分析进行归纳，得到 ER 图如下：
+将上述分析进行归纳，得到 ERD(Entity-Relationship Diagram, 即实体关系图)如图\ref{fig:ERD}所示。
 
 \begin{figure}[H]
     \centering
-    \includegraphics[width=0.8\linewidth]{../design/out/数据库概念模型设计.png}
-    \caption{数据库概念模型设计}
-    \label{fig:数据库概念模型设计}
+    \includegraphics[width=0.8\linewidth]{../design/out/ERD.png}
+    \caption{实体关系图}
+    \label{fig:ERD}
 \end{figure}
 
-该 ER 图展示了一个农场管理系统中各个实体之间的复杂关系，包括果实、员工、电子秤和 MQTT 客户端。通过这些关系，系统可以有效地跟踪果实的采摘、称重和授权信息，从而实现高效的农场管理。
+图\ref{fig:ERD}清晰地展示了各个实体之间的复杂关系，为后续进行数据库的逻辑模型设计奠定了基础。
 
 \subsection{逻辑模型设计}
 
-本部分详细描述了系统各个表的结构及其字段定义，涵盖了表之间的关系、字段的数据类型及约束条件。每个表的设计都遵循规范化原则，以确保数据的一致性、完整性和高效性。字段的定义包括主键、外键、唯一约束、非空约束等，同时考虑了查询和更新的效率，力求在保证系统扩展性的同时，实现良好的性能表现。
+基于图\ref{fig:ERD}所展示的实体关系以及功能权限表\ref{tab:user_permissions}所展示的用户功能权限信息，下面阐述逻辑模型设计，描述系统各个表的结构及其字段定义，涵盖了表之间的关系、字段的数据类型及约束条件，如表\ref{tab:user}，表\ref{tab:produce}，表\ref{tab:work}，表\ref{tab:scale}，表\ref{tab:record}，表\ref{tab:todo}，表\ref{tab:mqttacl}所示。
 
 % t_user
 \begin{table}[H]
     \centering
     \caption{用户表 (t\_user)}
+    \label{tab:user}
     \begin{tabular}{|l|l|l|l|}
     \hline
     字段 & 类型 & 约束 & 说明 \\
@@ -306,10 +70,13 @@ MQTT 客户端 - 设备授权 & 一对多（1:N） & 一个 MQTT 客户端可以
     \end{tabular}
     \end{table}
 
+表\ref{tab:user}中展现了软件中用户实体的具体字段设计，其中 roles 字段定义了用户角色，角色字段包含管理员(ROLE\_ADMIN)、采摘员工(ROLE\_EMPLOYEE)、电子秤(ROLE\_SCALE)以及系统用户(ROLE\_SYS)，如果用户包含多个角色，则使用英文半角逗号隔开。
+
 % t_produce
 \begin{table}[H]
 \centering
 \caption{果实表 (t\_produce)}
+\label{tab:produce}
 \begin{tabular}{|l|l|l|l|}
 \hline
 字段 & 类型 & 约束 & 说明 \\
@@ -324,10 +91,13 @@ status & int & 非空 & 状态(0未种植/1在种植/2已删除) \\
 \end{tabular}
 \end{table}
 
-% ## t_work
+表\ref{tab:produce}中展现了软件中果实实体的具体字段设计。
+
+% t_work
 \begin{table}[H]
 \centering
 \caption{采摘作业表 (t\_work)}
+\label{tab:work}
 \begin{tabular}{|l|l|l|l|}
 \hline
 字段 & 类型 & 约束 & 说明 \\
@@ -345,10 +115,13 @@ status & int & 非空 & 状态(0未开始/1进行中/2已结束/3已取消/4已�
 \end{tabular}
 \end{table}
 
+表\ref{tab:work}中展现了软件中采摘作业实体的具体字段设计。其中通过字段果实编号(produce\_id)关联了果实实体，字段对应果实表\ref{tab:produce}中的 id 字段。
+
 % t_scale
 \begin{table}[H]
 \centering
 \caption{电子秤表 (t\_scale)}
+\label{tab:scale}
 \begin{tabular}{|l|l|l|l|}
 \hline
 字段 & 类型 & 约束 & 说明 \\
@@ -370,10 +143,13 @@ status & int & 非空 & 状态(0禁用/1启用/2已删除) \\
 \end{tabular}
 \end{table}
 
+表\ref{tab:scale}中展现了软件中电子秤实体的具体字段设计。其中通过字段电子秤编号(sid)管理了用户实体，该字段对应于用户表\ref{tab:user}中的用户编号(uid)字段。
+
 % t_record
 \begin{table}[H]
 \centering
 \caption{称重记录表 (t\_record)}
+\label{tab:record}
 \begin{tabular}{|l|l|l|l|}
 \hline
 字段 & 类型 & 约束 & 说明 \\
@@ -392,10 +168,13 @@ data\_time & bigint & 非空 & 称重时间(毫秒级时间戳) \\
 \end{tabular}
 \end{table}
 
+表\ref{tab:record}中展现了软件中称重记录实体的具体字段设计。通过字段果实编号(produce\_id)关联了果实实体，对应果实表\ref{tab:produce}中的 id 字段；通过字段采摘作业编号(work\_id)关联了作业实体，对应作业表\ref{tab:work}中的 id 字段；通过字段员工编号(employee\_id)关联了员工实体，对应用户表\ref{tab:user}中的 id 字段；通过字段电子秤编号(scale\_id)关联了电子秤实体，对应电子秤表\ref{tab:scale}中的 id 字段。
+
 % t_todo
 \begin{table}[H]
 \centering
 \caption{待处理称重记录表 (t\_todo)}
+\label{tab:todo}
 \begin{tabular}{|l|l|l|l|}
 \hline
 字段 & 类型 & 约束 & 说明 \\
@@ -414,10 +193,13 @@ data\_time & bigint & 非空 & 称重时间(毫秒级时间戳) \\
 \end{tabular}
 \end{table}
 
-% ## t_mqtt_acl
+表\ref{tab:todo}中展现了软件中待办记录实体的具体字段设计。通过字段果实编号(produce\_id)关联了果实实体，对应果实表\ref{tab:produce}中的 id 字段；通过字段员工编号(employee\_id)关联了员工实体，对应用户表\ref{tab:user}中的 id 字段；通过字段电子秤编号(scale\_id)关联了电子秤实体，对应电子秤表\ref{tab:scale}中的 id 字段。
+
+% t_mqtt_acl
 \begin{table}[H]
 \centering
 \caption{MQTT 访问控制表 (t\_mqtt\_acl)}
+\label{tab:mqttacl}
 \begin{tabular}{|l|l|l|l|}
 \hline
 字段 & 类型 & 约束 & 说明 \\
@@ -433,14 +215,167 @@ retain & int & - & 是否支持发布保留消息(0否/1是) \\
 \end{tabular}
 \end{table}
 
+表\ref{tab:mqttacl}中展现了软件中 MQTT 服务的访问控制条目的具体字段设计。通过字段 MQTT 认证用户名(username)管理了用户实体，对应用户表\ref{tab:user}中的 uid 字段。
+
+数据库中每个表的设计都遵循规范化原则，以确保数据的一致性、完整性和高效性。字段的定义包括主键、唯一约束、非空约束等，考虑到更新数据的效率问题，取消了外键的设置，在后台服务中做相关数据更新的限制以确保数据一致性。
+
 \subsection{物理模型设计}
 
-本系统使用 MySQL 作为数据库管理系统，采用 InnoDB 存储引擎，事务隔离级别设置为可重复读，以确保数据的一致性和可靠性。在后台应用中，数据库访问通过 JPA (Java Persistence API) 进行实现，简化了数据库操作，提升了代码的可维护性和开发效率。
+软件使用 MySQL 作为数据库管理系统，采用 InnoDB 存储引擎，将事务隔离级别设置为可重复读，以确保数据的一致性和可靠性。下面从索引设计、数据存储与分布、数据访问控制和事务日志与恢复策略四个方面阐述物理模型设计。
+
+索引设计方面：针对实际业务场景，基于逻辑模型设计中的表信息，设置了相关索引以提高查询更新效率，如表\ref{tab:index}所示。
+
+% INDEX
+\begin{table}[H]
+\centering
+\caption{索引设计表 (INDEX)}
+\label{tab:index}
+\begin{tabular}{|l|l|l|}
+\hline
+表 & 索引字段 & 说明 \\ \hline
+
+t\_record & scale\_id & 高效查找电子秤历史称重记录 \\ \hline
+
+t\_record & employee\_id & 高效查找员工历史称重记录 \\ \hline
+
+t\_record & employee\_id, work\_id & 高效查找员工各采摘作业批次历史称重记录 \\ \hline
+
+t\_record & work\_id & 高效查找各采摘作业批次历史称重记录 \\ \hline
+
+t\_work & produce\_id & 高效查找果实对应的采摘作业 \\ \hline
+\end{tabular}
+\end{table}
+
+数据存储与分布方面：采用主从架构，在靠近农场边端部署从库，在远端服务器部署主库，主从库采用\ref{sec:gtid}中提到的基于 GTID 的主从复制技术完成数据实时同步。
+
+数据访问控制方面：主库允许读写，而从库只允许读，屏蔽任何用户的写操作，确保数据一致性。
+
+事务日志与恢复策略方面：主从库均开启 BinLog(二进制日志)。在上述数据复制技术中，从库通过读取主库的二进制日志来同步数据。除此之外，在数据丢失或损坏的情况下，通过回放二进制日志来恢复丢失的数据。
+
+\section{关键功能设计}\label{sec:keyFunction}
+
+\subsection{称重数据处理流程设计}
+
+针对以上需求背景，本研究从分析称重流程出发，逐步介绍系统所需要实现的功能点。下面开始模拟并分析称重的流程。
+
+% 对于整个称重流程，有几个关键的判断节点需要注意。首先是员工认证，如果后台认证失败，员工不可进入果实选择界面；接着是称重数据的提交，在后台完成相关动作之后，需要返回给前台相应的提示信息；最后是提示员工是否继续称重，如果不继续称重，需要登出帐号，以确保数据安全，否则退回到果实选择界面。具体的称重流程活动图如图\ref{fig:称重流程活动图}所示。
+
+% \begin{figure}[H]
+%     \centering
+%     \includegraphics[width=0.8\linewidth]{../design/out/称重流程活动图.png}
+%     \caption{称重流程活动图}
+%     \label{fig:称重流程活动图}
+% \end{figure}
+
+市面上的电子秤支持多种通信协议。对于支持 TCP/IP 的物联网设备，可以通过 WIFI、蜂窝网络以及以太网，使用 HTTP、MQTT、CoAP、LwM2M 以及 XMPP 等应用层协议协议接入云端。
+
+网关协议是适用于短距通信无法直接上云的协议，比如蓝牙、ZigBee、LoRa 等。此类设备需要接入网关转换之后，通过 TCP/IP 协议进行上云。
+
+本系统不考虑网关协议，只考虑应用层协议。系统将支持不同种类的电子秤，支持包含 HTTP、MQTT、MQTT-SN、CoAP、STOMP 在内的多种物联网通信协议。
+
+为了降低开发成本，除了 HTTP、MQTT 这两种通信协议，其它物联网协议采用网关转换的方法来提供支持，网关将对各类协议转换成 MQTT 协议与 MQTT Broker 进行通信，认证规则和消息的持久化规则遵循 MQTT 协议标准。
+
+MQTT（Message Queuing Telemetry Transport）即消息队列遥测传输协议，是一种轻量级的发布/订阅模式的消息传输协议。在电子秤系统中，发送 MQTT 消息上传称重信息具有以下优势：
+
+一、低带宽和低功耗：MQTT 协议非常适合在低带宽和低功耗的环境下使用。对于电子秤等物联网设备来说，通常需要在有限的网络资源和电池电量下进行数据传输。MQTT 协议通过采用轻量级的消息格式和高效的发布/订阅模式，可以大大降低网络带宽的占用和设备的功耗。例如，在一些偏远地区或者移动环境下，网络带宽可能非常有限，此时使用 MQTT 协议可以确保电子秤能够及时上传称重信息，同时不会对网络造成过大的负担\cite{Jia2015}。
+
+二、实时性和可靠性：MQTT 协议支持 QoS（Quality of Service）级别，可以根据不同的应用需求，选择不同的消息传输质量级别。在 MQTT 协议中，QoS 有三种级别\cite{Jia2015}，分别是：
+
+1、QoS0 – “最多一次”：消息最多传送一次，不保证消息到达目标。适用于实时性要求非常高，但对消息丢失容忍的场景。
+
+2、QoS1 – “至少一次”：保证消息至少传送一次，但可能会重复。适用于需要消息可靠到达，但不介意重复接收的情况。
+
+3、QoS2 – “只有一次”：确保每条消息只会传送一次，且无重复。适用于对消息的唯一性和可靠性有较高要求的场景。
+
+对于需要实时上传称重信息的场景，可以选择 QoS1 或 QoS2 级别，确保消息的可靠传输。同时，MQTT 协议的发布/订阅模式可以实现实时的数据推送，当电子秤上传称重信息后，订阅了该主题的客户端可以立即收到消息，实现实时的数据更新。
+
+三、易于扩展和集成：MQTT 协议具有良好的扩展性和集成性。可以很容易地与其他物联网协议和技术进行集成，如 CoAP、HTTP、WebSocket 等。同时，MQTT 协议的发布/订阅模式可以支持大规模的设备连接和数据传输，适用于构建物联网应用平台。例如，在智慧农业大棚测控系统中，采用 MQTT 协议将智慧大棚测控系统和阿里云物联网平台结合在一起，通过手机 APP 或 PC 软件访问阿里云服务器数据库，实现了移动终端对农业大棚实时监测和控制\cite{Liang2020}。
+
+\subsection{果实图像识别功能设计}
+
+\section{服务接口设计}\label{sec:service}
+
+本系统服务接口包含四个部分，分别是用户模块、果实模块、作业模块和称重模块。具体接口功能和路径设计如表\ref{tab:interface-user}、表\ref{tab:interface-produce}、表\ref{tab:interface-work}和表\ref{tab:interface-weigh}所示，接口风格均遵循 RESTful(Representational State Transfer, 即表现层状态转移)风格。
+
+% 用户模块
+\begin{table}[H]
+\centering
+\caption{用户模块接口设计}
+\label{tab:interface-user}
+\begin{tabular}{|c|c|c|}
+\hline
+接口名称 & 请求方法 & 接口路径 \\ \hline
+用户获取个人信息 & GET & /user \\ \hline
+管理员更新用户 & PUT & /user \\ \hline
+管理员添加用户 & POST & /user \\ \hline
+用户更新个人信息 & PUT & /user/me \\ \hline
+用户登录 & POST & /user/login \\ \hline
+管理员获取用户信息 & GET & /user/{uid} \\ \hline
+管理员获取用户列表 & GET & /user/list \\ \hline
+\end{tabular}
+\end{table}
+
+表\ref{tab:interface-user}显示了用户模块的接口设计，各接口以 /user 作为前缀。
+
+% 果实模块
+\begin{table}[H]
+\centering
+\caption{果实模块接口设计}
+\label{tab:interface-produce}
+\begin{tabular}{|c|c|c|}
+\hline
+接口名称 & 请求方法 & 接口路径 \\ \hline
+根据名称获取果实 & GET & /produce \\ \hline
+更新果实 & PUT & /produce \\ \hline
+添加果实 & POST & /produce \\ \hline
+获取果实 & GET & /produce/{id} \\ \hline
+获取果实年产量 & GET & /produce/summary/year \\ \hline
+获取果实分批产量 & GET & /produce/summary/work \\ \hline
+获取果实列表 & GET & /produce/list \\ \hline
+\end{tabular}
+\end{table}
+
+表\ref{tab:interface-produce}显示了果实模块的接口设计，各接口以 /produce 作为前缀。
+
+% 作业模块
+\begin{table}[H]
+\centering
+\caption{作业模块接口设计}
+\label{tab:interface-work}
+\begin{tabular}{|c|c|c|}
+\hline
+接口名称 & 请求方法 & 接口路径 \\ \hline
+更新采摘作业 & PUT & /work \\ \hline
+添加采摘作业 & POST & /work \\ \hline
+获取采摘作业 & GET & /work/{id} \\ \hline
+获取果实的采摘作业列表 & GET & /work/produce/{id}\\ \hline
+获取采摘作业列表 & GET & /work/list \\ \hline
+\end{tabular}
+\end{table}
+
+表\ref{tab:interface-work}显示了作业模块的接口设计，各接口以 /work 作为前缀。
+
+% 称重模块
+\begin{table}[H]
+\centering
+\caption{称重模块接口设计}
+\label{tab:interface-weigh}
+\begin{tabular}{|c|c|c|}
+\hline
+接口名称 & 请求方法 & 接口路径 \\\hline
+更新电子秤信息 & PUT & /weigh/scale \\ \hline
+添加电子秤 & POST & /weigh/scale \\\hline
+添加称重记录 & POST & /weigh/record \\\hline
+提交待处理称重记录 & POST & /weigh/record/todo \\\hline
+获取待处理称重记录 & GET & /weigh/record/todo/list \\\hline
+获取称重记录 & POST & /weigh/record/list \\\hline
+添加称重结果监控者 & POST & /weigh/monitor \\\hline
+获取员工各作业采摘量 & GET & /weigh/summary \\\hline
+获取电子秤 & GET & /weigh/scale/{id} \\\hline
+获取电子秤列表 & GET & /weigh/scale/list \\\hline
+\end{tabular}
+\end{table}
+
+表\ref{tab:interface-weigh}显示了称重模块的接口设计，各接口以 /weigh 作为前缀。
 
 \section{本章小结}
-
-这些设计模式和架构描述展示了农业果实称重云端软件系统的整体设计和通信流程。通过采用前后端分离的架构，结合 Spring 后端的 MVC 模式与 Vue 前端的 MVVM 模式，系统能够更好地处理数据交互和界面更新。系统架构通过分层设计，使得每一层都具备明确的职责，方便后期的扩展和维护。
-
-在通信协议部分，系统的选择了 HTTP 和 MQTT 两种协议，分别适用于不同的应用场景。HTTP 用于传统的接口交互，而 MQTT 则通过低带宽、高可靠性和实时性的优势，适应了物联网环境中的需求。这两种协议的结合使得系统可以灵活应对不同类型的设备和网络条件。
-
-数据库设计部分，构建了清晰的实体关系，确保了数据的完整性和系统的高效运行。通过一对多的关系设计，系统能够记录和管理员工、电子秤、果实等多个维度的数据，从而支持各种业务场景。

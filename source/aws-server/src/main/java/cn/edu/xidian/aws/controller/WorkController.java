@@ -23,12 +23,12 @@ import java.util.stream.Collectors;
 /**
  * @author akynazh@gmail.com
  * @date 2025/1/16
- * @description 工作服务模块
+ * @description 作业模块
  */
 @RestController
 @RequestMapping("/work")
 @Slf4j
-@Tag(name = "工作服务模块")
+@Tag(name = "作业模块")
 public class WorkController {
     @Autowired
     private WorkService workService;
@@ -37,7 +37,7 @@ public class WorkController {
     @Autowired
     private JwtService jwtService;
 
-    @Operation(summary = "添加采摘工作")
+    @Operation(summary = "添加采摘作业")
     @PostMapping
     @PreAuthorize(Security.PRE_AUTHORIZE_ADMIN)
     public ResponseEntity<WorkVO> addWork(@RequestBody WorkAddVO vo) {
@@ -45,7 +45,7 @@ public class WorkController {
         return ResponseEntity.ok(Work.toWorkVO(work));
     }
 
-    @Operation(summary = "更新采摘工作")
+    @Operation(summary = "更新采摘作业")
     @PutMapping
     @PreAuthorize(Security.PRE_AUTHORIZE_ADMIN)
     public ResponseEntity<WorkVO> updateWork(@RequestBody WorkUpdateVO vo) {
@@ -53,7 +53,7 @@ public class WorkController {
         return ResponseEntity.ok(Work.toWorkVO(work));
     }
 
-    @Operation(summary = "获取采摘工作")
+    @Operation(summary = "获取采摘作业")
     @GetMapping("/{id}")
     @PreAuthorize(Security.PRE_AUTHORIZE_EMPLOYEE)
     public ResponseEntity<WorkVO> getWork(@PathVariable long id) {
@@ -61,7 +61,7 @@ public class WorkController {
         return ResponseEntity.ok(Work.toWorkVO(work));
     }
 
-    @Operation(summary = "获取采摘工作列表")
+    @Operation(summary = "获取采摘作业列表")
     @GetMapping("/list")
     @PreAuthorize(Security.PRE_AUTHORIZE_EMPLOYEE)
     public ResponseEntity<WorkListVO> getWorks(@RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "10") int size) {
@@ -74,7 +74,7 @@ public class WorkController {
         return ResponseEntity.ok(workListVO);
     }
 
-    @Operation(summary = "获取果实的采摘工作列表")
+    @Operation(summary = "获取果实的采摘作业列表")
     @GetMapping("/produce/{id}")
     @PreAuthorize(Security.PRE_AUTHORIZE_EMPLOYEE)
     public ResponseEntity<List<WorkVO>> getProduceWorks(@PathVariable long id) {

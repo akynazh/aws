@@ -30,12 +30,12 @@ import java.util.stream.Collectors;
 /**
  * @author akynazh@gmail.com
  * @date 2025/1/16
- * @description 称重服务模块
+ * @description 称重模块
  */
 @RestController
 @RequestMapping("/weigh")
 @Slf4j
-@Tag(name = "称重服务模块")
+@Tag(name = "称重模块")
 public class WeighController {
     @Autowired
     private ScaleService scaleService;
