@@ -1,0 +1,85 @@
+<mxfile host="65bd71144e">
+    <diagram id="GkhBZIhsdIewnCVaJ9AP" name="Page-1">
+        <mxGraphModel dx="558" dy="1904" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="0" pageScale="1" pageWidth="827" pageHeight="1169" math="0" shadow="0">
+            <root>
+                <mxCell id="0"/>
+                <mxCell id="1" parent="0"/>
+                <mxCell id="42" value="" style="rounded=0;whiteSpace=wrap;html=1;fontFamily=Songti SC;fontSize=16;" vertex="1" parent="1">
+                    <mxGeometry x="1130" y="-700" width="280" height="130" as="geometry"/>
+                </mxCell>
+                <mxCell id="38" value="" style="rounded=0;whiteSpace=wrap;html=1;fontFamily=Songti SC;fontSize=16;" vertex="1" parent="1">
+                    <mxGeometry x="1130" y="-970" width="280" height="70" as="geometry"/>
+                </mxCell>
+                <mxCell id="32" value="" style="rounded=0;whiteSpace=wrap;html=1;fontFamily=Songti SC;fontSize=16;" vertex="1" parent="1">
+                    <mxGeometry x="1130" y="-900" width="280" height="130" as="geometry"/>
+                </mxCell>
+                <mxCell id="26" value="" style="rounded=0;whiteSpace=wrap;html=1;fontFamily=Songti SC;fontSize=16;" vertex="1" parent="1">
+                    <mxGeometry x="1130" y="-570" width="280" height="80" as="geometry"/>
+                </mxCell>
+                <mxCell id="6" value="电子秤" style="rounded=1;whiteSpace=wrap;html=1;fontFamily=Songti SC;aspect=fixed;fontSize=16;" parent="1" vertex="1">
+                    <mxGeometry x="1280" y="-960" width="100" height="50" as="geometry"/>
+                </mxCell>
+                <mxCell id="7" value="前台网页端" style="rounded=1;whiteSpace=wrap;html=1;fontFamily=Songti SC;aspect=fixed;fontSize=16;" parent="1" vertex="1">
+                    <mxGeometry x="1160" y="-960" width="100" height="50" as="geometry"/>
+                </mxCell>
+                <mxCell id="8" value="通信层" style="rounded=0;whiteSpace=wrap;html=1;fontFamily=Songti SC;fontSize=16;" parent="1" vertex="1">
+                    <mxGeometry x="1030" y="-900" width="100" height="130" as="geometry"/>
+                </mxCell>
+                <mxCell id="10" value="&lt;font&gt;HTTP/HTTPS&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;fontFamily=Songti SC;fontSize=16;" parent="1" vertex="1">
+                    <mxGeometry x="1160" y="-890" width="100" height="50" as="geometry"/>
+                </mxCell>
+                <mxCell id="11" value="服务层" style="rounded=0;whiteSpace=wrap;html=1;fontFamily=Songti SC;fontSize=16;" parent="1" vertex="1">
+                    <mxGeometry x="1030" y="-700" width="100" height="130" as="geometry"/>
+                </mxCell>
+                <mxCell id="13" value="用户模块" style="rounded=1;whiteSpace=wrap;html=1;fontFamily=Songti SC;aspect=fixed;fontSize=16;" parent="1" vertex="1">
+                    <mxGeometry x="1160" y="-690" width="100" height="50" as="geometry"/>
+                </mxCell>
+                <mxCell id="14" value="果实模块" style="rounded=1;whiteSpace=wrap;html=1;fontFamily=Songti SC;aspect=fixed;fontSize=16;" parent="1" vertex="1">
+                    <mxGeometry x="1280" y="-690" width="100" height="50" as="geometry"/>
+                </mxCell>
+                <mxCell id="15" value="称重模块" style="rounded=1;whiteSpace=wrap;html=1;fontFamily=Songti SC;aspect=fixed;fontSize=16;" parent="1" vertex="1">
+                    <mxGeometry x="1280" y="-630" width="100" height="50" as="geometry"/>
+                </mxCell>
+                <mxCell id="17" value="数据层" style="rounded=0;whiteSpace=wrap;html=1;fontFamily=Songti SC;fontSize=16;" parent="1" vertex="1">
+                    <mxGeometry x="1030" y="-570" width="100" height="80" as="geometry"/>
+                </mxCell>
+                <mxCell id="18" value="&lt;font&gt;MySQL&lt;/font&gt;" style="shape=datastore;whiteSpace=wrap;html=1;fontFamily=Songti SC;fontSize=16;" parent="1" vertex="1">
+                    <mxGeometry x="1150" y="-560" width="70" height="60" as="geometry"/>
+                </mxCell>
+                <mxCell id="19" value="&lt;font&gt;Redis&lt;/font&gt;" style="shape=datastore;whiteSpace=wrap;html=1;fontFamily=Songti SC;fontSize=16;" parent="1" vertex="1">
+                    <mxGeometry x="1235" y="-560" width="70" height="60" as="geometry"/>
+                </mxCell>
+                <mxCell id="20" value="&lt;font&gt;MQTT&lt;/font&gt;" style="shape=datastore;whiteSpace=wrap;html=1;fontFamily=Songti SC;fontSize=16;" parent="1" vertex="1">
+                    <mxGeometry x="1320" y="-560" width="70" height="60" as="geometry"/>
+                </mxCell>
+                <mxCell id="21" value="作业模块" style="rounded=1;whiteSpace=wrap;html=1;aspect=fixed;fontFamily=Songti SC;fontSize=16;" parent="1" vertex="1">
+                    <mxGeometry x="1160" y="-630" width="100" height="50" as="geometry"/>
+                </mxCell>
+                <mxCell id="22" value="&lt;font&gt;MQTT&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;fontFamily=Songti SC;fontSize=16;" parent="1" vertex="1">
+                    <mxGeometry x="1280" y="-890" width="100" height="50" as="geometry"/>
+                </mxCell>
+                <mxCell id="23" value="&lt;font&gt;CoAP&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;fontFamily=Songti SC;fontSize=16;" parent="1" vertex="1">
+                    <mxGeometry x="1160" y="-829" width="100" height="50" as="geometry"/>
+                </mxCell>
+                <mxCell id="25" value="&lt;font&gt;STOMP&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;fontFamily=Songti SC;fontSize=16;" parent="1" vertex="1">
+                    <mxGeometry x="1280" y="-829" width="100" height="50" as="geometry"/>
+                </mxCell>
+                <mxCell id="33" value="网关层" style="rounded=0;whiteSpace=wrap;html=1;fontFamily=Songti SC;fontSize=16;" vertex="1" parent="1">
+                    <mxGeometry x="1030" y="-770" width="100" height="70" as="geometry"/>
+                </mxCell>
+                <mxCell id="37" value="表现层" style="rounded=0;whiteSpace=wrap;html=1;fontFamily=Songti SC;fontSize=16;" vertex="1" parent="1">
+                    <mxGeometry x="1030" y="-970" width="100" height="70" as="geometry"/>
+                </mxCell>
+                <mxCell id="39" value="" style="rounded=0;whiteSpace=wrap;html=1;fontFamily=Songti SC;fontSize=16;" vertex="1" parent="1">
+                    <mxGeometry x="1130" y="-770" width="280" height="70" as="geometry"/>
+                </mxCell>
+                <mxCell id="40" value="协议转换" style="rounded=1;whiteSpace=wrap;html=1;fontFamily=Songti SC;fontSize=16;" vertex="1" parent="1">
+                    <mxGeometry x="1280" y="-760" width="100" height="50" as="geometry"/>
+                </mxCell>
+                <mxCell id="43" value="接口路由" style="rounded=1;whiteSpace=wrap;html=1;fontFamily=Songti SC;fontSize=16;" vertex="1" parent="1">
+                    <mxGeometry x="1160" y="-760" width="100" height="50" as="geometry"/>
+                </mxCell>
+            </root>
+        </mxGraphModel>
+    </diagram>
+</mxfile>
