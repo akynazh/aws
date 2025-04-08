@@ -1,0 +1,51 @@
+@startuml 边端称重数据处理流程活动图
+skinparam conditionStyle InsideDiamond
+
+|u| 采摘员工
+|sc| 电子秤
+|edge| 边端服务
+
+|u|
+start
+repeat
+:开始称重;
+:放置果实并刷员工卡;
+|sc|
+:读取卡和称重数据;
+|sc|
+if (读取结果) then(失败)
+    |sc|
+    :返回错误信息;
+else(成功)
+    |sc|
+    :生成称重信息;
+    repeat
+    :提交称重信息;
+    |edge|
+    :进行协议转换;
+    if (协议转换结果) then(失败)
+        :返回错误信息;
+    else(成功)
+        :进行认证授权;
+        if (认证授权结果) then(失败)
+            :返回错误信息;
+        else (成功)
+            |edge|
+            :发布称重消息;
+            if (发布结果) then(失败)
+                :返回错误信息;
+            else(成功)
+                :返回成功信息;
+            endif
+        endif
+    endif
+    |sc|
+    repeat while(提交成功或重试次数超过阈值？)
+endif
+|sc|
+:显示称重结果;
+|u|
+repeat while(称重是否成功？)
+:果实入库;
+stop
+@enduml
