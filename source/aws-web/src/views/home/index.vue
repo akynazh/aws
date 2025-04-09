@@ -101,8 +101,10 @@
         </div>
       </template>
       <el-table :data="recordsData" border class="hover-effect">
-        <el-table-column prop="id" label="记录编号" width="120" />
+        <!-- <el-table-column prop="id" label="记录编号" width="120" /> -->
         <el-table-column prop="workId" label="作业编号" width="120" />
+        <el-table-column prop="produceId" label="果实编号" width="120" />
+        <el-table-column prop="image" label="果实图像" width="120" />
         <el-table-column prop="scaleId" label="电子秤编号" width="120" />
         <el-table-column label="称重数据" width="150">
           <template #default="{ row }">
@@ -205,7 +207,7 @@ const handleSubmit = async () => {
 const weighRecordsDialogVisible = ref(false)
 const recordsData = ref<RecordVO[]>([])
 const recordsCurrentPage = ref(1)
-const recordsPageSize = ref(10)
+const recordsPageSize = ref(5)
 const recordsTotal = ref(0)
 
 // 打开称重记录对话框
@@ -285,6 +287,8 @@ const handleExport = async () => {
     const excelData = allRecords.map(record => ({
       '记录编号': record.id,
       '作业编号': record.workId,
+      '果实编号': record.produceId,
+      '果实图像': record.image,
       '电子秤编号': record.scaleId,
       '称重数据': `${record.dataValue}${ScaleUnitMap[record.unit]}`,
       '误差': `±${record.dataErrorMargin}${ScaleUnitMap[record.unit]}`,

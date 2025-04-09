@@ -52,13 +52,13 @@ def predict(image_local="", image_url="", image_base64=""):
 
 
 if __name__ == "__main__":
-    # predictions = predict(image_local="./sample/watermelon.png")
-    # print(predictions)
-
-    predictions = predict(
-        image_url="https://akynazh.site/images/pub/watermelon_d79dab34-ddf3-41fd-b6b6-8149bedc4670.png"
-    )
+    predictions = predict(image_local="./sample/pineapple.jpeg")
     print(predictions)
+
+    # predictions = predict(
+    #     image_url="https://akynazh.site/images/pub/watermelon_d79dab34-ddf3-41fd-b6b6-8149bedc4670.png"
+    # )
+    # print(predictions)
 
     # with open("./sample/watermelon.png", "rb") as f:
     #     image_base64 = base64.b64encode(f.read()).decode("utf-8")

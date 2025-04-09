@@ -7,10 +7,24 @@
                 <div class="operation-wrapper">
                     <el-card class="operation-panel hover-effect">
                         <div class="panel-header">
-                            <span class="panel-title">
+                            <span class="panel-title" >
                                 <el-icon class="title-icon"><DocumentChecked /></el-icon>
                                 待办管理
                             </span>
+                            <div class="batch-actions">
+                                <el-button 
+                                    type="primary" 
+                                    @click="handleBatchSubmit"
+                                >
+                                    批量提交
+                                </el-button>
+                                <el-button 
+                                    type="danger" 
+                                    @click="handleBatchDrop"
+                                >
+                                    批量丢弃
+                                </el-button>
+                            </div>
                         </div>
                     </el-card>
                 </div>
@@ -21,7 +35,9 @@
                     border 
                     class="custom-table hover-effect"
                     style="width: 100%"
+                    @selection-change="handleSelectionChange"
                 >
+                    <el-table-column type="selection" width="55" />
                     <el-table-column prop="id" label="编号" width="80" />
                     <el-table-column prop="produceId" label="果实编号" width="120">
                         <template #default="{ row }">
@@ -141,6 +157,49 @@
                     </template>
                 </el-dialog>
 
+                <!-- 批量编辑对话框 -->
+                <el-dialog 
+                    title="批量提交待办" 
+                    v-model="batchDialogVisible" 
+                    width="500px"
+                >
+                    <el-form 
+                        ref="batchFormRef"
+                        :model="batchForm"
+                        :rules="rules"
+                        label-width="120px"
+                    >
+                        <el-form-item label="选择果实" prop="produceId">
+                            <el-select 
+                                v-model="batchForm.produceId" 
+                                placeholder="请选择果实(如果置空将尝试识别果实图像)"
+                                filterable
+                                @change="handleBatchProduceChange"
+                            >
+                                <el-option 
+                                    v-for="item in produceList" 
+                                    :key="item.id"
+                                    :label="item.name"
+                                    :value="item.id"
+                                />
+                            </el-select>
+                        </el-form-item>
+                        <el-form-item label="果实名称">
+                            <el-input v-model="batchForm.produceName" disabled />
+                        </el-form-item>
+                        <el-form-item label="果实编号">
+                            <el-input v-model="batchForm.produceId" disabled />
+                        </el-form-item>
+                        <el-form-item label="待处理数量">
+                            <el-input :value="selectedRows.length" disabled />
+                        </el-form-item>
+                    </el-form>
+                    <template #footer>
+                        <el-button @click="batchDialogVisible = false">取消</el-button>
+                        <el-button type="primary" @click="submitBatch">确定</el-button>
+                    </template>
+                </el-dialog>
+
                 <!-- 添加图片预览弹框 -->
                 <el-dialog
                     v-model="previewVisible"
@@ -177,11 +236,12 @@ import { reqGetTodos, reqHandleTodoRecord, dropTodoRecord } from "@/api/weigh";
 import { reqGetProduces } from "@/api/produce";
 import { ScaleUnitMap } from '@/models/constants/scale';
 import dayjs from "dayjs";
+import { Row } from "element-plus/es/components/table-v2/src/components/index.mjs";
 
 // 表格数据
 const tableData = ref<TodoVO[]>([]);
 const currentPage = ref(1);
-const pageSize = ref(10);
+const pageSize = ref(6);
 const total = ref(0);
 
 // 获取待办列表
@@ -299,6 +359,94 @@ const previewImage = ref('');
 const handlePreview = (imageUrl: string) => {
     previewImage.value = imageUrl;
     previewVisible.value = true;
+};
+
+// 多选相关
+const selectedRows = ref<TodoVO[]>([]);
+
+const handleSelectionChange = (rows: TodoVO[]) => {
+    selectedRows.value = rows;
+};
+
+// 批量编辑相关
+const batchDialogVisible = ref(false);
+const batchFormRef = ref();
+const batchForm = reactive({
+    produceId: null,
+    produceName: '',
+});
+
+// 处理批量果实选择变化
+const handleBatchProduceChange = (value: number) => {
+    const selectedProduce = produceList.value.find(p => p.id === value);
+    if (selectedProduce) {
+        batchForm.produceName = selectedProduce.name;
+        batchForm.produceId = selectedProduce.id;
+    }
+};
+
+// 修改批量提交逻辑
+const handleBatchSubmit = () => {
+    if (selectedRows.value.length === 0) {
+        ElMessage.warning('请先勾选要批量提交的待办项');
+        return;
+    }
+    batchForm.produceId = null;
+    batchForm.produceName = '';
+    batchDialogVisible.value = true;
+};
+
+// 提交批量操作
+const submitBatch = async () => {
+    try {
+        const promises = selectedRows.value.map(row => {
+            // 如果选择了新的果实，则更新果实信息
+            if (batchForm.produceId !== null) {
+                row.produceId = batchForm.produceId
+                row.produceName = batchForm.produceName
+                console.log(row)
+                return reqHandleTodoRecord(row);
+            }
+            // 如果没有选择果实，保持原样提交
+            return reqHandleTodoRecord(row);
+        });
+        
+        await Promise.all(promises);
+        ElMessage.success('批量提交成功');
+        batchDialogVisible.value = false;
+        fetchTodoList();
+    } catch (error) {
+        ElMessage.error('批量提交失败: ' + error);
+    }
+};
+
+// 批量丢弃
+const handleBatchDrop = async () => {
+    if (selectedRows.value.length === 0) {
+        ElMessage.warning('请先勾择要批量丢弃的待办项');
+        return;
+    }
+
+    try {
+        await ElMessageBox.confirm(
+            `确定要丢弃选中的 ${selectedRows.value.length} 条记录吗？`,
+            '警告',
+            {
+                confirmButtonText: '确定',
+                cancelButtonText: '取消',
+                type: 'warning'
+            }
+        );
+
+        const promises = selectedRows.value.map(row => dropTodoRecord(row.id));
+        await Promise.all(promises);
+        
+        ElMessage.success('批量丢弃成功');
+        fetchTodoList();
+    } catch (error) {
+        if (error !== 'cancel')
+            ElMessage.error('批量丢弃失败: ' + error);
+    }
 };
 
 onMounted(() => {
@@ -429,5 +577,10 @@ onMounted(() => {
     display: flex;
     justify-content: center;
     align-items: center;
+}
+
+.batch-actions {
+    display: flex;
+    gap: 10px;
 }
 </style>

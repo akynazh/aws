@@ -113,6 +113,15 @@
                     </el-table-column>
                 </el-table>
 
+                <!-- 添加分页组件 -->
+                <Pagination 
+                    v-model:current-page="currentPage" 
+                    v-model:page-size="pageSize" 
+                    :total="total"
+                    @size-change="fetchScaleList" 
+                    @current-change="fetchScaleList"
+                />
+
                 <!-- 电子秤表单对话框 -->
                 <el-dialog 
                     :title="isEdit ? '编辑电子秤' : '添加电子秤'" 
@@ -208,8 +217,10 @@
                         </div>
                     </template>
                     <el-table :data="recordsData" border>
-                        <!-- <el-table-column prop="id" label="ID" width="80" /> -->
-                        <el-table-column prop="workId" label="电子秤编号" width="120" />
+                        <!-- <el-table-column prop="id" label="记录编号" width="80" /> -->
+                        <el-table-column prop="workId" label="作业编号" width="120" />
+                        <el-table-column prop="produceId" label="果实编号" width="120" />
+                        <el-table-column prop="image" label="果实图像" width="120" />
                         <el-table-column prop="employeeId" label="员工编号" width="120" />
                         <el-table-column label="称重数据" width="150">
                             <template #default="{ row }">
@@ -279,7 +290,7 @@ let store = userStore();
 // 表格数据
 const tableData = ref<ScaleVO[]>([]);
 const currentPage = ref(1);
-const pageSize = ref(10);
+const pageSize = ref(6); 
 const total = ref(0);
 
 // 表单相关
@@ -388,7 +399,7 @@ const fetchScaleList = async () => {
 const recordsDialogVisible = ref(false);
 const recordsData = ref<RecordVO[]>([]);
 const recordsCurrentPage = ref(1);
-const recordsPageSize = ref(10);
+const recordsPageSize = ref(5);
 const recordsTotal = ref(0);
 const currentScaleId = ref<number>();
 
@@ -557,6 +568,8 @@ const handleExport = async (scaleId: number) => {
         const excelData = allRecords.map(record => ({
             '编号': record.id,
             '作业编号': record.workId,
+            '果实编号': record.produceId,
+            '果实图像': record.image,
             '员工编号': record.employeeId,
             '称重数据': `${record.dataValue}${ScaleUnitMap[record.unit]}`,
             '误差': `±${record.dataErrorMargin}${ScaleUnitMap[record.unit]}`,

@@ -11,6 +11,8 @@ export interface RecordAddVO {
 export interface RecordVO {
   id: number;
   workId: number;
+  produceId: number;
+  image: string;
   employeeId: number;
   scaleId: number;
   dataValue: number;

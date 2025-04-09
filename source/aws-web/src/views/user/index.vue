@@ -192,6 +192,9 @@
             <el-table :data="recordsData" border class="hover-effect">
                 <el-table-column prop="id" label="记录编号" width="120" />
                 <el-table-column prop="workId" label="作业编号" width="120" />
+                <el-table-column prop="produceId" label="果实编号" width="120" />
+                <el-table-column prop="image" label="果实图像" width="120" />
+                <el-table-column prop="workId" label="作业编号" width="120" />
                 <el-table-column prop="scaleId" label="电子秤编号" width="120" />
                 <el-table-column label="称重数据" width="150">
                     <template #default="{ row }">
@@ -261,7 +264,7 @@ import * as XLSX from 'xlsx';
 
 const tableData = ref<UserVO[]>([]);
 const currentPage = ref(1); // 当前页码
-const pageSize = ref(10); // 每页条数
+const pageSize = ref(7); // 每页条数
 const total = ref(0); // 总条数
 
 const dialogVisible = ref(false);
@@ -463,7 +466,7 @@ const currentUser = ref<UserVO>();
 const recordsData = ref<RecordVO[]>([]);
 const workSummaryData = ref<UserWorkOutputVO[]>([]);
 const recordsCurrentPage = ref(1);
-const recordsPageSize = ref(10);
+const recordsPageSize = ref(5);
 const recordsTotal = ref(0);
 
 // View records handler
@@ -556,6 +559,8 @@ const handleExportRecords = async () => {
     const excelData = allRecords.map(record => ({
       '编号': record.id,
       '作业编号': record.workId,
+      '果实编号': record.produceId,
+      '果实图像': record.image,
       '电子秤编号': record.scaleId,
       '称重数据': `${record.dataValue}${ScaleUnitMap[record.unit]}`,
       '误差': `±${record.dataErrorMargin}${ScaleUnitMap[record.unit]}`,

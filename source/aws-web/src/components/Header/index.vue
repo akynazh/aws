@@ -6,25 +6,46 @@
     </div>
     <div class="right-section">
       <div class="nav-menu">
-        <el-button type="primary" plain @click="router.push('/')">
+        <el-button 
+          type="primary" 
+          plain 
+          :class="{ 'active-btn': route.path === '/' }"
+          @click="router.push('/')"
+        >
           <el-icon><User /></el-icon>
           个人中心
         </el-button>
-        <el-button type="primary" plain @click="router.push('/scale')">
+        <el-button 
+          type="primary" 
+          plain 
+          :class="{ 'active-btn': route.path === '/scale' }"
+          @click="router.push('/scale')"
+        >
           <el-icon><SwitchButton /></el-icon>
           电子秤管理
         </el-button>
-        <el-button type="primary" plain @click="router.push('/todo')">
-          <el-icon><SwitchButton /></el-icon>
+        <el-button 
+          type="primary" 
+          plain 
+          :class="{ 'active-btn': route.path === '/todo' }"
+          @click="router.push('/todo')"
+        >
+          <el-icon><DocumentChecked /></el-icon>
           待办管理
         </el-button>
-        <el-button type="primary" plain @click="router.push('/produce')">
+        <el-button 
+          type="primary" 
+          plain 
+          :class="{ 'active-btn': route.path === '/produce' }"
+          @click="router.push('/produce')"
+        >
           <el-icon><Platform /></el-icon>
           果实管理
         </el-button>
         <el-button 
           type="primary" 
           plain 
+          :class="{ 'active-btn': route.path === '/work' }"
           @click="router.push('/work')"
         >
           <el-icon><DataLine /></el-icon>
@@ -34,6 +55,7 @@
           v-if="store.roles?.includes(UserRole.ADMIN)"
           type="primary" 
           plain 
+          :class="{ 'active-btn': route.path === '/user' }"
           @click="router.push('/user')"
         >
           <el-icon><Management /></el-icon>
@@ -49,14 +71,15 @@
 </template>
 
 <script setup lang="ts">
-import { Platform, Management, DataLine, User, SwitchButton } from '@element-plus/icons-vue'
+import { Platform, Management, DataLine, User, SwitchButton, DocumentChecked } from '@element-plus/icons-vue'
 import { ElNotification } from "element-plus";
-import { useRouter } from "vue-router";
+import { useRouter, useRoute } from "vue-router";
 import userStore from "@/store/modules/user";
 import { UserRole } from '@/models/constants/user';
 
 let store = userStore();
 let router = useRouter();
+let route = useRoute();
 
 const logout = () => {
   store.logout();
@@ -142,5 +165,10 @@ const logout = () => {
 .el-icon {
   margin-right: 4px;
   vertical-align: middle;
+}
+
+.active-btn {
+  background-color: rgb(0, 64, 128) !important;
+  color: white !important;
 }
 </style>
