@@ -140,6 +140,8 @@ public class RecordService {
         Record record = new Record();
         BeanUtils.copyProperties(vo, record);
         record.setWorkId(ongoingWork.getId());
+        record.setProduceId(produceId);
+        record.setImage(image);
         return recordRepository.save(record);
     }
 
@@ -149,6 +151,10 @@ public class RecordService {
         BeanUtils.copyProperties(todoVO, recordAddVO);
         addRecord(recordAddVO);
         todoService.delTodo(todoVO.getId());
+    }
+
+    public void dropTodo(Long id) {
+        todoService.delTodo(id);
     }
 
     public Record getRecord(Long id) {

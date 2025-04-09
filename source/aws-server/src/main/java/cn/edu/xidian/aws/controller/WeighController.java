@@ -62,6 +62,14 @@ public class WeighController {
         return ResponseEntity.ok().build();
     }
 
+    @Operation(summary = "丢弃待处理称重记录")
+    @DeleteMapping("/record/todo")
+    @PreAuthorize(Security.PRE_AUTHORIZE_ADMIN)
+    public ResponseEntity<String> dropTodoRecord(@RequestParam Long id) {
+        recordService.dropTodo(id);
+        return ResponseEntity.ok().build();
+    }
+
     @Operation(summary = "获取称重记录")
     @PostMapping("/record/list")
     @PreAuthorize(Security.PRE_AUTHORIZE_EMPLOYEE)

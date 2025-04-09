@@ -40,7 +40,7 @@
                     style="width: 100%"
                 >
                     <el-table-column prop="id" label="编号" width="80" />
-                    <el-table-column prop="skey" label="密钥" width="120">
+                    <!-- <el-table-column prop="skey" label="密钥" width="120">
                         <template #default="{ row }">
                             <span 
                                 @click="toggleSkeyVisibility(row.id)"
@@ -49,7 +49,7 @@
                                 {{ skeyVisibility[row.id] ? row.skey : '********' }}
                             </span>
                         </template>
-                    </el-table-column>
+                    </el-table-column> -->
                     <el-table-column prop="sid" label="客户端号" width="120">
                         <template #default="{ row }">
                             <span 

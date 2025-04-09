@@ -104,7 +104,7 @@ public class MqttConfig {
     public RetryTemplate retryTemplate() {
         RetryTemplate retryTemplate = new RetryTemplate();
 
-        SimpleRetryPolicy retryPolicy = new SimpleRetryPolicy(5); // 最多重试 5 次
+        SimpleRetryPolicy retryPolicy = new SimpleRetryPolicy(3);
         retryTemplate.setRetryPolicy(retryPolicy);
 
         ExponentialBackOffPolicy backOffPolicy = new ExponentialBackOffPolicy();

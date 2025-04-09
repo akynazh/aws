@@ -30,9 +30,14 @@ export const constantRoutes = [
     name: "work",
   },
   {
-    path: "/weigh",
-    component: () => import("@/views/weigh/index.vue"),
-    name: "weigh",
+    path: "/scale",
+    component: () => import("@/views/scale/index.vue"),
+    name: "scale",
+  },
+  {
+    path: "/todo",
+    component: () => import("@/views/todo/index.vue"),
+    name: "todo",
   },
   // {
   //   path: "/data",

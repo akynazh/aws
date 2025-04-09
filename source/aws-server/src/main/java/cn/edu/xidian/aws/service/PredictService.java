@@ -25,6 +25,7 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.Base64;
 import java.util.Objects;
+import java.util.concurrent.TimeUnit;
 
 /**
  * @author akynazh@gmail.com
@@ -43,7 +44,11 @@ public class PredictService {
     @Value("${aws.predict.self.url}")
     private String SELF_PREDICT_URL;
 
-    static final OkHttpClient HTTP_CLIENT = new OkHttpClient().newBuilder().build();
+    static final OkHttpClient HTTP_CLIENT = new OkHttpClient().newBuilder()
+            .connectTimeout(60, TimeUnit.SECONDS)  // 设置连接超时为60秒
+            .readTimeout(60, TimeUnit.SECONDS)     // 设置读取超时为60秒
+            .writeTimeout(60, TimeUnit.SECONDS)    // 设置写入超时为60秒
+            .build();
 
     private static String resolve(Request request) {
         try (Response response = HTTP_CLIENT.newCall(request).execute()) {
@@ -56,6 +61,8 @@ public class PredictService {
             }
             PredictResultBody bestPredictResult = result.getResult().get(0);
             return Produces.get(Math.toIntExact(bestPredictResult.getClazz())).getName();
+        } catch (AwsNotFoundException e) {
+            throw e;
         } catch (Exception e) {
             throw new AwsNetworkException(AwsNetworkException.REQ_ERR);
         }
@@ -64,6 +71,12 @@ public class PredictService {
     public String predict(String image, String image64) {
         if (!StringUtils.hasText(image) && !StringUtils.hasText(image64)) {
             throw new AwsArgumentException(AwsArgumentException.PARAM_MISSING);
+        }
+        if (!StringUtils.hasText(image)) {
+            image = "";
+        }
+        if (!StringUtils.hasText(image64)) {
+            image64 = "";
         }
         PredictForm form = new PredictForm();
         form.setImage(image);

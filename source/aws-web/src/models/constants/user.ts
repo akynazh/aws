@@ -14,10 +14,12 @@ export const UserRole = {
   ADMIN: "ROLE_ADMIN",
   EMPLOYEE: "ROLE_EMPLOYEE",
   SCALE: "ROLE_SCALE",
+  SYS: "ROLE_SYS",
 } as const;
 
 export const UserRoleMap = {
   [UserRole.ADMIN]: "管理员",
   [UserRole.EMPLOYEE]: "员工",
   [UserRole.SCALE]: "电子秤",
+  [UserRole.SYS]: "系统用户",
 } as const;

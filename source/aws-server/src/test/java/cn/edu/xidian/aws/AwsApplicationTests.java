@@ -21,5 +21,6 @@ class AwsApplicationTests {
 
     @Test
     void test() {
+//        predictService.predict("https://akynazh.site/images/pub/watermelon_d79dab34-ddf3-41fd-b6b6-8149bedc4670.png", "");
     }
 }

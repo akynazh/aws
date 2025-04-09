@@ -11,8 +11,11 @@ def send(username, password, payload, topic):
 
 
 if __name__ == "__main__":
-    import data, time
+    import data, time, random
 
     while True:
-        send("30ac4feb-b672-457d-b937-dad0db312855", "xyzzzxy", data.gen(), "t/scale")
+        d = data.gen()
+        print(d)
+        send("67437ed1-c3b6-4995-948f-1e0a8bf5cc89", "123456", d, "t/scale")
+        # send("926538b1-3a48-4fef-9ea1-20c9ce2cc36c", "123456", data.gen(), "t/scale")
         time.sleep(1)

@@ -10,13 +10,17 @@
           <el-icon><User /></el-icon>
           个人中心
         </el-button>
-        <el-button type="primary" plain @click="router.push('/weigh')">
+        <el-button type="primary" plain @click="router.push('/scale')">
           <el-icon><SwitchButton /></el-icon>
-          电子秤模块
+          电子秤管理
+        </el-button>
+        <el-button type="primary" plain @click="router.push('/todo')">
+          <el-icon><SwitchButton /></el-icon>
+          待办管理
         </el-button>
         <el-button type="primary" plain @click="router.push('/produce')">
           <el-icon><Platform /></el-icon>
-          果实模块
+          果实管理
         </el-button>
         <el-button 
           type="primary" 
@@ -24,7 +28,7 @@
           @click="router.push('/work')"
         >
           <el-icon><DataLine /></el-icon>
-          作业模块
+          作业管理
         </el-button>
         <el-button 
           v-if="store.roles?.includes(UserRole.ADMIN)"
@@ -33,7 +37,7 @@
           @click="router.push('/user')"
         >
           <el-icon><Management /></el-icon>
-          用户模块
+          用户管理
         </el-button>
       </div>
       <el-button type="info" @click="logout" class="logout-btn">
