@@ -29,7 +29,7 @@ import paho.mqtt.client as mqtt
 
 TOPIC_RESULT = "t/result"
 TOPIC_SCALE = "t/scale"
-BROKER_URL = "node1.emqx.io:1883"
+BROKER_URL = "localhost:1883"
 USERNAME_RESULT = "result"
 PASSWORD_RESULT = "result"
 USERNAME_SCALE = "67437ed1-c3b6-4995-948f-1e0a8bf5cc89"

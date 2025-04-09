@@ -8,7 +8,7 @@ spring:
     allow-circular-references: true
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://mysql-edge:3307/aws
+    url: jdbc:mysql://localhost:3307/aws
     username: root
     password: 658766@Jzh
     hikari:
@@ -23,7 +23,7 @@ spring:
 
 mqtt:
   broker:
-    urls: tcp://node1.emqx.io:1883,tcp://node2.emqx.io:2883,tcp://node3.emqx.io:3883
+    urls: tcp://localhost:1883,tcp://localhost:2883,tcp://localhost:3883
   username: aws-edge
   password: 123456
 

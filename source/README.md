@@ -33,7 +33,7 @@ cd aws-edge && mvn package -DskipTests && java -jar target/aws-edge-1.0.0.jar
 - [x] 模型准确度计算
 - [x] 前台优化并添加处理称重数据的功能
 - [x] 模拟器结果输出优化
-- [] 前台打包部署问题
+- [x] 前台打包部署问题
 
 ## DOC
 
