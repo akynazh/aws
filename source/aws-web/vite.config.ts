@@ -11,7 +11,7 @@ export default defineConfig(({ mode }) => {
     css: {
       preprocessorOptions: {
         scss: {
-          additionalData: '@use "@/styles/variable.scss" as *;'
+          additionalData: '@use "@/styles/variable.scss" as *;',
         },
       },
     },
@@ -20,7 +20,7 @@ export default defineConfig(({ mode }) => {
       viteMockServe({
         mockPath: "mock", // mock 文件夹路径
         // localEnabled: command === "serve", // 仅在开发模式启用
-        localEnabled: false
+        localEnabled: false,
       }),
     ],
     resolve: {
@@ -36,9 +36,9 @@ export default defineConfig(({ mode }) => {
           target: env.VITE_SERVE,
           changeOrigin: true,
           // 路径重写: 由于服务器接口不含 /api,所以将 /api 替换为空
-          rewrite: (path) => path.replace(/^\/api/, '')
-        }
-      }
-  }
+          rewrite: (path) => path.replace(/^\/api/, ""),
+        },
+      },
+    },
   };
 });

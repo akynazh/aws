@@ -15,7 +15,13 @@ pnpm run dev
 
 ## PUBLISH
 
-TODO
+```sh
+pnpm run build
+# npm install -g serve
+serve dist
+
+# TODO: 端口问题
+```
 
 ## NOTE
 
