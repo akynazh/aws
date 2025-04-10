@@ -14,7 +14,8 @@ scale->scale: 读取员工卡数据
 scale->scale: 拍摄果实图片
 activate server
 scale->server: 生成并提交称重信息
-server->server: 处理称重信息
+server->server: 识别果实种类
+server->server: 持久化称重信息
 server->scale: 返回提交结果
 deactivate server
 scale->staff: 显示提交结果
