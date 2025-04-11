@@ -11,3 +11,5 @@
 .dep/mysql-server/*
 !.dep/mysql-server/conf
 !.dep/mysql-server/conf/my.cnf
+
+.dep/redis
