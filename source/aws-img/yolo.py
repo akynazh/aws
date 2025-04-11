@@ -3,10 +3,20 @@ from PIL import Image
 import io
 import requests
 from ultralytics import YOLO
+import os
+import sys
+
+
+def get_model_path():
+    if hasattr(sys, "_MEIPASS"):  # 处理 PyInstaller 打包后的路径
+        return os.path.join(sys._MEIPASS, "yolov8", "best.pt")
+    else:
+        return "yolov8/best.pt"  # 本地路径
+
 
 # 加载 YOLO 模型
-# model = YOLO("yolov8/best.pt")
-model = YOLO("yolov11/best.pt")
+# model = YOLO("yolov11/best.pt")
+model = YOLO(get_model_path())
 
 
 def predict(image_local="", image_url="", image_base64=""):

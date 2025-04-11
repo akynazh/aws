@@ -1,0 +1,63 @@
+server:
+  port: 8080
+spring:
+  application:
+    name: aws-server
+  main:
+    allow-circular-references: true
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://mysql-server/aws
+    username: root
+    password: 658766@Jzh
+    hikari:
+      maximum-pool-size: 8
+      minimum-idle: 4
+  jpa:
+    hibernate:
+      ddl-auto: update
+      naming.physical-strategy: org.hibernate.boot.model.naming.CamelCaseToUnderscoresNamingStrategy
+    properties:
+      hibernate.dialect: org.hibernate.dialect.MySQLDialect
+  task:
+    scheduling:
+      pool:
+        size: 5
+  data:
+    redis:
+      host: redis
+      port: 6379
+      password: 658766@Jzh
+      database: 0
+      client-type: lettuce
+
+aws:
+  jwt:
+    secret: 5367566B59703373367639792F423F4528482B4D6251655468576D5A71347437
+    validTime: 24
+  admin:
+    uid: 659811
+    password: 123456
+  predict:
+    self:
+      url: http://aws-img:8000/predict
+    baidu:
+      url: https://aip.baidubce.com/rest/2.0/image-classify/v1/classify/ingredient?access_token=
+      key: vUbXMbteYyjWCg1IKJpcaYoD
+      secret: DXGjvxUPfjcjSn3LEE0bsJPLZoAx6CjA
+
+mqtt:
+  broker:
+    urls: tcp://node1.emqx.io,tcp://node2.emqx.io,tcp://node3.emqx.io
+  server:
+    username: aws-server
+    password: 123456
+  edge:
+    username: aws-edge
+    password: 123456
+
+springdoc:
+  api-docs:
+    path: /docs
+  swagger-ui:
+    enabled: false

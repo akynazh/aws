@@ -1,0 +1,32 @@
+server:
+  port: 9090
+
+spring:
+  application:
+    name: aws-edge
+  main:
+    allow-circular-references: true
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://mysql-edge/aws
+    username: root
+    password: 658766@Jzh
+    hikari:
+      maximum-pool-size: 8
+      minimum-idle: 4
+  jpa:
+    hibernate:
+      ddl-auto: update
+      naming.physical-strategy: org.hibernate.boot.model.naming.CamelCaseToUnderscoresNamingStrategy
+    properties:
+      hibernate.dialect: org.hibernate.dialect.MySQLDialect
+
+mqtt:
+  broker:
+    urls: tcp://node1.emqx.io,tcp://node2.emqx.io,tcp://node3.emqx.io
+  username: aws-edge
+  password: 123456
+
+aws:
+  jwt:
+    validTime: 24

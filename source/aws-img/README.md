@@ -31,3 +31,10 @@ pip install ultralytics
 yolo task=detect mode=predict model=yolov8/best.pt source=./sample/carrot.png project=./yolov8/out
 yolo task=detect mode=predict model=yolov11/best.pt source=./sample/carrot.png project=./yolov11/out
 ```
+
+## EXEC
+
+```sh
+./.venv/bin/pyinstaller --onefile --add-data "yolov8/best.pt:yolov8" api.py
+# ./dist/api
+```

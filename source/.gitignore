@@ -1,0 +1,13 @@
+.dep/emqx1
+.dep/emqx2
+.dep/emqx3
+
+.dep/mysql-edge/*
+!.dep/mysql-edge/conf
+!.dep/mysql-edge/conf/my.cnf
+!.dep/mysql-edge/init
+!.dep/mysql-edge/init/slave.sql
+
+.dep/mysql-server/*
+!.dep/mysql-server/conf
+!.dep/mysql-server/conf/my.cnf

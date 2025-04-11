@@ -1,0 +1,215 @@
+version: "3"
+services:
+  mysql-server:
+    image: mysql:8.0
+    container_name: mysql-server
+    networks:
+      aws:
+        aliases:
+          - mysql-server
+    restart: unless-stopped
+    ports:
+      - 3306:3306
+    environment:
+      - MYSQL_ROOT_PASSWORD=658766@Jzh
+      - MYSQL_DATABASE=aws
+    volumes:
+      - ./.dep/mysql-server/data:/var/lib/mysql
+      - ./.dep/mysql-server/conf:/etc/mysql/conf.d
+
+  mysql-edge:
+    image: mysql:8.0
+    container_name: mysql-edge
+    networks:
+      aws:
+        aliases:
+          - mysql-edge
+    restart: unless-stopped
+    ports:
+      - 3307:3306
+    environment:
+      - MYSQL_ROOT_PASSWORD=658766@Jzh
+      - MYSQL_DATABASE=aws
+    command: --init-file=/docker-entrypoint-initdb.d/slave.sql
+    volumes:
+      - ./.dep/mysql-edge/data:/var/lib/mysql
+      - ./.dep/mysql-edge/conf:/etc/mysql/conf.d
+      - ./.dep/mysql-edge/init:/docker-entrypoint-initdb.d
+
+  redis:
+    image: redis:alpine
+    container_name: redis
+    networks:
+      aws:
+        aliases:
+          - redis
+    ports:
+      - "6379:6379"
+    restart: unless-stopped
+    command: "redis-server --requirepass 658766@Jzh"
+    volumes:
+      - ./.dep/redis/data:/data
+
+  emqx1:
+    image: emqx:5.8.6
+    container_name: emqx1
+    environment:
+      - "EMQX_NODE_NAME=emqx@node1.emqx.io"
+      - "EMQX_CLUSTER__DISCOVERY_STRATEGY=static"
+      - "EMQX_CLUSTER__STATIC__SEEDS=[emqx@node1.emqx.io,emqx@node2.emqx.io,emqx@node3.emqx.io]"
+    healthcheck:
+      test: ["CMD", "/opt/emqx/bin/emqx", "ctl", "status"]
+      interval: 5s
+      timeout: 25s
+      retries: 5
+    networks:
+      aws:
+        aliases:
+          - node1.emqx.io
+    ports:
+      - 1883:1883 # tcp(mqtt)
+      - 8083:8083 # ssl
+      - 8084:8084 # ws
+      - 8883:8883 # wss
+      - 18083:18083 # http(dashboard)
+      - 5683:5683/udp # coap
+      - 61613:61613 # stomp
+    volumes:
+      - ./.dep/emqx1/data:/opt/emqx/data
+
+  emqx2:
+    image: emqx:5.8.6
+    container_name: emqx2
+    environment:
+      - "EMQX_NODE_NAME=emqx@node2.emqx.io"
+      - "EMQX_CLUSTER__DISCOVERY_STRATEGY=static"
+      - "EMQX_CLUSTER__STATIC__SEEDS=[emqx@node1.emqx.io,emqx@node2.emqx.io,emqx@node3.emqx.io]"
+    healthcheck:
+      test: ["CMD", "/opt/emqx/bin/emqx", "ctl", "status"]
+      interval: 5s
+      timeout: 25s
+      retries: 5
+    networks:
+      aws:
+        aliases:
+          - node2.emqx.io
+    ports:
+      - 2883:1883 # tcp(mqtt)
+      # - 8083:8083 # ssl
+      # - 8084:8084 # ws
+      # - 8883:8883 # wss
+      # - 18083:18083 # http(dashboard)
+      # - 5683:5683/udp # coap
+      # - 61613:61613 # stomp
+    volumes:
+      - ./.dep/emqx2/data:/opt/emqx/data
+
+  emqx3:
+    image: emqx:5.8.6
+    container_name: emqx3
+    environment:
+      - "EMQX_NODE_NAME=emqx@node3.emqx.io"
+      - "EMQX_CLUSTER__DISCOVERY_STRATEGY=static"
+      - "EMQX_CLUSTER__STATIC__SEEDS=[emqx@node1.emqx.io,emqx@node2.emqx.io,emqx@node3.emqx.io]"
+    healthcheck:
+      test: ["CMD", "/opt/emqx/bin/emqx", "ctl", "status"]
+      interval: 5s
+      timeout: 25s
+      retries: 5
+    networks:
+      aws:
+        aliases:
+          - node3.emqx.io
+    ports:
+      - 3883:1883 # tcp(mqtt)
+      # - 8083:8083 # ssl
+      # - 8084:8084 # ws
+      # - 8883:8883 # wss
+      # - 18083:18083 # http(dashboard)
+      # - 5683:5683/udp # coap
+      # - 61613:61613 # stomp
+    volumes:
+      - ./.dep/emqx3/data:/opt/emqx/data
+
+  aws-edge:
+    image: openjdk:17-jdk-slim
+    command: ["java", "-jar", "/aws-edge/target/aws-edge-1.0.0.jar", "--spring.config.location=file:/aws-edge/conf/application.yml"]
+    container_name: aws-edge
+    volumes:
+      - ./aws-edge/target:/aws-edge/target
+      - ./.dep/aws-edge/conf:/aws-edge/conf
+    depends_on:
+      - mysql-server
+      - mysql-edge
+      - redis
+      - emqx1
+      - emqx2
+      - emqx3
+    networks:
+      aws:
+        aliases:
+          - aws-edge
+    ports:
+      - 9090:9090
+    restart: unless-stopped
+
+  aws-server:
+    image: openjdk:17-jdk-slim
+    command: ["java", "-jar", "/aws-server/target/aws-server-1.0.0.jar", "--spring.config.location=file:/aws-server/conf/application.yml"]
+    container_name: aws-server
+    volumes:
+      - ./aws-server/target:/aws-server/target
+      - ./.dep/aws-server/conf:/aws-server/conf
+    depends_on:
+      - mysql-server
+      - mysql-edge
+      - redis
+      - emqx1
+      - emqx2
+      - emqx3
+      - aws-edge
+    networks:
+      aws:
+        aliases:
+          - aws-server
+    ports:
+      - 8080:8080
+    restart: unless-stopped
+
+  aws-img:
+    image: python:3.11-slim
+    command: > 
+      bash -c "apt-get update \
+      && apt-get install libgl1-mesa-glx libglib2.0-0 -y \
+      && cd /aws-img \
+      && pip3 install -r requirements-prod.txt \
+      && python3 api.py"
+    container_name: aws-img
+    volumes:
+      - ./aws-img:/aws-img
+    networks:
+      aws:
+        aliases:
+          - aws-img
+    ports:
+      - 8000:8000
+    restart: unless-stopped
+  
+  aws-web:
+    image: node:20
+    command: >
+      bash -c "cd /aws-web && npm install -g serve && serve dist -p 80"
+    container_name: aws-web
+    volumes:
+      - ./aws-web:/aws-web
+    networks:
+      aws:
+        aliases:
+          - aws-web
+    ports:
+      - 80:80
+    restart: unless-stopped
+
+networks:
+  aws:
+    driver: bridge
