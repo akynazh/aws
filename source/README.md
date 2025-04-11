@@ -234,3 +234,191 @@ START SLAVE;
 -- 验证复制状态
 SHOW SLAVE STATUS\G;
 ``` -->
+
+### MinIO 数据滚动备份
+
+```sh
+brew install minio/stable/minio
+minio server ./data
+brew install minio/stable/mc
+mc alias set myminio http://localhost:9000 minioadmin minioadmin
+mc anonymous set download myminio/aws
+# WEB: http://localhost:9000/aws/CAT.jpg 
+```
+
+如果有多个边端 MinIO 实例，并且每个边端的桶都需要同步到一个远端 MinIO 实例，可以通过 MinIO 镜像同步 来实现。每个边端 MinIO 都会通过 mc 客户端配置与远端 MinIO 的同步关系。可以使用 多源同步，即每个边端的 MinIO 配置为源，远端 MinIO 配置为目标，进行数据同步。
+
+方案概述
+	•	有多个 边端 MinIO 实例，分别插入数据。
+	•	所有 边端 MinIO 将数据同步到同一个 远端 MinIO 实例。
+	•	每个边端 MinIO 使用 mc 工具配置与远端 MinIO 的同步。
+	•	每个边端可以定期清除数据，而远端 MinIO 会保留所有数据。
+
+1. 修改 Docker Compose 配置
+
+假设有 3 个边端 MinIO 实例和 1 个远端 MinIO 实例。你可以在 docker-compose.yml 文件中配置多个边端 MinIO 实例：
+
+version: '3'
+services:
+  mc-client:
+    image: minio/mc
+    container_name: mc-client
+    entrypoint: ["sleep", "infinity"]  # 保持容器运行，方便执行命令
+    depends_on:
+      - edge-minio-1
+      - remote-minio
+    networks:
+      - default
+  edge-minio-1:
+    image: minio/minio
+    container_name: edge-minio-1
+    environment:
+      - MINIO_ACCESS_KEY=edgeaccesskey1
+      - MINIO_SECRET_KEY=edgesecretkey1
+    volumes:
+      - edge-data-1:/data
+    ports:
+      - "9001:9000"
+    command: server /data
+
+  edge-minio-2:
+    image: minio/minio
+    container_name: edge-minio-2
+    environment:
+      - MINIO_ACCESS_KEY=edgeaccesskey2
+      - MINIO_SECRET_KEY=edgesecretkey2
+    volumes:
+      - edge-data-2:/data
+    ports:
+      - "9003:9000"
+    command: server /data
+
+  edge-minio-3:
+    image: minio/minio
+    container_name: edge-minio-3
+    environment:
+      - MINIO_ACCESS_KEY=edgeaccesskey3
+      - MINIO_SECRET_KEY=edgesecretkey3
+    volumes:
+      - edge-data-3:/data
+    ports:
+      - "9004:9000"
+    command: server /data
+
+  remote-minio:
+    image: minio/minio
+    container_name: remote-minio
+    environment:
+      - MINIO_ACCESS_KEY=remoteaccesskey
+      - MINIO_SECRET_KEY=remotesecretkey
+    volumes:
+      - remote-data:/data
+    ports:
+      - "9002:9000"
+    command: server /data
+
+volumes:
+  edge-data-1:
+  edge-data-2:
+  edge-data-3:
+  remote-data:
+
+在这个配置中，我们有 3 个边端 MinIO 实例，分别监听端口 9001, 9003, 9004，以及 1 个远端 MinIO 实例监听端口 9002。
+
+1. 配置 MinIO 客户端（mc）
+
+你需要在一个机器上安装 MinIO 客户端 mc，然后配置与多个 MinIO 实例的连接。
+
+```sh
+# 配置边端 MinIO 1
+mc alias set edge1 http://localhost:9001 edgeaccesskey1 edgesecretkey1
+
+# 配置边端 MinIO 2
+mc alias set edge2 http://localhost:9003 edgeaccesskey2 edgesecretkey2
+
+# 配置边端 MinIO 3
+mc alias set edge3 http://localhost:9004 edgeaccesskey3 edgesecretkey3
+
+# 配置远端 MinIO
+mc alias set remote http://localhost:9002 remoteaccesskey remotesecretkey
+```
+
+3. 配置镜像同步
+
+你可以使用 mc mirror 命令为每个边端 MinIO 配置数据同步到远端 MinIO。
+
+配置同步：边端 1 到远端
+
+mc mirror --watch edge1/edge-bucket remote/remote-bucket
+
+配置同步：边端 2 到远端
+
+mc mirror --watch edge2/edge-bucket remote/remote-bucket
+
+配置同步：边端 3 到远端
+
+mc mirror --watch edge3/edge-bucket remote/remote-bucket
+
+--watch 参数意味着 MinIO 会持续监控边端的桶，并将新的数据同步到远端。
+
+4. 数据插入与清除
+
+每个边端 MinIO 都可以插入数据并定期清除数据。你可以编写脚本定期上传数据，并在每次清除时清空边端 MinIO 中的数据。
+
+插入数据的脚本（示例）
+
+```sh
+#!/bin/bash
+# 向边端 MinIO 上传数据
+mc cp /path/to/file edge1/edge-bucket
+mc cp /path/to/file edge2/edge-bucket
+mc cp /path/to/file edge3/edge-bucket
+```
+
+定期清除数据的脚本（示例）
+
+每个边端 MinIO 可以通过定时任务（如 cron）定期清除数据：
+
+```sh
+#!/bin/bash
+# 清除边端 MinIO 中的所有数据
+mc rm --recursive --force edge1/edge-bucket
+mc rm --recursive --force edge2/edge-bucket
+mc rm --recursive --force edge3/edge-bucket
+```
+
+定时任务配置
+
+你可以使用 cron 来定期执行清除脚本（例如每小时清除一次）：
+
+```sh
+# 编辑 crontab
+crontab -e
+
+# 每小时执行清除脚本
+0 * * * * /path/to/cleanup.sh
+```
+
+5. 远端 MinIO 保留数据
+
+由于远端 MinIO 是通过 mc mirror 配置同步的，它会始终保留来自所有边端 MinIO 的数据。即使某个边端 MinIO 清除数据，远端 MinIO 中的数据依然存在。
+
+6. 监控与验证
+	1.	启动 docker-compose 服务：
+
+docker-compose up -d
+
+
+	2.	插入数据到边端 MinIO 中，例如通过 mc cp 命令上传文件到 edge1/edge-bucket。
+	3.	查看远端 MinIO（remote-bucket）中的数据，确保数据已经同步过去。
+	4.	定期执行清除脚本，验证远端 MinIO 数据是否仍然存在。
+
+⸻
+
+总结
+	•	配置多个边端 MinIO 实例，每个实例独立处理数据插入。
+	•	使用 MinIO 客户端（mc）配置多个边端 MinIO 到远端 MinIO 的数据同步。
+	•	每个边端可以定期清除数据，但远端 MinIO 会保留所有同步的数据。
+	•	通过 mc mirror --watch 实现边端 MinIO 与远端 MinIO 的持续同步。
+
+这种方式允许你有多个边端 MinIO 插入数据，并将所有数据集中保存在远端 MinIO 中。如果有其他问题或需要进一步帮助，随时可以问我！
