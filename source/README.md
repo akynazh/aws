@@ -13,12 +13,11 @@ docker-compose up -d
 # docker-compose stop aws-server
 
 # DATA ONLY
-# docker-compose up -f docker-compose-data.yml -d
+docker-compose up -d mysql-server mysql-edge redis emqx1 emqx2 emqx3 minio-edge minio-remote minio-bucket-init
 # cd aws-edge && mvn package -DskipTests && java -jar target/aws-edge-1.0.0.jar
 # cd aws-server && mvn package -DskipTests && java -jar target/aws-server-1.0.0.jar
 # cd aws-img && pythonv api.py
 # cd aws-web && pnpm run build && serve dist -p 80
-# docker-compose -f docker-compose-data.yml stop
 
 # NOTE
 # 1: docker-compose app 配置变更 > docker-compose up -d app
@@ -52,6 +51,7 @@ docker-compose up -d
 - [x] 前台优化并添加处理称重数据的功能
 - [x] 模拟器结果输出优化
 - [x] 前台打包部署问题
+- [ ] 模拟器引入图片上传和识别功能
 
 ## DOC
 
