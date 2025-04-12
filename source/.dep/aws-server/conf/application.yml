@@ -61,3 +61,8 @@ springdoc:
     path: /docs
   swagger-ui:
     enabled: false
+
+minio:
+  server:
+    name: minio-remote/
+    url: http://minio-remote:9000/

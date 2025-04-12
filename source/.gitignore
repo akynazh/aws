@@ -13,3 +13,6 @@
 !.dep/mysql-server/conf/my.cnf
 
 .dep/redis
+
+.dep/minio-edge-data
+.dep/minio-remote-data

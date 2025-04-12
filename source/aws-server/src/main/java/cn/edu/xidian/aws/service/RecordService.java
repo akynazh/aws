@@ -18,7 +18,6 @@ import cn.edu.xidian.aws.pojo.vo.todo.TodoVO;
 import cn.edu.xidian.aws.pojo.vo.user.UserWorkOutputVO;
 import cn.edu.xidian.aws.pojo.vo.work.WorkUpdateVO;
 import cn.edu.xidian.aws.repository.RecordRepository;
-import cn.edu.xidian.aws.repository.TodoRepository;
 import cn.edu.xidian.aws.util.ScaleUtil;
 import com.alibaba.fastjson.JSON;
 import jakarta.transaction.Transactional;
@@ -28,9 +27,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Example;
 import org.springframework.data.domain.ExampleMatcher;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.data.redis.core.Cursor;
 import org.springframework.data.redis.core.RedisTemplate;
-import org.springframework.data.redis.core.ScanOptions;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
@@ -62,6 +59,8 @@ public class RecordService {
     private PredictService produceUtil;
     @Autowired
     private TodoService todoService;
+    @Autowired
+    private ImageService imageService;
 
     private boolean isDuplicateRecord(RecordAddVO vo) {
         Record record = recordRepository.getRecordByScaleIdAndEmployeeIdAndDataTime(
@@ -86,6 +85,9 @@ public class RecordService {
         Long scaleId = vo.getScaleId();
         Integer unit = vo.getUnit();
         BigDecimal dataValue = vo.getDataValue();
+        if (StringUtils.hasText(image)) {
+            image = imageService.handle(image);
+        }
 
         // get produceId
         if (unit == null) {

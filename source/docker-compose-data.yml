@@ -76,6 +76,7 @@ services:
       - 61613:61613 # stomp
     volumes:
       - ./.dep/emqx1/data:/opt/emqx/data
+
   emqx2:
     image: emqx:5.8.6
     container_name: emqx2
@@ -102,6 +103,7 @@ services:
       # - 61613:61613 # stomp
     volumes:
       - ./.dep/emqx2/data:/opt/emqx/data
+
   emqx3:
     image: emqx:5.8.6
     container_name: emqx3
@@ -128,7 +130,43 @@ services:
       # - 61613:61613 # stomp
     volumes:
       - ./.dep/emqx3/data:/opt/emqx/data
-      
+
+  minio-remote:
+    image: minio/minio
+    container_name: minio-remote
+    environment:
+      - MINIO_ACCESS_KEY=minio-remote
+      - MINIO_SECRET_KEY=minio-remote
+    volumes:
+      - ./.dep/minio-remote-data:/data
+    ports:
+      - "9000:9000"
+      - "9001:9001"
+    command: server /data --console-address ":9001"
+    restart: unless-stopped
+    networks:
+      aws:
+        aliases:
+          - minio-remote
+          
+  minio-edge:
+    image: minio/minio
+    container_name: minio-edge
+    environment:
+      - MINIO_ACCESS_KEY=minio-edge
+      - MINIO_SECRET_KEY=minio-edge
+    volumes:
+      - ./.dep/minio-edge-data:/data
+    ports:
+      - "9100:9000"
+      - "9101:9001"
+    command: server /data --console-address ":9001"
+    restart: unless-stopped
+    networks:
+      aws:
+        aliases:
+          - minio-edge
+
 networks:
   aws:
     driver: bridge

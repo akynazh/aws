@@ -131,6 +131,61 @@ services:
     volumes:
       - ./.dep/emqx3/data:/opt/emqx/data
 
+  minio-remote:
+    image: minio/minio
+    container_name: minio-remote
+    environment:
+      - MINIO_ACCESS_KEY=minio-remote
+      - MINIO_SECRET_KEY=minio-remote
+    volumes:
+      - ./.dep/minio-remote-data:/data
+    ports:
+      - "9000:9000"
+      - "9001:9001"
+    command: server /data --console-address ":9001"
+    restart: unless-stopped
+    networks:
+      aws:
+        aliases:
+          - minio-remote
+          
+  minio-edge:
+    image: minio/minio
+    container_name: minio-edge
+    environment:
+      - MINIO_ACCESS_KEY=minio-edge
+      - MINIO_SECRET_KEY=minio-edge
+    volumes:
+      - ./.dep/minio-edge-data:/data
+    ports:
+      - "9100:9000"
+      - "9101:9001"
+    command: server /data --console-address ":9001"
+    restart: unless-stopped
+    networks:
+      aws:
+        aliases:
+          - minio-edge
+
+  minio-bucket-init:
+    image: minio/mc
+    depends_on:
+      - minio-remote
+      - minio-edge
+    networks:
+      aws:
+        aliases:
+          - minio-bucket-init
+    entrypoint: >
+      bash -c " /usr/bin/mc alias set minio-edge http://minio-edge:9000 minio-edge minio-edge \
+      && /usr/bin/mc alias set minio-remote http://minio-remote:9000 minio-remote minio-remote \
+      && /usr/bin/mc mb minio-edge/test \
+      && /usr/bin/mc anonymous set download minio-edge/test \
+      && /usr/bin/mc mb minio-remote/test \
+      && /usr/bin/mc anonymous set download minio-remote/test \
+      && exit 0;
+      "
+
   aws-edge:
     image: openjdk:17-jdk-slim
     command: ["java", "-jar", "/aws-edge/target/aws-edge-1.0.0.jar", "--spring.config.location=file:/aws-edge/conf/application.yml"]
@@ -155,7 +210,14 @@ services:
 
   aws-server:
     image: openjdk:17-jdk-slim
-    command: ["java", "-jar", "/aws-server/target/aws-server-1.0.0.jar", "--spring.config.location=file:/aws-server/conf/application.yml"]
+    command: > 
+      bash -c "apt-get update \
+      && apt-get install curl -y \
+      && curl https://dl.min.io/client/mc/release/linux-amd64/mc -o /bin/mc \
+      && chmod +x /bin/mc \
+      && mc alias set minio-edge http://minio-edge:9000 minio-edge minio-edge \
+      && mc alias set minio-remote http://minio-remote:9000 minio-remote minio-remote \
+      && java -jar /aws-server/target/aws-server-1.0.0.jar --spring.config.location=file:/aws-server/conf/application.yml"
     container_name: aws-server
     volumes:
       - ./aws-server/target:/aws-server/target
