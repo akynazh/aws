@@ -32,7 +32,14 @@ rclone copy -v $code/aws/source s2:/root/Codes/aws/ \
 --exclude "node_modules/**" \
 --exclude "mysql-server/data/**" \
 --exclude "mysql-edge/data/**" \
---exclude "redis/data/**" 
+--exclude "redis/data/**" \
+--exclude "emqx1/**" \
+--exclude "emqx2/**" \
+--exclude "emqx3/**"
+# mysqldump -h 127.0.0.1 -P 3306 -uroot -p658766@Jzh --all-databases > mysql-server.sql
+# chmod -R 777 emqx1 emqx2 emqx3
+# docker exec emqx1 emqx ctl data export
+# docker exec emqx1 emqx ctl data import xxx
 ```
 
 ## MODULE
