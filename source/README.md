@@ -24,6 +24,15 @@ docker-compose up -d mysql-server mysql-edge redis emqx1 emqx2 emqx3 minio-edge 
 # 2: docker-compose app 镜像变更 > docker-compose up -d app --build
 # 3: app 内容变更(jar, dist) > docker-compose restart app
 # 4: docker-compose down 将会删除 container，建议使用 docker-compose stop
+
+# SERVER
+rclone copy -v $code/aws/source s2:/root/Codes/aws/ \
+--exclude ".git/**" \
+--exclude ".venv/**" \
+--exclude "node_modules/**" \
+--exclude "mysql-server/data/**" \
+--exclude "mysql-edge/data/**" \
+--exclude "redis/data/**" 
 ```
 
 ## MODULE

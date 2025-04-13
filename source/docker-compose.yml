@@ -1,7 +1,7 @@
 version: "3"
 services:
   mysql-server:
-    image: mysql:8.0
+    image: mysql:8.0.41
     container_name: mysql-server
     networks:
       aws:
@@ -18,7 +18,7 @@ services:
       - ./.dep/mysql-server/conf:/etc/mysql/conf.d
 
   mysql-edge:
-    image: mysql:8.0
+    image: mysql:8.0.41
     container_name: mysql-edge
     networks:
       aws:
@@ -37,7 +37,7 @@ services:
       - ./.dep/mysql-edge/init:/docker-entrypoint-initdb.d
 
   redis:
-    image: redis:alpine
+    image: redis:7.4.2
     container_name: redis
     networks:
       aws:
@@ -132,7 +132,7 @@ services:
       - ./.dep/emqx3/data:/opt/emqx/data
 
   minio-remote:
-    image: minio/minio
+    image: minio/minio:RELEASE.2025-04-08T15-41-24Z-cpuv1
     container_name: minio-remote
     environment:
       - MINIO_ACCESS_KEY=minio-remote
@@ -150,7 +150,7 @@ services:
           - minio-remote
           
   minio-edge:
-    image: minio/minio
+    image: minio/minio:RELEASE.2025-04-08T15-41-24Z-cpuv1
     container_name: minio-edge
     environment:
       - MINIO_ACCESS_KEY=minio-edge
@@ -168,7 +168,7 @@ services:
           - minio-edge
 
   minio-bucket-init:
-    image: minio/mc
+    image: minio/mc:RELEASE.2025-04-08T15-39-49Z-cpuv1
     depends_on:
       - minio-remote
       - minio-edge
