@@ -33,11 +33,11 @@ def gen() -> str:
     data_err = {
         "image": random.choice(
             [
-                "https://akynazh.site/images/pub/apples_cd1cda61-5610-4c10-92f1-5485a7d9892a.jpg",
-                "https://akynazh.site/images/pub/watermelon_d79dab34-ddf3-41fd-b6b6-8149bedc4670.png",
-                "https://akynazh.site/images/pub/pineapple_a7afe351-9466-4355-8151-71c81b57b070.jpeg",
+                "minio-edge/aws/apple.png",
+                "minio-edge/aws/watermelon.png",
+                "minio-edge/aws/pineapple.jpeg",
             ]
-        ),  # 苹果
+        ),
         "produceId": "",
         "produceName": "",
         "employeeId": random.choice([3, 7, 8, 18, 19, 20, 21]),

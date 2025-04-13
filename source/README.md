@@ -51,7 +51,7 @@ docker-compose up -d mysql-server mysql-edge redis emqx1 emqx2 emqx3 minio-edge 
 - [x] 前台优化并添加处理称重数据的功能
 - [x] 模拟器结果输出优化
 - [x] 前台打包部署问题
-- [ ] 模拟器引入图片上传和识别功能
+- [x] 模拟器引入图片上传和识别功能
 
 ## DOC
 

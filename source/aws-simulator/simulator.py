@@ -19,6 +19,7 @@ from PyQt5.QtWidgets import (
 from PyQt5.QtCore import Qt, QThread, pyqtSignal
 import sys
 import data
+import requests
 import json
 import time
 import scale_mqtt
@@ -111,10 +112,13 @@ class MainWindow(QMainWindow):
         layout.addWidget(form_widget)
 
         button_layout = QHBoxLayout()
-        self.generate_btn = QPushButton("生成随机数据")
+        self.generate_btn = QPushButton("生成数据")
         self.generate_btn.clicked.connect(self.generate_data)
+        self.predict_btn = QPushButton("识别果实")
+        self.predict_btn.clicked.connect(self.predict_image)
         self.send_btn = QPushButton("提交数据")
         self.send_btn.clicked.connect(self.send_data)
+        button_layout.addWidget(self.predict_btn)
         button_layout.addWidget(self.generate_btn)
         button_layout.addWidget(self.send_btn)
         layout.addLayout(button_layout)
@@ -173,6 +177,17 @@ class MainWindow(QMainWindow):
             str(payload_dict.get("dataErrorMargin", "0.1"))
         )
         self.unit_input.setText(str(payload_dict.get("unit", "2")))
+
+    def predict_image(self):
+        image = str(self.image_input.text())
+        image = "http://minio-edge:9000" + image[image.find("/") :]
+        resp = requests.post(
+            url="http://localhost:8000/predict",
+            json={"image": image, "image64": ""},
+        )
+        if resp.status_code == 200:
+            clazz = resp.json()["result"][0]["clazz"] if resp.json()["result"] else ""
+            self.produce_id_input.setText(str(clazz))
 
     def send_data(self):
         payload = {

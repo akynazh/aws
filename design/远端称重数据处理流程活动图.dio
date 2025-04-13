@@ -1,6 +1,6 @@
 <mxfile host="65bd71144e">
     <diagram id="HOvSqV5hfiL-M3HpTQ80" name="Page-1">
-        <mxGraphModel dx="851" dy="411" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" math="0" shadow="0">
+        <mxGraphModel dx="906" dy="1735" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" math="0" shadow="0">
             <root>
                 <mxCell id="0"/>
                 <mxCell id="1" parent="0"/>
@@ -8,61 +8,61 @@
                     <mxGeometry relative="1" as="geometry"/>
                 </mxCell>
                 <mxCell id="4" value="" style="ellipse;fillColor=strokeColor;html=1;fontSize=15;fontFamily=Songti SC;" parent="1" vertex="1">
-                    <mxGeometry x="200" y="60" width="30" height="30" as="geometry"/>
+                    <mxGeometry x="200" y="-10" width="30" height="30" as="geometry"/>
                 </mxCell>
                 <mxCell id="16" style="edgeStyle=none;html=1;entryX=0.5;entryY=0;entryDx=0;entryDy=0;fontSize=15;fontFamily=Songti SC;" parent="1" source="5" target="15" edge="1">
                     <mxGeometry relative="1" as="geometry"/>
                 </mxCell>
                 <mxCell id="5" value="检查员工和电子秤状态" style="html=1;align=center;verticalAlign=top;rounded=1;absoluteArcSize=1;arcSize=10;dashed=0;whiteSpace=wrap;fontSize=15;fontFamily=Songti SC;" parent="1" vertex="1">
-                    <mxGeometry x="135" y="120" width="160" height="40" as="geometry"/>
+                    <mxGeometry x="135" y="50" width="160" height="40" as="geometry"/>
                 </mxCell>
                 <mxCell id="18" style="edgeStyle=none;html=1;entryX=0.5;entryY=0;entryDx=0;entryDy=0;fontSize=15;fontFamily=Songti SC;" parent="1" source="6" target="7" edge="1">
                     <mxGeometry relative="1" as="geometry"/>
                 </mxCell>
                 <mxCell id="6" value="根据图片识别果实" style="html=1;align=center;verticalAlign=top;rounded=1;absoluteArcSize=1;arcSize=10;dashed=0;whiteSpace=wrap;fontSize=15;fontFamily=Songti SC;" parent="1" vertex="1">
-                    <mxGeometry x="145" y="270" width="140" height="40" as="geometry"/>
+                    <mxGeometry x="145" y="280" width="140" height="40" as="geometry"/>
                 </mxCell>
                 <mxCell id="32" style="edgeStyle=none;html=1;exitX=0;exitY=0.5;exitDx=0;exitDy=0;fontSize=15;fontFamily=Songti SC;" parent="1" source="7" edge="1">
                     <mxGeometry relative="1" as="geometry">
-                        <mxPoint x="80" y="365" as="targetPoint"/>
+                        <mxPoint x="80" y="375" as="targetPoint"/>
                     </mxGeometry>
                 </mxCell>
                 <mxCell id="7" value="识别成功？" style="rhombus;fontSize=15;fontFamily=Songti SC;" parent="1" vertex="1">
-                    <mxGeometry x="137.5" y="340" width="155" height="50" as="geometry"/>
+                    <mxGeometry x="137.5" y="350" width="155" height="50" as="geometry"/>
                 </mxCell>
                 <mxCell id="20" style="edgeStyle=none;html=1;entryX=0.5;entryY=0;entryDx=0;entryDy=0;fontSize=15;fontFamily=Songti SC;" parent="1" source="8" target="9" edge="1">
                     <mxGeometry relative="1" as="geometry"/>
                 </mxCell>
                 <mxCell id="8" value="查询对应采摘作业" style="html=1;align=center;verticalAlign=top;rounded=1;absoluteArcSize=1;arcSize=10;dashed=0;whiteSpace=wrap;fontSize=15;fontFamily=Songti SC;" parent="1" vertex="1">
-                    <mxGeometry x="145" y="420" width="140" height="40" as="geometry"/>
+                    <mxGeometry x="145" y="430" width="140" height="40" as="geometry"/>
                 </mxCell>
                 <mxCell id="14" style="edgeStyle=none;html=1;entryX=0;entryY=0.5;entryDx=0;entryDy=0;rounded=0;curved=0;exitX=1;exitY=0.5;exitDx=0;exitDy=0;fontSize=15;fontFamily=Songti SC;" parent="1" source="9" target="10" edge="1">
                     <mxGeometry relative="1" as="geometry">
                         <Array as="points">
-                            <mxPoint x="340" y="515"/>
-                            <mxPoint x="340" y="140"/>
+                            <mxPoint x="350" y="525"/>
+                            <mxPoint x="350" y="150"/>
                         </Array>
                     </mxGeometry>
                 </mxCell>
                 <mxCell id="33" style="edgeStyle=none;html=1;exitX=0;exitY=0.5;exitDx=0;exitDy=0;fontSize=15;fontFamily=Songti SC;" parent="1" source="9" edge="1">
                     <mxGeometry relative="1" as="geometry">
-                        <mxPoint x="80" y="515" as="targetPoint"/>
+                        <mxPoint x="80" y="525" as="targetPoint"/>
                     </mxGeometry>
                 </mxCell>
                 <mxCell id="9" value="存在对应作业？" style="rhombus;fontSize=15;fontFamily=Songti SC;" parent="1" vertex="1">
-                    <mxGeometry x="137.5" y="490" width="155" height="50" as="geometry"/>
+                    <mxGeometry x="137.5" y="500" width="155" height="50" as="geometry"/>
                 </mxCell>
                 <mxCell id="21" style="edgeStyle=none;html=1;entryX=0.5;entryY=0;entryDx=0;entryDy=0;fontSize=15;fontFamily=Songti SC;" parent="1" source="10" target="11" edge="1">
                     <mxGeometry relative="1" as="geometry"/>
                 </mxCell>
                 <mxCell id="10" value="检查作业和果实状态" style="html=1;align=center;verticalAlign=top;rounded=1;absoluteArcSize=1;arcSize=10;dashed=0;whiteSpace=wrap;fontSize=15;fontFamily=Songti SC;" parent="1" vertex="1">
-                    <mxGeometry x="390" y="120" width="140" height="40" as="geometry"/>
+                    <mxGeometry x="390" y="130" width="140" height="40" as="geometry"/>
                 </mxCell>
-                <mxCell id="46" style="edgeStyle=none;html=1;entryX=1;entryY=0.5;entryDx=0;entryDy=0;exitX=1;exitY=0.5;exitDx=0;exitDy=0;rounded=0;curved=0;" edge="1" parent="1" source="11" target="28">
+                <mxCell id="46" style="edgeStyle=none;html=1;entryX=1;entryY=0.5;entryDx=0;entryDy=0;exitX=1;exitY=0.5;exitDx=0;exitDy=0;rounded=0;curved=0;" parent="1" source="11" target="28" edge="1">
                     <mxGeometry relative="1" as="geometry">
                         <Array as="points">
                             <mxPoint x="600" y="225"/>
-                            <mxPoint x="600" y="605"/>
+                            <mxPoint x="600" y="570"/>
                         </Array>
                     </mxGeometry>
                 </mxCell>
@@ -77,19 +77,19 @@
                 <mxCell id="12" value="持久化称重信息" style="html=1;align=center;verticalAlign=top;rounded=1;absoluteArcSize=1;arcSize=10;dashed=0;whiteSpace=wrap;fontSize=15;fontFamily=Songti SC;" parent="1" vertex="1">
                     <mxGeometry x="390" y="280" width="140" height="40" as="geometry"/>
                 </mxCell>
-                <mxCell id="17" style="edgeStyle=none;html=1;fontSize=15;fontFamily=Songti SC;" parent="1" source="15" target="6" edge="1">
-                    <mxGeometry relative="1" as="geometry"/>
-                </mxCell>
                 <mxCell id="31" style="edgeStyle=none;html=1;entryX=0;entryY=0.5;entryDx=0;entryDy=0;exitX=0;exitY=0.5;exitDx=0;exitDy=0;rounded=0;curved=0;fontSize=15;fontFamily=Songti SC;" parent="1" source="15" target="28" edge="1">
                     <mxGeometry relative="1" as="geometry">
                         <Array as="points">
-                            <mxPoint x="80" y="215"/>
-                            <mxPoint x="80" y="605"/>
+                            <mxPoint x="80" y="145"/>
+                            <mxPoint x="80" y="570"/>
                         </Array>
                     </mxGeometry>
                 </mxCell>
+                <mxCell id="51" style="edgeStyle=none;html=1;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="1" source="15" target="47">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
                 <mxCell id="15" value="在启用状态？" style="rhombus;fontSize=15;fontFamily=Songti SC;" parent="1" vertex="1">
-                    <mxGeometry x="137.5" y="190" width="155" height="50" as="geometry"/>
+                    <mxGeometry x="137.5" y="120" width="155" height="50" as="geometry"/>
                 </mxCell>
                 <mxCell id="19" style="edgeStyle=none;html=1;entryX=0.5;entryY=0;entryDx=0;entryDy=0;exitX=0.5;exitY=1;exitDx=0;exitDy=0;fontSize=15;fontFamily=Songti SC;" parent="1" source="7" target="8" edge="1">
                     <mxGeometry relative="1" as="geometry"/>
@@ -107,16 +107,30 @@
                     <mxGeometry relative="1" as="geometry"/>
                 </mxCell>
                 <mxCell id="27" value="发布处理失败消息" style="html=1;align=center;verticalAlign=top;rounded=1;absoluteArcSize=1;arcSize=10;dashed=0;whiteSpace=wrap;fontSize=15;fontFamily=Songti SC;" parent="1" vertex="1">
-                    <mxGeometry x="390" y="510" width="140" height="40" as="geometry"/>
+                    <mxGeometry x="390" y="480" width="140" height="40" as="geometry"/>
                 </mxCell>
                 <mxCell id="43" style="edgeStyle=none;html=1;entryX=0.5;entryY=1;entryDx=0;entryDy=0;" parent="1" source="28" target="27" edge="1">
                     <mxGeometry relative="1" as="geometry"/>
                 </mxCell>
                 <mxCell id="28" value="将称重消息写入待办" style="html=1;align=center;verticalAlign=top;rounded=1;absoluteArcSize=1;arcSize=10;dashed=0;whiteSpace=wrap;fontSize=15;fontFamily=Songti SC;" parent="1" vertex="1">
-                    <mxGeometry x="390" y="585" width="140" height="40" as="geometry"/>
+                    <mxGeometry x="390" y="550" width="140" height="40" as="geometry"/>
                 </mxCell>
                 <mxCell id="37" value="" style="ellipse;html=1;shape=endState;fillColor=strokeColor;fontSize=15;fontFamily=Songti SC;" parent="1" vertex="1">
-                    <mxGeometry x="445" y="430" width="30" height="30" as="geometry"/>
+                    <mxGeometry x="445" y="420" width="30" height="30" as="geometry"/>
+                </mxCell>
+                <mxCell id="48" style="edgeStyle=none;html=1;entryX=1;entryY=0.5;entryDx=0;entryDy=0;exitX=1;exitY=0.5;exitDx=0;exitDy=0;rounded=0;curved=0;" edge="1" parent="1" source="47" target="8">
+                    <mxGeometry relative="1" as="geometry">
+                        <Array as="points">
+                            <mxPoint x="320" y="225"/>
+                            <mxPoint x="320" y="450"/>
+                        </Array>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="50" style="edgeStyle=none;html=1;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="1" source="47" target="6">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="47" value="果实种类未知?" style="rhombus;fontSize=15;fontFamily=Songti SC;" vertex="1" parent="1">
+                    <mxGeometry x="137.5" y="200" width="155" height="50" as="geometry"/>
                 </mxCell>
             </root>
         </mxGraphModel>
