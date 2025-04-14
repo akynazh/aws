@@ -3,6 +3,7 @@ package cn.edu.xidian.aws.cron;
 import cn.edu.xidian.aws.constant.WorkStatus;
 import cn.edu.xidian.aws.pojo.po.Work;
 import cn.edu.xidian.aws.repository.WorkRepository;
+import cn.edu.xidian.aws.service.RecordService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -21,6 +22,16 @@ import java.util.List;
 public class WorkStatusUpdater {
     @Autowired
     private WorkRepository workRepository;
+    @Autowired
+    private RecordService recordService;
+
+//    @Scheduled(fixedRate = 3600 * 1000)
+//    public void updateWorkOutput() {
+//        List<Work> works = workRepository.findAll();
+//        for (Work work : works) {
+//            recordService.updateWorkOutput(work.getId());
+//        }
+//    }
 
     @Scheduled(fixedRate = 5 * 1000) // 5s
     public void updateJobStatus() {

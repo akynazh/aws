@@ -259,12 +259,12 @@ const getProduceName = (id: number): string => {
 };
 
 // 添加作业名称生成函数
-const generateWorkName = (work: WorkVO): string => {
-    const date = dayjs(work.startTime);
-    const dateStr = date.format('YYYY-MM-DD');
-    const produceName = getProduceName(work.produceId);
-    return `${dateStr}-${produceName}`;
-};
+// const generateWorkName = (work: WorkVO): string => {
+//     const date = dayjs(work.startTime);
+//     const dateStr = date.format('YYYY-MM-DD');
+//     const produceName = getProduceName(work.produceId);
+//     return `${dateStr}-${produceName}`;
+// };
 
 // 修改表单验证规则
 const rules = {
@@ -373,9 +373,9 @@ const handleSubmit = async () => {
 };
 
 const fetchWorkList = async (resetPage: boolean = false) => {
-    if (resetPage) {
-        currentPage.value = 1;
-    }
+    // if (resetPage) {
+    //     currentPage.value = 1;
+    // }
     try {
         const result = await reqGetWorks(currentPage.value - 1, pageSize.value);
         if (result) {
@@ -412,10 +412,10 @@ const handleSearchSubmit = async () => {
     });
 };
 
-const handleRefresh = () => {
-    searchForm.workId = null;
-    fetchWorkList(true);
-};
+// const handleRefresh = () => {
+//     searchForm.workId = null;
+//     fetchWorkList(true);
+// };
 
 const handleExport = async () => {
     try {

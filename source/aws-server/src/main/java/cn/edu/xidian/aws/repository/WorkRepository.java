@@ -19,4 +19,5 @@ public interface WorkRepository extends JpaRepository<Work, Long> {
     List<Work> findAllByProduceId(Long produceId);
     List<Work> findAllByStatus(Integer status);
     List<Work> findAllByStatusIn(List<Integer> status);
+    Work getWorkById(Long id);
 }

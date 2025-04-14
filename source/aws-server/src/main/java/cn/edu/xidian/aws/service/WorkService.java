@@ -111,14 +111,20 @@ public class WorkService {
             work.setDataValue(vo.getDataValue());
         }
         work.setUpdateTime(System.currentTimeMillis());
-        if (System.currentTimeMillis() >= work.getStartTime() && System.currentTimeMillis() <= work.getEndTime()) {
-            work.setStatus(WorkStatus.ONGOING.getCode());
-        } else if (System.currentTimeMillis() > work.getEndTime()) {
-            work.setStatus(WorkStatus.FINISHED.getCode());
-        } else if (System.currentTimeMillis() < work.getStartTime()) {
-            work.setStatus(WorkStatus.NOT_STARTED.getCode());
+        if (WorkStatus.DELETED.getCode() != work.getStatus() && WorkStatus.CANCELED.getCode() != work.getStatus()) {
+            if (System.currentTimeMillis() >= work.getStartTime() && System.currentTimeMillis() <= work.getEndTime()) {
+                work.setStatus(WorkStatus.ONGOING.getCode());
+            } else if (System.currentTimeMillis() > work.getEndTime()) {
+                work.setStatus(WorkStatus.FINISHED.getCode());
+            } else if (System.currentTimeMillis() < work.getStartTime()) {
+                work.setStatus(WorkStatus.NOT_STARTED.getCode());
+            }
         }
-
+        if (vo.getStatus() != null && (
+                WorkStatus.DELETED.getCode() == vo.getStatus() || WorkStatus.CANCELED.getCode() == vo.getStatus()
+        )) {
+            work.setStatus(vo.getStatus());
+        }
         return workRepository.save(work);
     }
 

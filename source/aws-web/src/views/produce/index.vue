@@ -507,7 +507,7 @@ const handleExportWork = () => {
 const handleExportAllAnnual = async () => {
     try {
         // Get first page and total count
-        const firstPage = await reqGetProduces(0, 10);
+        const firstPage = await reqGetProduces(0, 1000);
         if (!firstPage?.count) {
             ElMessage.warning('暂无果实数据');
             return;
@@ -565,7 +565,7 @@ const handleExportAllAnnual = async () => {
 const handleExportAllWork = async () => {
     try {
         // Get first page and total count
-        const firstPage = await reqGetProduces(0, 10);
+        const firstPage = await reqGetProduces(0, 1000);
         if (!firstPage?.count) {
             ElMessage.warning('暂无果实数据');
             return;

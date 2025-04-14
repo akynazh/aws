@@ -18,6 +18,7 @@ import cn.edu.xidian.aws.pojo.vo.todo.TodoVO;
 import cn.edu.xidian.aws.pojo.vo.user.UserWorkOutputVO;
 import cn.edu.xidian.aws.pojo.vo.work.WorkUpdateVO;
 import cn.edu.xidian.aws.repository.RecordRepository;
+import cn.edu.xidian.aws.repository.WorkRepository;
 import cn.edu.xidian.aws.util.ScaleUtil;
 import com.alibaba.fastjson.JSON;
 import jakarta.transaction.Transactional;
@@ -61,6 +62,8 @@ public class RecordService {
     private TodoService todoService;
     @Autowired
     private ImageService imageService;
+    @Autowired
+    private WorkRepository workRepository;
 
     private boolean isDuplicateRecord(RecordAddVO vo) {
         Record record = recordRepository.getRecordByScaleIdAndEmployeeIdAndDataTime(
@@ -240,5 +243,18 @@ public class RecordService {
         redisTemplate.opsForValue().set(CA.getPrefix() + id,
                 JSON.toJSONString(result), CA.getDuration(), CA.getUnit());
         return result;
+    }
+
+    public void updateWorkOutput(Long workId) {
+        Work work = workRepository.getWorkById(workId);
+        List<Record> records = recordRepository.getRecordByWorkId(workId);
+        BigDecimal result = BigDecimal.ZERO;
+        for (Record record : records) {
+            result = result.add(ScaleUtil.convDataValue(record.getDataValue(), record.getUnit(), work.getUnit()));
+        }
+        WorkUpdateVO workUpdateVO = new WorkUpdateVO();
+        workUpdateVO.setId(workId);
+        workUpdateVO.setDataValue(result);
+        workService.updateWork(workUpdateVO);
     }
 }
