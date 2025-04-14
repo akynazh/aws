@@ -198,8 +198,8 @@ services:
       - mysql-edge
       - redis
       - emqx1
-      - emqx2
-      - emqx3
+      # - emqx2
+      # - emqx3
     networks:
       aws:
         aliases:
@@ -227,8 +227,8 @@ services:
       - mysql-edge
       - redis
       - emqx1
-      - emqx2
-      - emqx3
+      # - emqx2
+      # - emqx3
       - aws-edge
     networks:
       aws:

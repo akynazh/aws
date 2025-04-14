@@ -11,6 +11,7 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -24,10 +25,15 @@ import java.util.stream.Collectors;
 public class TodoService {
     @Autowired
     private TodoRepository todoRepository;
+    @Autowired
+    private ImageService imageService;
 
     public void addTodo(RecordAddVO recordAddVO) {
         Todo todo = new Todo();
         BeanUtils.copyProperties(recordAddVO, todo);
+        if (StringUtils.hasText(todo.getImage())) {
+            todo.setImage(imageService.handle(todo.getImage()));
+        }
         todo = todoRepository.save(todo);
         TodoVO todoVO = new TodoVO();
         BeanUtils.copyProperties(todo, todoVO);

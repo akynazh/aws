@@ -5,6 +5,8 @@
 ```sh
 # ALL IN ONE
 docker-compose up -d
+# docker logs -f aws-server
+# docker-compose stop emqx2 emqx3 aws-img minio-edge
 # cd aws-edge && mvn package -DskipTests && cd .. && docker-compose restart aws-edge
 # cd aws-server && mvn package -DskipTests && cd .. && docker-compose restart aws-server
 # docker-compose restart aws-img
@@ -37,6 +39,7 @@ rclone copy -v $code/aws/source s2:/root/Codes/aws/ \
 --exclude "emqx2/**" \
 --exclude "emqx3/**"
 # mysqldump -h 127.0.0.1 -P 3306 -uroot -p658766@Jzh --all-databases > mysql-server.sql
+# mysql -uroot -p658766@Jzh < mysql-server.sql
 # chmod -R 777 emqx1 emqx2 emqx3
 # docker exec emqx1 emqx ctl data export
 # docker exec emqx1 emqx ctl data import xxx
