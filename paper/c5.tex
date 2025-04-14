@@ -158,6 +158,54 @@ aws-web & 远端 Vue 后台管理界面  \\\hline
 
 图\ref{fig:todo-handle-result-2}展现了待办项的提交表单，包含2个操作按钮和9个表单项，其中操作按钮包含取消和确认按钮；表单项包含选择果实、果实名称、果实编号、果实图像、员工编号、电子秤编号、称重数据、误差、称重时间，其中只能编辑果实，从选择果实项的下滑表单中选择果实后，果实名称和果实编号项将会随之变化。
 
+对称重记录统计分析需求用例\ref{tab:uc-record-analysis}设计测试用例并进行测试，如表\ref{tab:uc-record-analysis-test}所示。
+
+\begin{longtable}[ht]{|c|p{8cm}|}
+\caption{称重记录统计分析测试用例}
+\label{tab:uc-record-analysis-test}
+\\
+\hline
+用例名称 & 称重记录统计分析 \\
+\hline
+用例描述 & 在管理后台界面查看果实和采摘人员的称重记录统计情况 \\
+\hline
+用例入口 & 后台管理界面中的果实/用户管理模块 \\
+\hline
+测试步骤 & 1 管理员访问果实/用户管理界面 \\
+& 2 管理员点击某个可视化选项进行查看并导出 \\
+\hline
+测试用例 & 用例1：点击查看苹果的年产量并导出为 Excel \\
+& 用例2： 点击查看苹果的分批产量并导出为 Excel \\
+& 用例3： 点击查看用户(用户编号为3)的分批产量并导出为 Excel  \\
+\hline
+预期结果与实际结果 & 用例1：预期得到折线图和对应的 Excel 表格，实际结果一致 \\
+& 用例2：预期得到折线图和对应的 Excel 表格，实际结果一致 \\
+& 用例3：预期得到折线图和对应的 Excel 表格，实际结果一致 \\
+\hline
+\end{longtable}
+
+实际界面的测试情况如图\ref{fig:record-analysis-result-1}和图\ref{fig:record-analysis-result-2}所示。
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.8\linewidth]{../result/record-analysis-result-1.png}
+    \caption{称重记录统计分析用例测试截图一}
+    \label{fig:record-analysis-result-1}
+\end{figure}
+
+如图\ref{fig:record-analysis-result-1}所示，从左至右分别展现了果实的年产量、果实的分批产量和用户的分批采摘量和情况。其中果实的年产量折线图中，横坐标为年份，纵坐标为产量(kg)；果实的分批产量折线图中，横坐标为作业编号，纵坐标为产量(kg)；用户分批采摘量表格中，表头包含作业编号、员工编号、果实名称和采摘量。
+
+每个可视化图表都支持导出，点击图表右上方的导出按钮即可完成 Excel 导出，导出情况如图\ref{fig:record-analysis-result-2}所示。
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.8\linewidth]{../result/record-analysis-result-2.png}
+    \caption{称重记录统计分析用例测试截图二}
+    \label{fig:record-analysis-result-2}
+\end{figure}
+
+如图\ref{fig:record-analysis-result-2}所示，从左至右分别展现了果实的年产量表格、果实的分批产量表格和用户的分批采摘量表格。
+
 对用户认证和授权需求用例\ref{tab:uc-user-auth}设计测试用例并进行测试，如表\ref{tab:uc-user-auth-test}所示。
 
 \begin{longtable}[ht]{|c|p{8cm}|}
@@ -279,7 +327,9 @@ aws-web & 远端 Vue 后台管理界面  \\\hline
 提供安全性保障 & 数据库加密敏感字段，所有接口提供认证授权保护 & 验证通过 \\\hline
 \end{longtable}
 
-针对核心接口的性能测试
+针对提供高性能接口这个非功能需求，下面给出针对核心接口的性能测试。
+
+1、测试环境：一台 8G 内存、8核 CPU 的 MacOS 系统。
 
 1、测试环境
 2、测试用例
