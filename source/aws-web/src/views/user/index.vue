@@ -236,22 +236,29 @@
                     </el-button>
                 </div>
             </template>
-            <el-table :data="workSummaryData" border class="hover-effect">
-                <el-table-column prop="workId" label="作业编号" width="120" />
+            <el-table :data="paginatedWorkSummaryData" border class="hover-effect">
+                <el-table-column prop="workId" label="作业编号" width="200" />
                 <el-table-column prop="name" label="员工名称" width="200" />
-                <el-table-column prop="produceName" label="果实名称" width="150" />
-                <el-table-column label="采摘量" width="150">
+                <el-table-column prop="produceName" label="果实名称" width="200" />
+                <el-table-column label="采摘量" width="200">
                     <template #default="{ row }">
                         {{ `${row.dataValue}${row.unit}` }}
                     </template>
                 </el-table-column>
             </el-table>
+            <Pagination 
+                v-model:current-page="workSummaryCurrentPage" 
+                v-model:page-size="workSummaryPageSize" 
+                :total="workSummaryTotal"
+                @size-change="handleWorkSummaryPageChange" 
+                @current-change="handleWorkSummaryPageChange" 
+            />
         </el-dialog>
     </div>
 </template>
 
 <script setup lang="ts">
-import { ref, reactive, onMounted } from "vue";
+import { ref, reactive, onMounted, computed } from "vue";
 import type { UserVO, RecordVO, UserWorkOutputVO } from "@/models";
 import { reqGetUsers, reqAddUser, reqUpdateUser, reqGetEmployee } from "@/api/user";
 import { reqGetRecords, reqGetUserWorkSummary } from '@/api/weigh';
@@ -469,6 +476,24 @@ const recordsCurrentPage = ref(1);
 const recordsPageSize = ref(5);
 const recordsTotal = ref(0);
 
+// 添加作业采摘量分页相关的状态
+const workSummaryCurrentPage = ref(1);
+const workSummaryPageSize = ref(5);
+const workSummaryTotal = ref(0);
+const allWorkSummaryData = ref<UserWorkOutputVO[]>([]);
+
+// 计算当前页的数据
+const paginatedWorkSummaryData = computed(() => {
+  const start = (workSummaryCurrentPage.value - 1) * workSummaryPageSize.value;
+  const end = start + workSummaryPageSize.value;
+  return allWorkSummaryData.value.slice(start, end);
+});
+
+// 处理分页变化
+const handleWorkSummaryPageChange = () => {
+  // 不需要重新请求数据，只需要让计算属性重新计算即可
+};
+
 // View records handler
 const handleViewRecords = async (row: UserVO) => {
   currentUser.value = row;
@@ -509,7 +534,9 @@ const fetchWorkSummary = async () => {
   try {
     const result = await reqGetUserWorkSummary(currentUser.value.id);
     if (result) {
-      workSummaryData.value = result;
+      allWorkSummaryData.value = result;
+      workSummaryTotal.value = result.length;
+      workSummaryCurrentPage.value = 1;
     }
   } catch (error) {
     console.error('获取作业采摘量失败', error);
@@ -581,16 +608,16 @@ const handleExportRecords = async () => {
 };
 
 const handleExportSummary = () => {
-  if (!currentUser.value || !workSummaryData.value.length) {
+  if (!currentUser.value || !allWorkSummaryData.value.length) {
     ElMessage.warning('暂无数据可导出');
     return;
   }
 
   try {
-    const excelData = workSummaryData.value.map(summary => ({
+    const excelData = allWorkSummaryData.value.map(summary => ({
       '作业编号': summary.workId,
-      '作业名称': summary.name,
-      '产品': summary.produceName,
+      '员工名称': summary.name,
+      '果实名称': summary.produceName,
       '采摘量': `${summary.dataValue}${summary.unit}`
     }));
 
@@ -600,7 +627,7 @@ const handleExportSummary = () => {
 
     XLSX.writeFile(wb, `作业采摘量_${currentUser.value.name}_${formatDate(Date.now())}.xlsx`);
 
-    ElMessage.success('成功导出作业采摘量数据');
+    ElMessage.success(`成功导出${allWorkSummaryData.value.length}条记录`);
   } catch (error) {
     console.error('导出失败', error);
     ElMessage.error('导出失败: ' + error);

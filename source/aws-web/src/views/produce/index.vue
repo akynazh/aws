@@ -143,9 +143,9 @@
                 <v-chart ref="annualChartRef" class="chart" :option="annualChartOption" autoresize />
             </div>
             <el-table v-else :data="annualOutputData" border class="hover-effect">
-                <el-table-column prop="name" label="果实名称" width="150" />
-                <el-table-column prop="year" label="年份" width="120" />
-                <el-table-column label="产量" width="150">
+                <el-table-column prop="name" label="果实名称" width="200" />
+                <el-table-column prop="year" label="年份" width="200" />
+                <el-table-column label="产量" width="200">
                     <template #default="{ row }">
                         {{ `${row.dataValue}${row.unit}` }}
                     </template>
@@ -190,9 +190,9 @@
                 <v-chart ref="workChartRef" class="chart" :option="workChartOption" autoresize />
             </div>
             <el-table v-else :data="workOutputData" border class="hover-effect">
-                <el-table-column prop="name" label="果实名称" width="150" />
-                <el-table-column prop="workId" label="作业编号" width="120" />
-                <el-table-column label="产量" width="150">
+                <el-table-column prop="name" label="果实名称" width="200" />
+                <el-table-column prop="workId" label="作业编号" width="200" />
+                <el-table-column label="产量" width="200">
                     <template #default="{ row }">
                         {{ `${row.dataValue}${row.unit}` }}
                     </template>

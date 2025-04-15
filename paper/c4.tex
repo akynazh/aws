@@ -1,6 +1,6 @@
 \chapter{软件设计与分析}
 
-本章将从软件架构设计、数据库设计、核心功能设计以及服务接口设计四个方面对农业果实称重云端软件进行详细阐述。
+本章将阐述农业果实称重云端软件的软件架构设计、数据库设计以及各个功能模块的设计情况。
 
 \section{软件架构设计}\label{sec:architecture}
 
@@ -257,11 +257,9 @@ t\_work & produce\_id & 高效查找果实对应的采摘作业 \\ \hline
 
 事务日志与恢复策略方面：主从库均开启 BinLog(二进制日志)。在上述数据复制技术中，从库通过读取主库的二进制日志来同步数据。除此之外，在数据丢失或损坏的情况下，通过回放二进制日志来恢复丢失的数据。
 
-\section{核心功能设计}\label{sec:keyFunction}
+\section{称重数据处理流程设计}
 
-称重数据处理作为软件中的核心功能，涉及到多端数据处理、图像识别以及 MQTT 消息的配置等多个操作，这里对其进行更为详细的设计与分析。
-
-称重数据的处理可分为边端处理和远端处理。如边端称重数据处理流程活动图\ref{fig:边端称重数据处理流程活动图}和远端称重数据处理流程活动图\ref{fig:远端称重数据处理流程活动图}所示。
+软件采用远边协同的方式来处理称重数据，称重数据先在边端（即离电子秤较近的一端）完成提交，然后远端通过订阅的模式完成后续的数据处理和持久化，下面将介绍具体的数据处理流程。首先对边端数据处理的流程进行阐述，如图\ref{fig:边端称重数据处理流程活动图}所示。
 
 \begin{figure}[H]
     \centering
@@ -311,105 +309,96 @@ t\_work & produce\_id & 高效查找果实对应的采摘作业 \\ \hline
 
 6、处理过程中发生异常，为防止数据丢失，将称重消息写入待办并发布处理失败的消息到 MQTT Broker。在管理后台待办界面中，由管理员人工完成异常称重数据的处理。
 
-在上述称重数据的处理流程中，存在三个需要注意的问题：
+在上述称重数据的处理流程中，存在两个需要注意的问题：
 
 （1）关于称重数据处理结果的订阅：在最后称重数据处理成功或失败结果的消息发布到 MQTT Broker 之后，可以由特定的监控者订阅相关主题，进行告警或其它相关操作。在本软件中，通过电子秤模拟器对该结果进行订阅，而实际生产中需要注意电子秤不需要关心这个数据处理的结果，只要电子秤在边端完成称重数据的提交，电子秤就将称重操作视做成功；
 
 （2）关于 MQTT 消息的配置问题：边端和远端称重消息在 MQTT Broker 进行发布和订阅时，需要考虑 MQTT 消息的配置问题。对于消息主题的设置，发布/订阅称重消息和发布/订阅称重数据处理结果消息应该属于两个不同主题；对于传输质量级别的设置，需要确保消息有且仅被消费一次。根据\ref{sec:mqtt}中提到的三种 QoS 级别，这里应该选择 QoS2 级别，确保称重数据的可靠传输；
 
-（3）关于果实图像识别问题：软件通过调用果实图像服务所提供的接口完成果实图像识别。果实图像服务调用本地训练完成的模型进行推理，如果可信度超过预设值(80\%) 则视为识别成功，否则视为识别失败。
-
 结合上述对远端和边端称重数据处理流程的设计和分析，可以作为代码编写的主要基础。
 
-\section{服务接口设计}\label{sec:service}
+\section{果实数据}
 
-本系统服务接口包含四个部分，分别是用户模块、果实模块、作业模块和称重模块。具体接口功能和路径设计如表\ref{tab:interface-user}、表\ref{tab:interface-produce}、表\ref{tab:interface-work}和表\ref{tab:interface-weigh}所示，接口风格均遵循 RESTful(Representational State Transfer, 即表现层状态转移)风格。
+\section{用户模块功能设计}
 
-% 用户模块
-\begin{table}[H]
-\centering
-\caption{用户模块接口设计}
-\label{tab:interface-user}
-\begin{tabular}{|c|c|c|}
-\hline
-接口名称 & 请求方法 & 接口路径 \\ \hline
-用户获取个人信息 & GET & /user \\ \hline
-管理员更新用户 & PUT & /user \\ \hline
-管理员添加用户 & POST & /user \\ \hline
-用户更新个人信息 & PUT & /user/me \\ \hline
-用户登录 & POST & /user/login \\ \hline
-管理员获取用户信息 & GET & /user/{uid} \\ \hline
-管理员获取用户列表 & GET & /user/list \\ \hline
-\end{tabular}
-\end{table}
 
-表\ref{tab:interface-user}显示了用户模块的接口设计，各接口以 /user 作为前缀。
 
-% 果实模块
-\begin{table}[H]
-\centering
-\caption{果实模块接口设计}
-\label{tab:interface-produce}
-\begin{tabular}{|c|c|c|}
-\hline
-接口名称 & 请求方法 & 接口路径 \\ \hline
-果实图像推理识别 & POST & /predict \\ \hline
-根据名称获取果实 & GET & /produce \\ \hline
-更新果实 & PUT & /produce \\ \hline
-添加果实 & POST & /produce \\ \hline
-获取果实 & GET & /produce/{id} \\ \hline
-获取果实年产量 & GET & /produce/summary/year \\ \hline
-获取果实分批产量 & GET & /produce/summary/work \\ \hline
-获取果实列表 & GET & /produce/list \\ \hline
-\end{tabular}
-\end{table}
 
-表\ref{tab:interface-produce}显示了果实模块的接口设计，除了果实图像推理识别接口，其它各接口以 /produce 作为前缀。
+% \begin{table}[H]
+% \centering
+% \caption{称重模块接口设计}
+% \label{tab:interface-weigh}
+% \begin{tabular}{|c|c|c|}
+% \hline
+% 接口名称 & 请求方法 & 接口路径 \\\hline
+% 更新电子秤信息 & PUT & /weigh/scale \\ \hline
+% 添加电子秤 & POST & /weigh/scale \\\hline
+% 添加称重记录 & POST & /weigh/record \\\hline
+% 提交待处理称重记录 & POST & /weigh/record/todo \\\hline
+% 丢弃待处理称重记录 & DELETE & /weigh/record/todo \\\hline
+% 获取待处理称重记录 & GET & /weigh/record/todo/list \\\hline
+% 获取称重记录 & POST & /weigh/record/list \\\hline
+% 添加称重结果监控者 & POST & /weigh/monitor \\\hline
+% 获取员工各作业采摘量 & GET & /weigh/summary \\\hline
+% 获取电子秤 & GET & /weigh/scale/{id} \\\hline
+% 获取电子秤列表 & GET & /weigh/scale/list \\\hline
+% \end{tabular}
+% \end{table}
+% 表\ref{tab:interface-weigh}显示了称重模块的接口设计，各接口以 /weigh 作为前缀。
 
-% 作业模块
-\begin{table}[H]
-\centering
-\caption{作业模块接口设计}
-\label{tab:interface-work}
-\begin{tabular}{|c|c|c|}
-\hline
-接口名称 & 请求方法 & 接口路径 \\ \hline
-更新采摘作业 & PUT & /work \\ \hline
-添加采摘作业 & POST & /work \\ \hline
-获取采摘作业 & GET & /work/{id} \\ \hline
-获取果实的采摘作业列表 & GET & /work/produce/{id}\\ \hline
-获取采摘作业列表 & GET & /work/list \\ \hline
-\end{tabular}
-\end{table}
+% \begin{table}[H]
+% \centering
+% \caption{用户模块接口设计}
+% \label{tab:interface-user}
+% \begin{tabular}{|c|c|c|}
+% \hline
+% 接口名称 & 请求方法 & 接口路径 \\ \hline
+% 用户获取个人信息 & GET & /user \\ \hline
+% 管理员更新用户 & PUT & /user \\ \hline
+% 管理员添加用户 & POST & /user \\ \hline
+% 用户更新个人信息 & PUT & /user/me \\ \hline
+% 用户登录 & POST & /user/login \\ \hline
+% 管理员获取用户信息 & GET & /user/{uid} \\ \hline
+% 管理员获取用户列表 & GET & /user/list \\ \hline
+% \end{tabular}
+% \end{table}
+% 表\ref{tab:interface-user}显示了用户模块的接口设计，各接口以 /user 作为前缀。
 
-表\ref{tab:interface-work}显示了作业模块的接口设计，各接口以 /work 作为前缀。
+% \begin{table}[H]
+% \centering
+% \caption{果实模块接口设计}
+% \label{tab:interface-produce}
+% \begin{tabular}{|c|c|c|}
+% \hline
+% 接口名称 & 请求方法 & 接口路径 \\ \hline
+% 果实图像推理识别 & POST & /predict \\ \hline
+% 根据名称获取果实 & GET & /produce \\ \hline
+% 更新果实 & PUT & /produce \\ \hline
+% 添加果实 & POST & /produce \\ \hline
+% 获取果实 & GET & /produce/{id} \\ \hline
+% 获取果实年产量 & GET & /produce/summary/year \\ \hline
+% 获取果实分批产量 & GET & /produce/summary/work \\ \hline
+% 获取果实列表 & GET & /produce/list \\ \hline
+% \end{tabular}
+% \end{table}
+% 表\ref{tab:interface-produce}显示了果实模块的接口设计，除了果实图像推理识别接口，其它各接口以 /produce 作为前缀。
 
-% 称重模块
-\begin{table}[H]
-\centering
-\caption{称重模块接口设计}
-\label{tab:interface-weigh}
-\begin{tabular}{|c|c|c|}
-\hline
-接口名称 & 请求方法 & 接口路径 \\\hline
-更新电子秤信息 & PUT & /weigh/scale \\ \hline
-添加电子秤 & POST & /weigh/scale \\\hline
-添加称重记录 & POST & /weigh/record \\\hline
-提交待处理称重记录 & POST & /weigh/record/todo \\\hline
-丢弃待处理称重记录 & DELETE & /weigh/record/todo \\\hline
-获取待处理称重记录 & GET & /weigh/record/todo/list \\\hline
-获取称重记录 & POST & /weigh/record/list \\\hline
-添加称重结果监控者 & POST & /weigh/monitor \\\hline
-获取员工各作业采摘量 & GET & /weigh/summary \\\hline
-获取电子秤 & GET & /weigh/scale/{id} \\\hline
-获取电子秤列表 & GET & /weigh/scale/list \\\hline
-\end{tabular}
-\end{table}
-
-表\ref{tab:interface-weigh}显示了称重模块的接口设计，各接口以 /weigh 作为前缀。
-
-根据本节提到所设计的服务接口，结合前面章节中提到的数据库设计和核心功能设计，可以为后续的系统实现提供规范化的接口调用方式。
+% \begin{table}[H]
+% \centering
+% \caption{作业模块接口设计}
+% \label{tab:interface-work}
+% \begin{tabular}{|c|c|c|}
+% \hline
+% 接口名称 & 请求方法 & 接口路径 \\ \hline
+% 更新采摘作业 & PUT & /work \\ \hline
+% 添加采摘作业 & POST & /work \\ \hline
+% 获取采摘作业 & GET & /work/{id} \\ \hline
+% 获取果实的采摘作业列表 & GET & /work/produce/{id}\\ \hline
+% 获取采摘作业列表 & GET & /work/list \\ \hline
+% \end{tabular}
+% \end{table}
+% 表\ref{tab:interface-work}显示了作业模块的接口设计，各接口以 /work 作为前缀。
 
 \section{本章小结}
 
-本章从软件架构设计、数据库设计、核心功能设计以及服务接口设计四个方面对农业果实称重云端软件进行了详细阐述。在软件架构设计中，明确了边端与远端协同的整体架构模式，并通过分层架构图清晰划分了各功能模块。在数据库设计中，从概念模型、逻辑模型到物理模型，逐步完善了数据库的设计方案，确保数据的一致性和高效性。在核心功能设计中，详细分析了称重数据处理的边端与远端流程，为后续实现提供了指导。在服务接口设计中，基于 RESTful 风格定义了各模块的接口，为系统的开发和集成提供了规范。本章内容为后续的系统实现和优化奠定了坚实的基础。
+% 本章从软件架构设计、数据库设计、核心功能设计以及服务接口设计四个方面对农业果实称重云端软件进行了详细阐述。在软件架构设计中，明确了边端与远端协同的整体架构模式，并通过分层架构图清晰划分了各功能模块。在数据库设计中，从概念模型、逻辑模型到物理模型，逐步完善了数据库的设计方案，确保数据的一致性和高效性。

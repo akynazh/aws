@@ -139,22 +139,29 @@
           </el-button>
         </div>
       </template>
-      <el-table :data="workSummaryData" border class="hover-effect">
-        <el-table-column prop="workId" label="作业编号" width="120" />
-        <el-table-column prop="name" label="员工名称" width="200" />
-        <el-table-column prop="produceName" label="果实名称" width="150" />
-        <el-table-column label="采摘量" width="150">
+      <el-table :data="paginatedWorkSummaryData" border class="hover-effect">
+        <el-table-column prop="workId" label="作业编号" width="250" />
+        <!-- <el-table-column prop="name" label="员工名称" width="200" /> -->
+        <el-table-column prop="produceName" label="果实名称" width="250" />
+        <el-table-column label="采摘量" width="250">
           <template #default="{ row }">
             {{ `${row.dataValue}${row.unit}` }}
           </template>
         </el-table-column>
       </el-table>
+      <Pagination 
+        v-model:current-page="workSummaryCurrentPage" 
+        v-model:page-size="workSummaryPageSize" 
+        :total="workSummaryTotal"
+        @size-change="handleWorkSummaryPageChange" 
+        @current-change="handleWorkSummaryPageChange" 
+      />
     </el-dialog>
   </div>
 </template>
 
 <script setup lang="ts">
-import { onMounted, ref } from 'vue'
+import { onMounted, ref, computed } from 'vue'
 import { useUserStore } from '@/store/modules/user'
 import { UserRoleMap } from '@/models/constants/user'
 import { ElNotification } from "element-plus"
@@ -343,7 +350,9 @@ const fetchWorkSummary = async () => {
   try {
     const result = await reqGetUserWorkSummary(userStore.id);
     if (result) {
-      workSummaryData.value = result;
+      allWorkSummaryData.value = result;
+      workSummaryTotal.value = result.length;
+      workSummaryCurrentPage.value = 1;
     }
   } catch (error) {
     console.error('获取作业采摘量失败', error);
@@ -357,7 +366,7 @@ const fetchWorkSummary = async () => {
 // 导出作业采摘量
 const handleExportSummary = () => {
   try {
-    if (!workSummaryData.value.length) {
+    if (!allWorkSummaryData.value.length) {
       ElNotification.warning({
         title: '提示',
         message: '暂无数据可导出'
@@ -366,10 +375,10 @@ const handleExportSummary = () => {
     }
 
     // 准备 Excel 数据
-    const excelData = workSummaryData.value.map(summary => ({
+    const excelData = allWorkSummaryData.value.map(summary => ({
       '作业编号': summary.workId,
-      '作业名称': summary.name,
-      '产品': summary.produceName,
+      // '员工名称': summary.name,
+      '果实名称': summary.produceName,
       '采摘量': `${summary.dataValue}${summary.unit}`
     }))
 
@@ -383,7 +392,7 @@ const handleExportSummary = () => {
 
     ElNotification.success({
       title: '成功',
-      message: `成功导出作业采摘量数据`
+      message: `成功导出${allWorkSummaryData.value.length}条记录`
     })
   } catch (error) {
     console.error('导出失败', error)
@@ -393,6 +402,19 @@ const handleExportSummary = () => {
     })
   }
 }
+
+// 添加作业采摘量分页相关的状态
+const workSummaryCurrentPage = ref(1)
+const workSummaryPageSize = ref(5)
+const workSummaryTotal = ref(0)
+const allWorkSummaryData = ref<UserWorkOutputVO[]>([])
+
+// 计算当前页的数据
+const paginatedWorkSummaryData = computed(() => {
+  const start = (workSummaryCurrentPage.value - 1) * workSummaryPageSize.value
+  const end = start + workSummaryPageSize.value
+  return allWorkSummaryData.value.slice(start, end)
+})
 </script>
 
 <style scoped>
