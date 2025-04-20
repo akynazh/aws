@@ -1,0 +1,33 @@
+names:
+- apple
+- banana
+- bell_pepper
+- cabbage
+- carrot
+- chilli_pepper
+- corn
+- cucumber
+- eggplant
+- garlic
+- grape
+- kiwi
+- lemon
+- lettuce
+- mango
+- onion
+- orange
+- pineapple
+- potato
+- sweetpotato
+- tomato
+- watermelon
+nc: 22
+roboflow:
+  license: Public Domain
+  project: fruits-and-vegetables-knetf-9dd0s
+  url: https://universe.roboflow.com/zhihang/fruits-and-vegetables-knetf-9dd0s/dataset/1
+  version: 1
+  workspace: zhihang
+test: ../test/images
+train: ../train/images
+val: ../valid/images
