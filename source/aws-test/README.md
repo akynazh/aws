@@ -1,5 +1,12 @@
 # aws-test
 
+## jmeter
+
+```sh
+pip install pymeter
+python test.py
+```
+
 ## emqtt-bench
 
 ```sh

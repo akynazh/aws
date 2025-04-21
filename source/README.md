@@ -274,3 +274,9 @@ mc cp './aws-img/sample/watermelon.png' minio-edge/aws
 # minio-edge/aws/apple.png
 # minio-edge/aws/watermelon.png
 ```
+
+### MqttX 测试
+
+```sh
+mqttx sub -u aws-server -P 123456 -h 127.0.0.1 -p 1883 -i sub -t t/scale -q 2
+```

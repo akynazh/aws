@@ -37,6 +37,7 @@ public class EdgeController {
 
     @PostMapping("/weigh/record")
     public ResponseEntity<String> record(@RequestBody RecordAddVO vo) {
+        log.info("Received record: {}", vo);
         if (userService.authUser(vo.getUsername(), vo.getPassword())) {
             UserPO user = userService.getUserByUID(vo.getUsername());
             if (UserRole.canAccessMqtt(user.getRoles())) {
