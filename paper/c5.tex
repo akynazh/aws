@@ -195,7 +195,7 @@ aws-web & 远端 Vue 后台管理界面  \\\hline
     \label{fig:record-analysis-result-1}
 \end{figure}
 
-如图\ref{fig:record-analysis-result-1}所示，从左至右分别展现了果实的年产量、果实的分批产量和用户的分批采摘量和情况。其中果实的年产量折线图中，横坐标为年份，纵坐标为产量(kg)；果实的分批产量折线图中，横坐标为作业编号，纵坐标为产量(kg)；用户分批采摘量表格中，表头包含作业编号、果实名称和采摘量。
+如图\ref{fig:record-analysis-result-1}所示，上方两个折线图展现了果实的年产量和分批产量，下方的表格展现了用户的分批采摘量情况。其中果实的年产量折线图中，横坐标为年份，纵坐标为产量(kg)；果实的分批产量折线图中，横坐标为作业编号，纵坐标为产量(kg)；用户分批采摘量表格中，表头包含作业编号、果实名称和采摘量。
 
 每个可视化图表都支持导出，点击图表右上方的导出按钮即可完成 Excel 导出，导出情况如图\ref{fig:record-analysis-result-2}所示。
 
@@ -219,7 +219,7 @@ aws-web & 远端 Vue 后台管理界面  \\\hline
 \hline
 用例描述 & 用户在后台管理界面中执行操作时的认证和授权流程 \\
 \hline
-用例入口 & 接口请求工具 Apifox \\
+用例入口 & 接口请求工具 Rest Client \\
 \hline
 测试步骤 & 1 调用登录接口获取到认证令牌 \\
 & 2 调用普通用户功能接口 \\
@@ -231,23 +231,32 @@ aws-web & 远端 Vue 后台管理界面  \\\hline
 & 用例4： 管理员调用查看用户列表接口 \\
 \hline
 预期结果与实际结果 & 用例1：预期返回数据和状态码 200，实际结果一致 \\
-& 用例2：预期返回数据和状态码 200，实际结果一致 \\
 \hline
+& 用例2：预期返回数据和状态码 200，实际结果一致 \\
 & 用例3：预期返回错误信息和状态码 403，实际结果一致 \\
 & 用例4：预期返回数据和状态码 200，实际结果一致 \\
 \hline
 \end{longtable}
 
-实际界面的测试情况如图\ref{fig:user-auth-apifox}所示。
+实际界面的测试情况如图\ref{fig:user-auth-admin}和\ref{fig:user-auth-emp}所示。
 
 \begin{figure}[H]
     \centering
-    \includegraphics[width=0.8\linewidth]{../result/user-auth-apifox.png}
-    \caption{用户认证和授权用例测试截图}
-    \label{fig:user-auth-apifox}
+    \includegraphics[width=0.8\linewidth]{../result/user-auth-admin.png}
+    \caption{管理员认证和授权用例测试截图}
+    \label{fig:user-auth-admin}
 \end{figure}
 
-如图\ref{fig:user-auth-apifox}所示，左侧展现了管理员调用接口的结果，左上调用查看个人信息接口，返回个人信息，状态码为 200，左下调用查看用户列表接口，返回用户列表，状态码为200；右侧展现了采摘员工调用接口的结果，左上调用查看个人信息接口，返回个人信息，状态码为 200，左下调用查看用户列表接口，返回 Access Denied(访问禁止)，状态码为 403。
+图\ref{fig:user-auth-admin}展现了管理员调用接口的结果。首先调用用户登录接口获取到认证令牌；接着通过令牌调用查看个人信息接口，返回个人信息，其中用户角色显示为管理员(ROLE\_ADMIN)，状态码为 200；最后调用查看用户列表接口，返回用户列表，状态码为200。结果符合预期，测试通过。
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.8\linewidth]{../result/user-auth-emp.png}
+    \caption{采摘员工认证和授权用例测试截图}
+    \label{fig:user-auth-emp}
+\end{figure}
+
+图\ref{fig:user-auth-admin}展现了采摘员工调用接口的结果。首先调用用户登录接口获取到认证令牌；接着通过令牌调用查看个人信息接口，返回个人信息，其中用户角色显示为采摘员工(ROLE\_EMPLOYEE)，状态码为 200；最后调用查看用户列表接口，返回 Access Denied(访问拒绝)，状态码为 403。结果符合预期，测试通过。
 
 对果实图像识别需求用例\ref{tab:uc-produce-predict}设计测试用例并进行测试，如表\ref{tab:uc-produce-predict-test}所示。
 
@@ -260,7 +269,7 @@ aws-web & 远端 Vue 后台管理界面  \\\hline
 \hline
 用例描述 & 调用本地模型推理预测果实种类 \\
 \hline
-用例入口 & 接口请求工具 Apifox \\
+用例入口 & 接口请求工具 Rest Client \\
 \hline
 测试步骤 & 1 输入果实图片地址 \\
 & 2 调用果实图像识别接口 \\
@@ -273,16 +282,16 @@ aws-web & 远端 Vue 后台管理界面  \\\hline
 \hline
 \end{longtable}
 
-实际界面的测试情况如图\ref{fig:produce-predict-apifox}所示。
+实际界面的测试情况如图\ref{fig:produce-predict}所示。
 
 \begin{figure}[H]
     \centering
-    \includegraphics[width=0.8\linewidth]{../result/produce-predict-apifox.png}
+    \includegraphics[width=0.8\linewidth]{../result/produce-predict.png}
     \caption{果实图像识别用例测试截图}
-    \label{fig:produce-predict-apifox}
+    \label{fig:produce-predict}
 \end{figure}
 
-如图\ref{fig:produce-predict-apifox}所示，左侧提交了苹果图片(apple.png)，返回结果中得到预测置信度排名第一位的果实为苹果，置信度为 0.93563，符合预期；右侧提交了火龙果图片(pitaya.jpeg)，返回结果中得到预测置信度排名第一位的果实为甜土豆，置信度为 0.41996，低于预设值 0.8，说明预测失败，结果符合预期。
+如图\ref{fig:produce-predict}所示，图中上方请求提交了苹果图片，返回结果中得到预测置信度排名第一位的果实为苹果，置信度为 0.93563，符合预期；下方请求显示提交了火龙果图片，返回结果为空，预测失败，符合预期。
 
 对新建采摘作业需求用例\ref{tab:uc-work-new}设计测试用例并进行测试，如表\ref{tab:uc-work-new-test}所示。
 

@@ -1,0 +1,20 @@
+### 用户登录
+POST http://localhost:8080/user/login
+content-type: application/json
+
+{
+    "uid": "659822",
+    "password": "123456"
+}
+
+### 获取个人信息
+
+GET http://localhost:8080/user
+content-type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiI2NTk4MjIiLCJpYXQiOjE3NDUzMTA1NzYsImV4cCI6MTc0NTM5Njk3Nn0.coBUkGTjVNNkKj_5mcIAS9Gkige8XhWky_ogUN6pNDk
+
+### 获取用户列表
+
+GET http://localhost:8080/user/list
+content-type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiI2NTk4MjIiLCJpYXQiOjE3NDUzMTA1NzYsImV4cCI6MTc0NTM5Njk3Nn0.coBUkGTjVNNkKj_5mcIAS9Gkige8XhWky_ogUN6pNDk

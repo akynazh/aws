@@ -38,8 +38,8 @@ def predict(image_local="", image_url="", image_base64=""):
         image = Image.open(image_local)
 
     # 进行推理
-    # results = model(source=image, conf=0.5)
-    results = model(image)
+    results = model(source=image, conf=0.75)
+    # results = model(image
 
     # 解析推理结果
     predictions = []

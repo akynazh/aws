@@ -1,0 +1,7 @@
+POST http://localhost:8000/predict
+content-type: application/json
+
+{
+    "image": "http://minio-edge:9000/aws/apple.png",
+    "image64": ""
+}
