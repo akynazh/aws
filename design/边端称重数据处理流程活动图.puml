@@ -1,6 +1,6 @@
 @startuml 边端称重数据处理流程活动图
 skinparam conditionStyle InsideDiamond
-
+skinparam defaultFontSize 25
 |u| 采摘员工
 |sc| 电子秤
 |edge| 边端服务
@@ -8,18 +8,17 @@ skinparam conditionStyle InsideDiamond
 |u|
 start
 repeat
-:开始称重;
 :放置果实并刷员工卡;
 |sc|
 :读取卡和称重数据;
 |sc|
 if (读取结果) then(失败)
+
     |sc|
     :返回错误信息;
 else(成功)
     |sc|
     :拍摄并识别果实;
-    :存储果实图片;
     :生成称重信息;
     repeat
     :提交称重信息;
