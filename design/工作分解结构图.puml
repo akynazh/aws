@@ -1,4 +1,10 @@
 @startwbs
+
+' skinparam Diagram {
+'   BorderColor black
+'   BorderThickness 1
+' }
+
 * 农业果实称重云端软件工作分解结构图
 
 ** 称重模块

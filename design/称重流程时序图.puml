@@ -1,4 +1,10 @@
 @startuml 称重流程时序图
+
+skinparam Diagram {
+  BorderColor black
+  BorderThickness 1
+}
+
 title 称重流程时序图
 
 actor 采摘人员 as staff
@@ -16,7 +22,7 @@ scale->scale: 识别果实种类(可选)
 activate server
 scale->server: 生成并提交称重信息
 server->server: 识别果实种类(可选)
-server->server: 对称重信息进行存储或转存为待办
+server->server: 对称重信息进行存储\n或转存为待办
 server->scale: 返回提交结果
 deactivate server
 scale->staff: 显示提交结果

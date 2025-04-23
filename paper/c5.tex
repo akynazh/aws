@@ -107,7 +107,7 @@ aws-web & 远端 Vue 后台管理界面  \\\hline
 \begin{figure}[H]
     \centering
     \includegraphics[width=0.8\linewidth]{../result/weigh-submit-result.png}
-    \caption{提交称重数据用例测试截图}
+    \caption{提交称重数据用例测试}
     \label{fig:weigh-submit-result}
 \end{figure}
 
@@ -142,8 +142,8 @@ aws-web & 远端 Vue 后台管理界面  \\\hline
 
 \begin{figure}[H]
     \centering
-    \includegraphics[width=0.8\linewidth]{../result/todo-handle-result-1.png}
-    \caption{处理待办记录用例测试截图一}
+    \includegraphics[width=0.95\linewidth]{../result/todo-handle-result-1.png}
+    \caption{处理待办记录用例测试}
     \label{fig:todo-handle-result-1}
 \end{figure}
 
@@ -152,7 +152,7 @@ aws-web & 远端 Vue 后台管理界面  \\\hline
 \begin{figure}[H]
     \centering
     \includegraphics[width=0.8\linewidth]{../result/todo-handle-result-2.png}
-    \caption{处理待办记录用例测试截图二}
+    \caption{处理待办记录用例测试}
     \label{fig:todo-handle-result-2}
 \end{figure}
 
@@ -190,8 +190,8 @@ aws-web & 远端 Vue 后台管理界面  \\\hline
 
 \begin{figure}[H]
     \centering
-    \includegraphics[width=0.8\linewidth]{../result/record-analysis-result-1.png}
-    \caption{称重记录统计分析用例测试截图一}
+    \includegraphics[width=0.9\linewidth]{../result/record-analysis-result-1.png}
+    \caption{称重记录统计分析用例测试}
     \label{fig:record-analysis-result-1}
 \end{figure}
 
@@ -201,8 +201,8 @@ aws-web & 远端 Vue 后台管理界面  \\\hline
 
 \begin{figure}[H]
     \centering
-    \includegraphics[width=0.8\linewidth]{../result/record-analysis-result-2.png}
-    \caption{称重记录统计分析用例测试截图二}
+    \includegraphics[width=0.9\linewidth]{../result/record-analysis-result-2.png}
+    \caption{称重记录统计分析用例测试}
     \label{fig:record-analysis-result-2}
 \end{figure}
 
@@ -228,6 +228,7 @@ aws-web & 远端 Vue 后台管理界面  \\\hline
 测试用例 & 用例1：采摘员工调用查看个人信息接口 \\
 & 用例2： 管理员调用查看个人信息接口 \\
 & 用例3： 采摘员工调用查看用户列表接口 \\
+\hline
 & 用例4： 管理员调用查看用户列表接口 \\
 \hline
 预期结果与实际结果 & 用例1：预期返回数据和状态码 200，实际结果一致 \\
@@ -242,8 +243,8 @@ aws-web & 远端 Vue 后台管理界面  \\\hline
 
 \begin{figure}[H]
     \centering
-    \includegraphics[width=0.8\linewidth]{../result/user-auth-admin.png}
-    \caption{管理员认证和授权用例测试截图}
+    \includegraphics[width=0.9\linewidth]{../result/user-auth-admin.png}
+    \caption{管理员认证和授权用例测试}
     \label{fig:user-auth-admin}
 \end{figure}
 
@@ -251,13 +252,14 @@ aws-web & 远端 Vue 后台管理界面  \\\hline
 
 \begin{figure}[H]
     \centering
-    \includegraphics[width=0.8\linewidth]{../result/user-auth-emp.png}
-    \caption{采摘员工认证和授权用例测试截图}
+    \includegraphics[width=0.9\linewidth]{../result/user-auth-emp.png}
+    \caption{采摘员工认证和授权用例测试}
     \label{fig:user-auth-emp}
 \end{figure}
 
 图\ref{fig:user-auth-admin}展现了采摘员工调用接口的结果。首先调用用户登录接口获取到认证令牌；接着通过令牌调用查看个人信息接口，返回个人信息，其中用户角色显示为采摘员工(ROLE\_EMPLOYEE)，状态码为 200；最后调用查看用户列表接口，返回 Access Denied(访问拒绝)，状态码为 403。结果符合预期，测试通过。
 
+\newpage
 对果实图像识别需求用例\ref{tab:uc-produce-predict}设计测试用例并进行测试，如表\ref{tab:uc-produce-predict-test}所示。
 
 \begin{longtable}[ht]{|c|p{8cm}|}
@@ -286,8 +288,8 @@ aws-web & 远端 Vue 后台管理界面  \\\hline
 
 \begin{figure}[H]
     \centering
-    \includegraphics[width=0.8\linewidth]{../result/produce-predict.png}
-    \caption{果实图像识别用例测试截图}
+    \includegraphics[width=0.9\linewidth]{../result/produce-predict.png}
+    \caption{果实图像识别用例测试}
     \label{fig:produce-predict}
 \end{figure}
 
@@ -326,8 +328,8 @@ aws-web & 远端 Vue 后台管理界面  \\\hline
 
 \begin{figure}[H]
     \centering
-    \includegraphics[width=0.8\linewidth]{../result/work-new-result-1.png}
-    \caption{新建采摘作业用例测试截图一}
+    \includegraphics[width=0.9\linewidth]{../result/work-new-result-1.png}
+    \caption{新建采摘作业用例测试}
     \label{fig:work-new-result-1}
 \end{figure}
 
@@ -336,7 +338,7 @@ aws-web & 远端 Vue 后台管理界面  \\\hline
 \begin{figure}[H]
     \centering
     \includegraphics[width=0.8\linewidth]{../result/work-new-result-2.png}
-    \caption{新建采摘作业用例测试截图二}
+    \caption{新建采摘作业用例测试}
     \label{fig:work-new-result-2}
 \end{figure}
 

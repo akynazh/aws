@@ -1,6 +1,6 @@
 @startuml 边端称重数据处理流程活动图
 skinparam conditionStyle InsideDiamond
-skinparam defaultFontSize 25
+skinparam defaultFontSize 30
 |u| 采摘员工
 |sc| 电子秤
 |edge| 边端服务
