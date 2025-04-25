@@ -71,13 +71,6 @@ rclone copy -v $code/aws/source s2:/root/Codes/aws/ \
 - [x] 模拟器结果输出优化
 - [x] 前台打包部署问题
 - [x] 模拟器引入图片上传和识别功能
-- [ ] 第二章位置调整
-- [ ] 软件实现 伪代码、序列图（具体到类）
-- [ ] 图片位置调整，尽量不要有空行
-- [ ] 非功能需求 to 性能测试
-- [ ] 测试章节 1 环境 2 3
-- [ ] 类图
-- [ ] 章介绍，至少 3 行
 
 ## DOC
 
@@ -85,7 +78,6 @@ rclone copy -v $code/aws/source s2:/root/Codes/aws/ \
 2. MQTTX CLI 文档：https://mqttx.app/zh/docs/cli
 3. 文章：[EMQX 5.0 全新网关框架：轻松实现多物联网协议接入](https://www.emqx.com/zh/blog/emqx-connects-multiple-iot-protocols)
 4. 文章：[主流物联网协议选择：MQTT、CoAP 还是 LwM2M？](https://www.emqx.com/zh/blog/iot-protocols-mqtt-coap-lwm2m)
-
 
 ## NOTE
 
