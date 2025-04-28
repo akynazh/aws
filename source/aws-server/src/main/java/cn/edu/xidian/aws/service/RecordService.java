@@ -23,6 +23,7 @@ import cn.edu.xidian.aws.util.ScaleUtil;
 import com.alibaba.fastjson.JSON;
 import jakarta.transaction.Transactional;
 import lombok.extern.slf4j.Slf4j;
+import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Example;
@@ -91,14 +92,53 @@ public class RecordService {
         if (StringUtils.hasText(image)) {
             image = imageService.handle(image);
         }
-
-        // get produceId
         if (unit == null) {
             throw new AwsArgumentException(AwsArgumentException.PARAM_MISSING);
         }
         if (!ScaleUnit.codeExists(unit)) {
             throw new AwsArgumentException(AwsArgumentException.SCALE_UNIT_NOT_EXISTS);
         }
+
+        produceId = getProduceId(produceId, produceName, image);
+        Work ongoingWork = workService.getProduceWorks(produceId).stream()
+                .filter(work -> work.getStatus() == WorkStatus.ONGOING.getCode())
+                .findFirst()
+                .orElseThrow(() -> new AwsNotFoundException(AwsNotFoundException.WORK_NOT_FOUND));
+        Scale scale = scaleService.getScale(scaleId);
+        User employee = userService.getUserByID(employeeId);
+        if (UserStatus.userNotEnabled(employee.getStatus())) {
+            throw new AwsForbiddenException(UserStatus.label + UserStatus.fromCode(employee.getStatus()).getMessage());
+        }
+        if (ScaleStatus.scaleNotEnabled(scale.getStatus())) {
+            throw new AwsForbiddenException(ScaleStatus.label + ScaleStatus.fromCode(scale.getStatus()).getMessage());
+        }
+        if (WorkStatus.workNotOnGoing(ongoingWork.getStatus())) {
+            throw new AwsForbiddenException(WorkStatus.label + WorkStatus.fromCode(ongoingWork.getStatus()).getMessage());
+        }
+
+        updateWorkOutput(dataValue, unit, ongoingWork);
+        return saveRecord(vo, ongoingWork, produceId, image);
+    }
+
+    @NotNull
+    private Record saveRecord(RecordAddVO vo, Work ongoingWork, Long produceId, String image) {
+        Record record = new Record();
+        BeanUtils.copyProperties(vo, record);
+        record.setWorkId(ongoingWork.getId());
+        record.setProduceId(produceId);
+        record.setImage(image);
+        return recordRepository.save(record);
+    }
+
+    private void updateWorkOutput(BigDecimal dataValue, Integer unit, Work ongoingWork) {
+        BigDecimal workDataValue = ScaleUtil.convDataValue(dataValue, unit, ongoingWork.getUnit());
+        WorkUpdateVO workUpdateVO = new WorkUpdateVO();
+        workUpdateVO.setId(ongoingWork.getId());
+        workUpdateVO.setDataValue(ongoingWork.getDataValue().add(workDataValue));
+        workService.updateWork(workUpdateVO);
+    }
+
+    private Long getProduceId(Long produceId, String produceName, String image) {
         if (produceId == null && !StringUtils.hasText(produceName)) {
             if (!StringUtils.hasText(image)) {
                 throw new AwsArgumentException(AwsArgumentException.PARAM_MISSING);
@@ -118,36 +158,7 @@ public class RecordService {
                 throw new AwsNotFoundException(AwsNotFoundException.PRODUCE_NOT_FOUND);
             }
         }
-
-        Work ongoingWork = workService.getProduceWorks(produceId).stream()
-                .filter(work -> work.getStatus() == WorkStatus.ONGOING.getCode())
-                .findFirst()
-                .orElseThrow(() -> new AwsNotFoundException(AwsNotFoundException.WORK_NOT_FOUND));
-        Scale scale = scaleService.getScale(scaleId);
-        User employee = userService.getUserByID(employeeId);
-        if (UserStatus.userNotEnabled(employee.getStatus())) {
-            throw new AwsForbiddenException(UserStatus.label + UserStatus.fromCode(employee.getStatus()).getMessage());
-        }
-        if (ScaleStatus.scaleNotEnabled(scale.getStatus())) {
-            throw new AwsForbiddenException(ScaleStatus.label + ScaleStatus.fromCode(scale.getStatus()).getMessage());
-        }
-        if (WorkStatus.workNotOnGoing(ongoingWork.getStatus())) {
-            throw new AwsForbiddenException(WorkStatus.label + WorkStatus.fromCode(ongoingWork.getStatus()).getMessage());
-        }
-
-
-        BigDecimal workDataValue = ScaleUtil.convDataValue(dataValue, unit, ongoingWork.getUnit());
-        WorkUpdateVO workUpdateVO = new WorkUpdateVO();
-        workUpdateVO.setId(ongoingWork.getId());
-        workUpdateVO.setDataValue(ongoingWork.getDataValue().add(workDataValue));
-        workService.updateWork(workUpdateVO);
-
-        Record record = new Record();
-        BeanUtils.copyProperties(vo, record);
-        record.setWorkId(ongoingWork.getId());
-        record.setProduceId(produceId);
-        record.setImage(image);
-        return recordRepository.save(record);
+        return produceId;
     }
 
     @Transactional

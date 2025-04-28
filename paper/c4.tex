@@ -55,14 +55,18 @@
 基于图\ref{fig:ERD}所展示的实体关系以及功能权限表\ref{tab:user_permissions}所展示的用户功能权限信息，下面阐述逻辑模型设计，描述系统各个表的结构及其字段定义，涵盖了表之间的关系、字段的数据类型及约束条件，如表\ref{tab:user}，表\ref{tab:produce}，表\ref{tab:work}，表\ref{tab:scale}，表\ref{tab:record}，表\ref{tab:todo}，表\ref{tab:mqttacl}所示。
 
 % t_user
-\begin{table}[H]
-    \centering
-    \caption{用户表 (t\_user)}
-    \label{tab:user}
-    \begin{tabular}{|l|l|l|l|}
-    \hline
+\begin{longtblr}
+    [
+    caption        = {用户表 (t\_user)},
+    label          = {tab:user}
+    ]
+    {
+        colspec={Q[c,m]X[c,m]},
+        hlines,vlines,cell{2-Z}{1}={},
+        row{1}         = {font=\bfseries},
+        rowhead        = 1,
+    }
     字段 & 类型 & 约束 & 说明 \\
-    \hline
     id & bigint & 主键 & 自增主键 \\
     uid & varchar(255) & 非空,唯一 & 用户认证编号 \\
     name & varchar(255) & 非空 & 用户名称 \\
@@ -71,42 +75,46 @@
     create\_time & bigint & 非空 & 创建时间(毫秒级时间戳) \\
     update\_time & bigint & 非空 & 更新时间(毫秒级时间戳) \\
     status & int & 非空 & 状态(0禁用/1启用/2已删除) \\
-    \hline
-    \end{tabular}
-    \end{table}
+\end{longtblr}
 
 表\ref{tab:user}中展现了软件中用户实体的具体字段设计，其中 roles 字段定义了用户角色，角色字段包含管理员(ROLE\_ADMIN)、采摘员工(ROLE\_EMPLOYEE)、电子秤(ROLE\_SCALE)以及系统用户(ROLE\_SYS)，如果用户包含多个角色，则使用英文半角逗号隔开。
 
 % t_produce
-\begin{table}[H]
-\centering
-\caption{果实表 (t\_produce)}
-\label{tab:produce}
-\begin{tabular}{|l|l|l|l|}
-\hline
+\begin{longtblr}
+    [
+    caption        = {果实表 (t\_produce)},
+    label          = {tab:produce}
+    ]
+    {
+        colspec={Q[c,m]X[c,m]},
+        hlines,vlines,cell{2-Z}{1}={},
+        row{1}         = {font=\bfseries},
+        rowhead        = 1,
+    }
 字段 & 类型 & 约束 & 说明 \\
-\hline
 id & bigint & 主键 & 系统自带从0开始，用户添加从1000000开始 \\
 name & varchar(255) & 非空,唯一 & 果实名称 \\
 name\_en & varchar(255) & 唯一 & 果实英文名称 \\
 create\_time & bigint & 非空 & 创建时间(毫秒级时间戳) \\
 update\_time & bigint & 非空 & 更新时间(毫秒级时间戳) \\
 status & int & 非空 & 状态(0未种植/1在种植/2已删除) \\
-\hline
-\end{tabular}
-\end{table}
+\end{longtblr}
 
 表\ref{tab:produce}中展现了软件中果实实体的具体字段设计。
 
 % t_work
-\begin{table}[H]
-\centering
-\caption{采摘作业表 (t\_work)}
-\label{tab:work}
-\begin{tabular}{|l|l|l|l|}
-\hline
+\begin{longtblr}
+    [
+    caption        = {采摘作业表 (t\_work)},
+    label          = {tab:work}
+    ]
+    {
+        colspec={Q[c,m]X[c,m]},
+        hlines,vlines,cell{2-Z}{1}={},
+        row{1}         = {font=\bfseries},
+        rowhead        = 1,
+    }
 字段 & 类型 & 约束 & 说明 \\
-\hline
 id & bigint & 主键 & 自增主键 \\
 produce\_id & bigint & 非空 & 果实编号 \\
 start\_time & bigint & 非空 & 采摘开始时间(毫秒级时间戳) \\
@@ -116,21 +124,23 @@ unit & int & - & 称重单位(0mg/1g/2kg/3t/4lb/5oz/6ct) \\
 create\_time & bigint & 非空 & 创建时间(毫秒级时间戳) \\
 update\_time & bigint & 非空 & 更新时间(毫秒级时间戳) \\
 status & int & 非空 & 状态(0未开始/1进行中/2已结束/3已取消/4已删除) \\
-\hline
-\end{tabular}
-\end{table}
+\end{longtblr}
 
 表\ref{tab:work}中展现了软件中采摘作业实体的具体字段设计。其中通过字段果实编号(produce\_id)关联了果实实体，字段对应果实表\ref{tab:produce}中的 id 字段。
 
 % t_scale
-\begin{table}[H]
-\centering
-\caption{电子秤表 (t\_scale)}
-\label{tab:scale}
-\begin{tabular}{|l|l|l|l|}
-\hline
+\begin{longtblr}
+    [
+    caption        = {电子秤表 (t\_scale)},
+    label          = {tab:scale}
+    ]
+    {
+        colspec={Q[c,m]X[c,m]},
+        hlines,vlines,cell{2-Z}{1}={},
+        row{1}         = {font=\bfseries},
+        rowhead        = 1,
+    }
 字段 & 类型 & 约束 & 说明 \\
-\hline
 id & bigint & 主键 & 自增主键 \\
 sid & varchar(255) & 非空 & MQTT 用户认证编号 \\
 model & varchar(255) & - & 型号 \\
@@ -144,21 +154,23 @@ protocol & varchar(255) & - & 协议(小写,逗号分隔) \\
 create\_time & bigint & 非空 & 创建时间(毫秒级时间戳) \\
 update\_time & bigint & 非空 & 更新时间(毫秒级时间戳) \\
 status & int & 非空 & 状态(0禁用/1启用/2已删除) \\
-\hline
-\end{tabular}
-\end{table}
+\end{longtblr}
 
 表\ref{tab:scale}中展现了软件中电子秤实体的具体字段设计。其中通过字段电子秤编号(sid)管理了用户实体，该字段对应于用户表\ref{tab:user}中的用户编号(uid)字段。
 
 % t_record
-\begin{table}[H]
-\centering
-\caption{称重记录表 (t\_record)}
-\label{tab:record}
-\begin{tabular}{|l|l|l|l|}
-\hline
+\begin{longtblr}
+    [
+    caption        = {称重记录表 (t\_record)},
+    label          = {tab:record}
+    ]
+    {
+        colspec={Q[c,m]X[c,m]},
+        hlines,vlines,cell{2-Z}{1}={},
+        row{1}         = {font=\bfseries},
+        rowhead        = 1,
+    }
 字段 & 类型 & 约束 & 说明 \\
-\hline
 id & bigint & 主键 & 自增主键 \\
 work\_id & bigint & 非空 & 采摘作业编号 \\
 produce\_id & bigint & 非空 & 果实编号 \\
@@ -169,21 +181,23 @@ data\_value & decimal(10,2) & 非空 & 称重结果 \\
 data\_error\_margin & decimal(10,2) & - & 称量结果误差范围 \\
 unit & int & 非空 & 称重单位(0mg/1g/2kg/3t/4lb/5oz/6ct) \\
 data\_time & bigint & 非空 & 称重时间(毫秒级时间戳) \\
-\hline
-\end{tabular}
-\end{table}
+\end{longtblr}
 
 表\ref{tab:record}中展现了软件中称重记录实体的具体字段设计。通过字段果实编号(produce\_id)关联了果实实体，对应果实表\ref{tab:produce}中的 id 字段；通过字段采摘作业编号(work\_id)关联了作业实体，对应作业表\ref{tab:work}中的 id 字段；通过字段员工编号(employee\_id)关联了员工实体，对应用户表\ref{tab:user}中的 id 字段；通过字段电子秤编号(scale\_id)关联了电子秤实体，对应电子秤表\ref{tab:scale}中的 id 字段。
 
 % t_todo
-\begin{table}[H]
-\centering
-\caption{待处理称重记录表 (t\_todo)}
-\label{tab:todo}
-\begin{tabular}{|l|l|l|l|}
-\hline
+\begin{longtblr}
+    [
+    caption        = {待处理称重记录表 (t\_todo)},
+    label          = {tab:todo}
+    ]
+    {
+        colspec={Q[c,m]X[c,m]},
+        hlines,vlines,cell{2-Z}{1}={},
+        row{1}         = {font=\bfseries},
+        rowhead        = 1,
+    }
 字段 & 类型 & 约束 & 说明 \\
-\hline
 id & bigint & 主键 & 自增主键 \\
 produce\_id & bigint & - & 果实编号 \\
 produce\_name & varchar(255) & - & 果实名称 \\
@@ -194,21 +208,23 @@ data\_value & decimal(10,2) & 非空 & 称重结果 \\
 data\_error\_margin & decimal(10,2) & - & 称量结果误差范围 \\
 unit & int & 非空 & 称重单位(0mg/1g/2kg/3t/4lb/5oz/6ct) \\
 data\_time & bigint & 非空 & 称重时间(毫秒级时间戳) \\
-\hline
-\end{tabular}
-\end{table}
+\end{longtblr}
 
 表\ref{tab:todo}中展现了软件中待办记录实体的具体字段设计。通过字段果实编号(produce\_id)关联了果实实体，对应果实表\ref{tab:produce}中的 id 字段；通过字段员工编号(employee\_id)关联了员工实体，对应用户表\ref{tab:user}中的 id 字段；通过字段电子秤编号(scale\_id)关联了电子秤实体，对应电子秤表\ref{tab:scale}中的 id 字段。
 
 % t_mqtt_acl
-\begin{table}[H]
-\centering
-\caption{MQTT 访问控制表 (t\_mqtt\_acl)}
-\label{tab:mqttacl}
-\begin{tabular}{|l|l|l|l|}
-\hline
+\begin{longtblr}
+    [
+    caption        = {MQTT 访问控制表 (t\_mqtt\_acl)},
+    label          = {tab:mqttacl}
+    ]
+    {
+        colspec={Q[c,m]X[c,m]},
+        hlines,vlines,cell{2-Z}{1}={},
+        row{1}         = {font=\bfseries},
+        rowhead        = 1,
+    }
 字段 & 类型 & 约束 & 说明 \\
-\hline
 id & int & 主键 & 自增主键 \\
 username & varchar(255) & 非空 & MQTT 认证用户名 \\
 permission & varchar(255) & 非空 & 操作权限(allow/deny，即允许/拒绝) \\
@@ -216,9 +232,7 @@ action & varchar(255) & 非空 & 操作类型(publish/subscribe/all，即发布/
 topic & varchar(255) & 非空 & 适用主题 \\
 qos & int & - & 消息 QoS 级别(0,1,2) \\
 retain & int & - & 是否支持发布保留消息(0否/1是) \\
-\hline
-\end{tabular}
-\end{table}
+\end{longtblr}
 
 表\ref{tab:mqttacl}中展现了软件中 MQTT 服务的访问控制条目的具体字段设计。通过字段 MQTT 认证用户名(username)管理了用户实体，对应用户表\ref{tab:user}中的 uid 字段。
 
@@ -231,25 +245,29 @@ retain & int & - & 是否支持发布保留消息(0否/1是) \\
 索引设计方面：针对实际业务场景，基于逻辑模型设计中的表信息，设置了相关索引以提高查询更新效率，如表\ref{tab:index}所示。
 
 % INDEX
-\begin{table}[H]
-\centering
-\caption{索引设计表 (INDEX)}
-\label{tab:index}
-\begin{tabular}{|l|l|l|}
-\hline
-表 & 索引字段 & 说明 \\ \hline
+\begin{longtblr}
+    [
+    caption        = {索引设计表 (INDEX)},
+    label          = {tab:index}
+    ]
+    {
+        colspec={Q[c,m]X[c,m]},
+        hlines,vlines,cell{2-Z}{1}={},
+        row{1}         = {font=\bfseries},
+        rowhead        = 1,
+    }
+表 & 索引字段 & 说明 \\
 
-t\_record & scale\_id & 高效查找电子秤历史称重记录 \\ \hline
+t\_record & scale\_id & 高效查找电子秤历史称重记录 \\
 
-t\_record & employee\_id & 高效查找员工历史称重记录 \\ \hline
+t\_record & employee\_id & 高效查找员工历史称重记录 \\
 
-t\_record & employee\_id, work\_id & 高效查找员工各采摘作业批次历史称重记录 \\ \hline
+t\_record & employee\_id, work\_id & 高效查找员工各采摘作业批次历史称重记录 \\
 
-t\_record & work\_id & 高效查找各采摘作业批次历史称重记录 \\ \hline
+t\_record & work\_id & 高效查找各采摘作业批次历史称重记录 \\
 
-t\_work & produce\_id & 高效查找果实对应的采摘作业 \\ \hline
-\end{tabular}
-\end{table}
+t\_work & produce\_id & 高效查找果实对应的采摘作业 \\
+\end{longtblr}
 
 数据存储与分布方面：采用主从架构，在靠近农场边端部署从库，在远端服务器部署主库，主从库采用\ref{sec:gtid}中提到的基于 GTID 的主从复制技术完成数据实时同步。
 
@@ -316,6 +334,13 @@ t\_work & produce\_id & 高效查找果实对应的采摘作业 \\ \hline
 （2）关于 MQTT 消息的配置问题：边端和远端称重消息在 MQTT Broker 进行发布和订阅时，需要考虑 MQTT 消息的配置问题。对于消息主题的设置，发布/订阅称重消息和发布/订阅称重数据处理结果消息应该属于两个不同主题；对于传输质量级别的设置，需要确保消息有且仅被消费一次。根据\ref{sec:mqtt}中提到的三种 QoS 级别，这里应该选择 QoS2 级别，确保称重数据的可靠传输；
 
 结合上述对远端和边端称重数据处理流程的设计和分析，可以作为代码编写的主要基础。
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.9\linewidth]{../design/test.png}
+    \caption{test}
+    \label{fig:test}
+\end{figure}
 
 \section{农场数据管理功能设计与实现}\label{data-management}
 

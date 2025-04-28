@@ -77,56 +77,48 @@ rowhead        = 1,
 对提交称重数据需求用例\ref{tab:uc-weigh-submit}设计测试用例并进行测试，如表\ref{tab:uc-weigh-submit-test}所示。
 
 \begin{longtblr}
-    [
-    caption        = {提交称重数据测试用例},
-    label          = {tab:uc-weigh-submit-test}
-    ]
-    {
-    colspec        = {Q[c,m]X[l,m]},
-    hline{1,Z}     = {wd=.08em},
-    hline{2}       = {wd=.05em},
-    % row{even[2-Z]} = {bg=gray9!50},
-    % row{1}         = {font=\bfseries},
-    rowhead        = 1,
-    }
-
+[
+caption        = {提交称重数据测试用例},
+label          = {tab:uc-weigh-submit-test}
+]
+{
+    colspec={Q[c,m]X[c,m]},
+    hlines,vlines,cell{2-Z}{1}={},
+    cell{1-Z}{1}={font=\bfseries},
+    cell{1-Z}{2}={halign=l}
+}
 用例名称 & 提交称重数据 \\
 
 用例描述 & 采摘员工在电子秤提交称重数据 \\
 
-\hline
 用例入口 & 电子秤提交称重数据 \\
 
-\hline
-测试步骤 & 步骤1. 运行电子秤模拟器 \\
-& 步骤2. 点击生成数据 \\
-& 步骤3. 点击识别果实 \\
-& 步骤4. 点击提交数据 \\
+测试步骤 & 步骤1. 运行电子秤模拟器\newline
+步骤2. 点击生成数据\newline
+步骤3. 点击识别果实\newline
+步骤4. 点击提交数据 \\
 
-\hline
-测试用例 & 用例1： 通过 MQTT 协议提交正常数据 \\
-& 用例2： 通过 CoAP 协议提交正常数据 \\
-& 用例3： 通过 STOMP 协议提交正常数据 \\
-& 用例4： 通过 HTTP 协议提交正常数据 \\
-& 用例5： 通过 MQTT 协议提交异常数据(不存在的电子秤, 编号为999) \\
+测试用例 & 用例1： 通过 MQTT 协议提交正常数据\newline
+用例2： 通过 CoAP 协议提交正常数据\newline
+用例3： 通过 STOMP 协议提交正常数据\newline
+用例4： 通过 HTTP 协议提交正常数据\newline
+用例5： 通过 MQTT 协议提交异常数据(不存在的电子秤, 编号为999)\newline
+用例6： 通过 MQTT 协议提交异常数据(未启用的电子秤, 电子秤编号为1)\newline
+用例7： 通过 MQTT 协议提交异常数据(不存在的果实, 果实编号为999)\newline
+用例8： 通过 MQTT 协议提交异常数据(未启用的果实, 果实编号为1)\newline
+用例9： 通过 MQTT 协议提交异常数据(不存在的采摘作业,果实编号为3)\newline
+用例10： 通过 MQTT 协议提交异常数据(未开始或已结束的采摘作业,作业编号为4) \\
 
-& 用例6： 通过 MQTT 协议提交异常数据(未启用的电子秤, 电子秤编号为1) \\
-& 用例7： 通过 MQTT 协议提交异常数据(不存在的果实, 果实编号为999) \\
-& 用例8： 通过 MQTT 协议提交异常数据(未启用的果实, 果实编号为1) \\
-& 用例9： 通过 MQTT 协议提交异常数据(不存在的采摘作业,果实编号为3) \\
-& 用例10： 通过 MQTT 协议提交异常数据(未开始或已结束的采摘作业,作业编号为4) \\
-
-\hline
-预期结果与实际结果 & 用例1：预期返回"成功"，实际结果一致 \\
-& 用例2：预期返回"成功"，实际结果一致 \\
-& 用例3：预期返回"成功"，实际结果一致 \\
-& 用例4：预期返回"成功"，实际结果一致 \\
-& 用例5：预期返回"成功"，实际结果一致 \\
-& 用例6：预期返回"失败"，实际结果一致 \\
-& 用例7：预期返回"失败"，实际结果一致 \\
-& 用例8：预期返回"失败"，实际结果一致 \\
-& 用例9：预期返回"失败"，实际结果一致 \\
-& 用例10：预期返回"失败"，实际结果一致 \\
+预期结果与实际结果 & 用例1：预期返回"成功"，实际结果一致\newline
+用例2：预期返回"成功"，实际结果一致\newline
+用例3：预期返回"成功"，实际结果一致\newline
+用例4：预期返回"成功"，实际结果一致\newline
+用例5：预期返回"成功"，实际结果一致\newline
+用例6：预期返回"失败"，实际结果一致\newline
+用例7：预期返回"失败"，实际结果一致\newline
+用例8：预期返回"失败"，实际结果一致\newline
+用例9：预期返回"失败"，实际结果一致\newline
+用例10：预期返回"失败"，实际结果一致 \\
 
 \end{longtblr}
 
@@ -143,30 +135,36 @@ rowhead        = 1,
 
 对处理待办记录需求用例\ref{tab:uc-todo-handle}设计测试用例并进行测试，如表\ref{tab:uc-todo-handle-test}所示。
 
-\begin{longtable}[ht]{|c|p{8cm}|}
-\caption{处理待办记录测试用例}
-\label{tab:uc-todo-handle-test}
-\\
-\hline
+\begin{longtblr}
+    [
+    caption        = {处理待办记录测试用例},
+    label          = {tab:uc-todo-handle-test}
+    ]
+    {
+        colspec={Q[c,m]X[c,m]},
+        hlines,vlines,cell{2-Z}{1}={},
+        cell{1-Z}{1}={font=\bfseries},
+        cell{1-Z}{2}={halign=l}
+    }
 用例名称 & 处理待办记录 \\
-\hline
+
 用例描述 & 管理员在管理后台界面处理待办记录 \\
-\hline
+
 用例入口 & 后台管理界面中的待办管理模块 \\
-\hline
-测试步骤 & 1 点击提交待办 \\
-& 2 选择果实种类 \\
-& 3 点击确定，完成待办 \\
-\hline
-测试用例 & 用例1： 提交正常数据 \\
-& 用例2： 提交异常数据(不存在的果实, 果实编号为999) \\
-& 用例3： 提交异常数据(未启用的果实, 果实编号为1) \\
-\hline
-预期结果与实际结果 & 用例1：预期返回"成功"，实际结果一致 \\
-& 用例2：预期返回"失败"，实际结果一致 \\
-& 用例3：预期返回"失败"，实际结果一致 \\
-\hline
-\end{longtable}
+
+测试步骤 & 步骤1. 点击提交待办 \newline
+步骤2. 选择果实种类 \newline
+步骤3. 点击确定，完成待办 \\
+
+测试用例 & 用例1： 提交正常数据 \newline
+用例2： 提交异常数据(不存在的果实, 果实编号为999) \newline
+用例3： 提交异常数据(未启用的果实, 果实编号为1) \\
+
+预期结果与实际结果 & 用例1：预期返回"成功"，实际结果一致 \newline
+用例2：预期返回"失败"，实际结果一致 \newline
+用例3：预期返回"失败"，实际结果一致 \\
+
+\end{longtblr}
 
 实际界面的测试情况如图\ref{fig:todo-handle-result-1}和图\ref{fig:todo-handle-result-2}所示。
 
@@ -190,31 +188,36 @@ rowhead        = 1,
 
 对称重记录统计分析需求用例\ref{tab:uc-record-analysis}设计测试用例并进行测试，如表\ref{tab:uc-record-analysis-test}所示。
 
-\begin{longtable}[ht]{|c|p{8cm}|}
-\caption{称重记录统计分析测试用例}
-\label{tab:uc-record-analysis-test}
-\\
-\hline
+\begin{longtblr}
+    [
+    caption        = {称重记录统计分析测试用例},
+    label          = {tab:uc-record-analysis-test}
+    ]
+    {
+        colspec={Q[c,m]X[c,m]},
+        hlines,vlines,cell{2-Z}{1}={},
+        cell{1-Z}{1}={font=\bfseries},
+        cell{1-Z}{2}={halign=l}
+    }
+
 用例名称 & 称重记录统计分析 \\
-\hline
+
 用例描述 & 在管理后台界面查看果实和采摘人员的称重记录统计情况 \\
-\hline
+
 用例入口 & 后台管理界面中的果实/用户管理模块 \\
-\hline
-测试步骤 & 1 管理员访问果实/用户管理界面 \\
-& 2 管理员点击某个可视化选项进行查看并导出 \\
-\hline
-\newpage
-\hline
-测试用例 & 用例1：点击查看苹果的年产量并导出为 Excel \\
-& 用例2： 点击查看苹果的分批产量并导出为 Excel \\
-& 用例3： 点击查看用户(用户编号为3)的分批产量并导出为 Excel  \\
-\hline
-预期结果与实际结果 & 用例1：预期得到折线图和对应的 Excel 表格，实际结果一致 \\
-& 用例2：预期得到折线图和对应的 Excel 表格，实际结果一致 \\
-& 用例3：预期得到折线图和对应的 Excel 表格，实际结果一致 \\
-\hline
-\end{longtable}
+
+测试步骤 & 步骤1. 管理员访问果实/用户管理界面 \newline
+步骤2. 管理员点击某个可视化选项进行查看并导出 \\
+
+测试用例 & 用例1：点击查看苹果的年产量并导出为 Excel \newline
+用例2： 点击查看苹果的分批产量并导出为 Excel \newline
+用例3： 点击查看用户(用户编号为3)的分批产量并导出为 Excel  \\
+
+预期结果与实际结果 & 用例1：预期得到折线图和对应的 Excel 表格，实际结果一致 \newline
+用例2：预期得到折线图和对应的 Excel 表格，实际结果一致 \newline
+用例3：预期得到折线图和对应的 Excel 表格，实际结果一致 \\
+
+\end{longtblr}
 
 实际界面的测试情况如图\ref{fig:record-analysis-result-1}和图\ref{fig:record-analysis-result-2}所示。
 
@@ -240,34 +243,38 @@ rowhead        = 1,
 
 对用户认证和授权需求用例\ref{tab:uc-user-auth}设计测试用例并进行测试，如表\ref{tab:uc-user-auth-test}所示。
 
-\begin{longtable}[ht]{|c|p{8cm}|}
-\caption{用户认证和授权测试用例}
-\label{tab:uc-user-auth-test}
-\\
-\hline
+\begin{longtblr}
+    [
+    caption        = {用户认证和授权测试用例},
+    label          = {tab:uc-user-auth-test}
+    ]
+    {
+        colspec={Q[c,m]X[c,m]},
+        hlines,vlines,cell{2-Z}{1}={},
+        cell{1-Z}{1}={font=\bfseries},
+        cell{1-Z}{2}={halign=l}
+    }
+
 用例名称 & 用户认证和授权 \\
-\hline
+
 用例描述 & 用户在后台管理界面中执行操作时的认证和授权流程 \\
-\hline
+
 用例入口 & 接口请求工具 Rest Client \\
-\hline
-测试步骤 & 1 调用登录接口获取到认证令牌 \\
-& 2 调用普通用户功能接口 \\
-& 3 调用管理员功能接口 \\
-\hline
-测试用例 & 用例1：采摘员工调用查看个人信息接口 \\
-& 用例2： 管理员调用查看个人信息接口 \\
-& 用例3： 采摘员工调用查看用户列表接口 \\
-\hline
-& 用例4： 管理员调用查看用户列表接口 \\
-\hline
-预期结果与实际结果 & 用例1：预期返回数据和状态码 200，实际结果一致 \\
-\hline
-& 用例2：预期返回数据和状态码 200，实际结果一致 \\
-& 用例3：预期返回错误信息和状态码 403，实际结果一致 \\
-& 用例4：预期返回数据和状态码 200，实际结果一致 \\
-\hline
-\end{longtable}
+
+测试步骤 & 步骤1. 调用登录接口获取到认证令牌 \newline
+步骤2. 调用普通用户功能接口 \newline
+步骤3. 调用管理员功能接口 \\
+
+测试用例 & 用例1：采摘员工调用查看个人信息接口 \newline
+用例2： 管理员调用查看个人信息接口 \newline
+用例3： 采摘员工调用查看用户列表接口 \newline
+用例4： 管理员调用查看用户列表接口 \\
+
+预期结果与实际结果 & 用例1：预期返回数据和状态码 200，实际结果一致 \newline
+用例2：预期返回数据和状态码 200，实际结果一致 \newline
+用例3：预期返回错误信息和状态码 403，实际结果一致 \newline
+用例4：预期返回数据和状态码 200，实际结果一致 \\
+\end{longtblr}
 
 实际界面的测试情况如图\ref{fig:user-auth-admin}和\ref{fig:user-auth-emp}所示。
 
@@ -292,27 +299,33 @@ rowhead        = 1,
 \newpage
 对果实图像识别需求用例\ref{tab:uc-produce-predict}设计测试用例并进行测试，如表\ref{tab:uc-produce-predict-test}所示。
 
-\begin{longtable}[ht]{|c|p{8cm}|}
-\caption{果实图像识别测试用例}
-\label{tab:uc-produce-predict-test}
-\\
-\hline
+\begin{longtblr}
+    [
+    caption        = {果实图像识别测试用例},
+    label          = {tab:uc-produce-predict-test}
+    ]
+    {
+        colspec={Q[c,m]X[c,m]},
+        hlines,vlines,cell{2-Z}{1}={},
+        cell{1-Z}{1}={font=\bfseries},
+        cell{1-Z}{2}={halign=l}
+    }
 用例名称 & 果实图像识别用例 \\
-\hline
+
 用例描述 & 调用本地模型推理预测果实种类 \\
-\hline
+
 用例入口 & 接口请求工具 Rest Client \\
-\hline
-测试步骤 & 1 输入果实图片地址 \\
-& 2 调用果实图像识别接口 \\
-\hline
-测试用例 & 用例1：提交模型支持的果实图片（苹果） \\
-& 用例2： 提交模型不支持的果实图片(火龙果) \\
-\hline
-预期结果与实际结果 & 用例1：预期为成功预测果实种类为苹果且置信度高于 0.8，实际结果一致 \\
-& 用例2：预期为错误预测果实种类且置信度低于 0.8，实际结果一致 \\
-\hline
-\end{longtable}
+
+测试步骤 & 步骤1. 输入果实图片地址 \newline
+步骤2. 调用果实图像识别接口 \\
+
+测试用例 & 用例1：提交模型支持的果实图片（苹果） \newline
+用例2： 提交模型不支持的果实图片(火龙果) \\
+
+预期结果与实际结果 & 用例1：预期为成功预测果实种类为苹果且置信度高于 0.8，实际结果一致 \newline
+用例2：预期为错误预测果实种类且置信度低于 0.8，实际结果一致 \\
+
+\end{longtblr}
 
 实际界面的测试情况如图\ref{fig:produce-predict}所示。
 
@@ -327,32 +340,38 @@ rowhead        = 1,
 
 对新建采摘作业需求用例\ref{tab:uc-work-new}设计测试用例并进行测试，如表\ref{tab:uc-work-new-test}所示。
 
-\begin{longtable}[ht]{|c|p{8cm}|}
-\caption{新建采摘作业测试用例}
-\label{tab:uc-work-new-test}
-\\
-\hline
+\begin{longtblr}
+    [
+    caption        = {新建采摘作业测试用例},
+    label          = {tab:uc-work-new-test}
+    ]
+    {
+        colspec={Q[c,m]X[c,m]},
+        hlines,vlines,cell{2-Z}{1}={},
+        cell{1-Z}{1}={font=\bfseries},
+        cell{1-Z}{2}={halign=l}
+    }
+
 用例名称 & 新建采摘作业用例 \\
-\hline
+
 用例描述 & 对某一果实新建对于采摘作业 \\
-\hline
+
 用例入口 & 后台管理界面中的作业管理模块 \\
-\hline
-测试步骤 & 1 点击添加作业 \\
-& 2 选择采摘产品 \\
-& 3 选择起止时间 \\
-& 4 点击确认完成添加 \\
-\hline
-测试用例 & 用例1： 提交正常数据(选择已启用的果实：苹果) \\
-& 用例2： 提交异常数据(选择未启用的果实：香蕉) \\
-\hline
-& 用例3： 提交异常数据(选择已有对应采摘作业的果实：苹果) \\
-\hline
-预期结果与实际结果 & 用例1：预期返回"成功"，实际结果一致 \\
-& 用例2：预期返回"失败"，实际结果一致 \\
-& 用例3：预期返回"失败"，实际结果一致 \\
-\hline
-\end{longtable}
+
+测试步骤 & 步骤1. 点击添加作业 \newline
+步骤2. 选择采摘产品 \newline
+步骤3. 选择起止时间 \newline
+步骤4. 点击确认完成添加 \\
+
+测试用例 & 用例1： 提交正常数据(选择已启用的果实：苹果) \newline
+用例2： 提交异常数据(选择未启用的果实：香蕉) \newline
+用例3： 提交异常数据(选择已有对应采摘作业的果实：苹果) \\
+
+预期结果与实际结果 & 用例1：预期返回"成功"，实际结果一致 \newline
+用例2：预期返回"失败"，实际结果一致 \newline
+用例3：预期返回"失败"，实际结果一致 \\
+
+\end{longtblr}
 
 实际界面的测试情况如图\ref{fig:work-new-result-1}和图\ref{fig:work-new-result-2}所示。
 
@@ -380,19 +399,27 @@ rowhead        = 1,
 
 根据非功能需求汇总表\ref{tab:n-req-summary}中提到的功能，给出对应的实现结果，如表\ref{tab:test-n-req-summary}所示。
 
-\begin{longtable}[ht]{|c|p{8cm}|c|}
-\caption{非功能需求实现结果}
-\label{tab:test-n-req-summary}
-\\
-\hline
-测试项 & 描述 & 测试结果 \\\hline
-支持多种协议 & 支持 MQTT、HTTP、CoAP、STOMP 四种协议 & 验证通过 \\\hline
-支持多种提交方式 & 支持通过果实图像/名称/编号提交称重数据 & 验证通过 \\\hline
-支持模拟提交流程 & 支持通过电子秤模拟器模拟数据提交 & 验证通过 \\\hline
-支持受限网络环境 & 支持在边端提交数据 & 验证通过 \\\hline
-提供高性能的服务 & 提供高性能的果实图像识别服务和称重数据提交服务 & 验证通过 \\\hline
-提供安全性保障 & 数据库加密敏感字段，所有接口提供认证授权保护 & 验证通过 \\\hline
-\end{longtable}
+\begin{longtblr}
+    [
+    caption        = {非功能需求实现结果},
+    label          = {tab:test-n-req-summary}
+    ]
+    {
+    colspec        = {Q[c,m]X[l,m]},
+    hline{1,Z}     = {wd=.08em},
+    hline{2}       = {wd=.05em},
+    row{even[2-Z]} = {bg=gray9!50},
+    row{1}         = {font=\bfseries},
+    rowhead        = 1,
+    }
+测试项 & 描述 & 测试结果 \\
+支持多种协议 & 支持 MQTT、HTTP、CoAP、STOMP 四种协议 & 验证通过 \\
+支持多种提交方式 & 支持通过果实图像/名称/编号提交称重数据 & 验证通过 \\
+支持模拟提交流程 & 支持通过电子秤模拟器模拟数据提交 & 验证通过 \\
+支持受限网络环境 & 支持在边端提交数据 & 验证通过 \\
+提供高性能的服务 & 提供高性能的果实图像识别服务和称重数据提交服务 & 验证通过 \\
+提供安全性保障 & 数据库加密敏感字段，所有接口提供认证授权保护 & 验证通过 \\
+\end{longtblr}
 
 针对提供高性能服务这个非功能需求，下面给出具体的测试和分析结果。首先给出对果实图像识别服务的性能测试，然后再给出称重数据提交服务的性能测试。
 

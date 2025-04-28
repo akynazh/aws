@@ -59,3 +59,56 @@ https://github.com/note286/xduts
 ### 论文格式检查
 
 学校 SPOC 平台智能分析学生毕业论文格式是否符合撰写规范及相关国家标准《GB7713 学位论文撰写格式》。
+
+## Template
+
+普通表格
+
+```tex
+\begin{longtblr}
+    [
+    caption        = {用户表 (t\_user)},
+    label          = {tab:user}
+    ]
+    {
+        colspec={Q[c,m]X[c,m]},
+        hlines,vlines,cell{2-Z}{1}={},
+        row{1}         = {font=\bfseries},
+        rowhead        = 1,
+    }
+```
+
+普通表格（用例相关表，第一列加粗）
+
+```tex
+\begin{longtblr}
+[
+caption        = {},
+label          = {}
+]
+{
+    colspec={Q[c,m]X[c,m]},
+    hlines,vlines,cell{2-Z}{1}={},
+    cell{1-Z}{1}={font=\bfseries},
+    cell{1-Z}{2}={halign=l}
+}
+```
+
+
+三线表格:
+
+```tex
+\begin{longtblr}
+[
+caption        = {},
+label          = {}
+]
+{
+colspec        = {Q[c,m]X[l,m]},
+hline{1,Z}     = {wd=.08em},
+hline{2}       = {wd=.05em},
+row{even[2-Z]} = {bg=gray9!50},
+row{1}         = {font=\bfseries},
+rowhead        = 1,
+}
+```
