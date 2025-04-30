@@ -1,0 +1,86 @@
+@startuml
+
+top to bottom direction
+skinparam linetype ortho
+skinparam classAttributeIconSize 0
+
+class ImageService {
+  + serverName: String
+  + serverUrl: String
+  + handle(String): String
+}
+class MqttWeighService {
+  - recordService: RecordService
+  - mqttGateway: MqttGateway
+  + handleMessage(Message<?>): void
+}
+class PredictService {
+  - SELF_PREDICT_URL: String
+  ~ HTTP_CLIENT: OkHttpClient
+  + predict(String, String): String
+}
+class ProduceService {
+  - produceRepository: ProduceRepository
+  + getProduce(Long): Produce
+  + getProduceByName(String): Produce
+  + getProduces(int, int): List<Produce>
+}
+class RecordService {
+  - recordRepository: RecordRepository
+  - workService: WorkService
+  - todoService: TodoService
+  - userService: UserService
+  - imageService: ImageService
+  - produceService: ProduceService
+  - scaleService: ScaleService
+  - produceUtil: PredictService
+  - workRepository: WorkRepository
+  + handleTodo(TodoVO): void
+  + addRecord(RecordAddVO): Record
+  - updateWorkOutput(BigDecimal, Integer, Work): void
+  + dropTodo(Long): void
+  - isDuplicateRecord(RecordAddVO): boolean
+  - saveRecord(RecordAddVO, Work, Long, String): Record
+  - getProduceId(Long, String, String): Long
+  + updateWorkOutput(Long): void
+}
+class ScaleService {
+  - scaleRepository: ScaleRepository
+  - userService: UserService
+  + getScale(Long): Scale
+}
+class TodoService {
+  - todoRepository: TodoRepository
+  - imageService: ImageService
+  + getTodos(TodosGetVO): TodoListVO
+  + delTodo(Long): void
+  + addTodo(RecordAddVO): void
+}
+class UserService {
+  - authenticationManager: AuthenticationManager
+  - userRepository: UserRepository
+  - encoder: PasswordEncoder
+  + authUser(String, String): boolean
+  + loadUserByUsername(String): UserDetails
+  + getUserByID(Long): User
+  + getUserByUID(String): User
+}
+class WorkService {
+  - produceService: ProduceService
+  - workRepository: WorkRepository
+  + getProduceWorks(Long): List<Work>
+  + getWork(Long): Work
+}
+
+MqttWeighService  -[#595959,dashed]->  RecordService    
+RecordService     -[#595959,dashed]->  ImageService     
+RecordService     -[#595959,dashed]->  PredictService   
+RecordService     -[#595959,dashed]->  ProduceService   
+RecordService     -[#595959,dashed]->  ScaleService     
+RecordService     -[#595959,dashed]->  TodoService      
+RecordService     -[#595959,dashed]->  UserService      
+RecordService     -[#595959,dashed]->  WorkService      
+ScaleService      -[#595959,dashed]->  UserService      
+TodoService       -[#595959,dashed]->  ImageService     
+WorkService       -[#595959,dashed]->  ProduceService   
+@enduml
