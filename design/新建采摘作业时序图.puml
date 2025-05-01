@@ -1,0 +1,32 @@
+@startuml
+Actor 管理员 as Actor
+Actor -> WorkController : addWork
+activate WorkController
+WorkController -> WorkService : addWork
+activate WorkService
+WorkService -> ProduceService : getProduce
+activate ProduceService
+ProduceService --> WorkService
+deactivate ProduceService
+WorkService -> WorkService : getProduceWorks
+activate WorkService
+WorkService --> WorkService
+deactivate WorkService
+create Work
+WorkService -> Work : new
+activate Work
+Work --> WorkService
+deactivate Work
+WorkService --> WorkController
+deactivate WorkService
+WorkController -> Work : toWorkVO
+activate Work
+create WorkVO
+Work -> WorkVO : new
+activate WorkVO
+WorkVO --> Work
+deactivate WorkVO
+Work --> WorkController
+deactivate Work
+return
+@enduml

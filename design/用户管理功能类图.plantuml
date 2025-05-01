@@ -1,0 +1,84 @@
+@startuml
+
+top to bottom direction
+' left to right direction
+skinparam linetype ortho
+skinparam classAttributeIconSize 0
+skinparam defaultFontSize 30
+
+interface AuthenticationManager << interface >> {
+  + authenticate(Authentication): Authentication
+}
+class JwtService {
+  - jwtSecret: String
+  - jwtValidTime: long
+  + extractUsername(String): String
+  - extractAllClaims(String): Claims
+  - createToken(Map<String, Object>, String): String
+  + extractExpiration(String): Date
+  + extractClaim(String, Function<Claims, T>): T
+  + validateToken(String, UserDetails): Boolean
+  - isTokenExpired(String): Boolean
+  - getSignKey(): Key
+  + extractToken(HttpServletRequest): String
+  + generateToken(String): String
+}
+class User {
+  - updateTime: Long
+  - uid: String
+  - name: String
+  - createTime: Long
+  - id: Long
+  - status: Integer
+  - password: String
+  - roles: String
+}
+class UserController {
+  - jwtService: JwtService
+  - userService: UserService
+  + login(UserLoginVO): ResponseEntity<String>
+  + getUsers(int, int): ResponseEntity<UserListVO>
+  + addUser(UserRegisterVO): ResponseEntity<UserVO>
+  + updateMe(UserUpdateMeVO, HttpServletRequest): ResponseEntity<UserVO>
+  + updateUser(UserUpdateVO): ResponseEntity<UserVO>
+  + getMe(HttpServletRequest): ResponseEntity<UserVO>
+  + getEmployee(String): ResponseEntity<UserVO>
+}
+class UserDetails {
+  - password: String
+  - authorities: List<GrantedAuthority>
+  - uid: String
+  + getPassword(): String
+  + getUsername(): String
+  + getAuthorities(): Collection<GrantedAuthority>
+}
+interface UserDetailsService << interface >> {
+  + loadUserByUsername(String): UserDetails
+}
+class UserService {
+  - authenticationManager: AuthenticationManager
+  - userRepository: UserRepository
+  - adminPassword: String
+  - encoder: PasswordEncoder
+  - adminUID: String
+  + getUsersByIds(List<Long>): Map<Long, String>
+  + authUser(String, String): boolean
+  + loadUserByUsername(String): UserDetails
+  + initAdmin(): void
+  + getUserByID(Long): User
+  + getUsers(int, int): List<User>
+  + getUserCount(): long
+  + updateUser(UserUpdateVO, User): User
+  + updateMe(UserUpdateMeVO, User): User
+  + addUser(UserRegisterVO): User
+  + getUserByUID(String): User
+}
+
+UserController         -[#595959,dashed]->  JwtService            
+UserController         -[#595959,dashed]->  User                  
+UserController         -[#595959,dashed]->  UserService           
+UserDetails            -[#595959,dashed]->  User                  
+UserService            -[#595959,dashed]->  AuthenticationManager 
+UserService            -[#595959,dashed]->  User                  
+UserDetailsService  ^-[#595959,dashed]-  UserService 
+@enduml

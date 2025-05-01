@@ -1,0 +1,59 @@
+@startuml
+
+skinparam sequenceMessageAlign center
+skinparam defaultFontSize 18
+
+actor 电子秤 as Actor
+Actor -> RecordService : addRecord
+activate RecordService
+RecordService -> RecordService : isDuplicateRecord
+activate RecordService
+RecordService --> RecordService
+deactivate RecordService
+RecordService -> ImageService : handle
+activate ImageService
+ImageService --> RecordService
+deactivate ImageService
+RecordService -> RecordService : getProduceId
+activate RecordService
+RecordService -> PredictService : predict
+activate PredictService
+PredictService --> RecordService
+deactivate PredictService
+RecordService -> ProduceService : getProduce
+activate ProduceService
+ProduceService --> RecordService
+deactivate ProduceService
+RecordService --> RecordService
+deactivate RecordService
+RecordService -> WorkService : getProduceWorks
+activate WorkService
+WorkService --> RecordService
+deactivate WorkService
+RecordService -> ScaleService : getScale
+activate ScaleService
+ScaleService --> RecordService
+deactivate ScaleService
+RecordService -> UserService : getUserByID
+activate UserService
+UserService --> RecordService
+deactivate UserService
+RecordService -> RecordService : updateWorkOutput
+activate RecordService
+RecordService -> WorkService : updateWork
+activate WorkService
+WorkService --> RecordService
+deactivate WorkService
+RecordService --> RecordService
+deactivate RecordService
+RecordService -> RecordService : saveRecord
+activate RecordService
+create Record
+RecordService -> Record : new
+activate Record
+Record --> RecordService
+deactivate Record
+RecordService --> RecordService
+deactivate RecordService
+return
+@enduml

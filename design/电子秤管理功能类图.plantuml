@@ -1,0 +1,93 @@
+@startuml
+
+top to bottom direction
+' left to right direction
+skinparam linetype ortho
+skinparam classAttributeIconSize 0
+skinparam defaultFontSize 30
+
+class MqttAcl {
+  - id: Integer
+  - topic: String
+  - username: String
+  - permission: String
+  - action: String
+  - retain: Integer
+  - qos: Integer
+}
+class MqttUserService {
+  - mqttAclRepository: MqttAclRepository
+  - userRepository: UserRepository
+  - userService: UserService
+  + createScaleSubscriberAndResultPublisher(String, String): void
+  - createAcl(String, String, String, String): void
+  + createScalePublisher(String, String): void
+  + userNotExists(String): boolean
+  + createResultSubscriber(String, String): void
+  - createUser(String, String, UserRole): void
+}
+class Scale {
+  - protocol: String
+  - id: Long
+  - unit: Integer
+  - createTime: Long
+  - displayInterval: Integer
+  - sid: String
+  - status: Integer
+  - minCapacity: BigDecimal
+  - verificationInterval: Integer
+  - updateTime: Long
+  - unitDv: Integer
+  - maxCapacity: BigDecimal
+  - model: String
+}
+class ScaleService {
+  - scaleRepository: ScaleRepository
+  - mqttUserService: MqttUserService
+  - userService: UserService
+  + addScale(ScaleAddVO): Scale
+  + getScale(Long): Scale
+  + getScales(int, int): List<Scale>
+  + updateScale(ScaleUpdateVO): Scale
+  + getScaleCount(): long
+}
+class User {
+  - uid: String
+  - name: String
+  - id: Long
+  - status: Integer
+  - password: String
+  - roles: String
+}
+class UserService {
+  - authenticationManager: AuthenticationManager
+  - userRepository: UserRepository
+  + getUsersByIds(List<Long>): Map<Long, String>
+  + authUser(String, String): boolean
+  + loadUserByUsername(String): UserDetails
+  + getUserByID(Long): User
+  + getUsers(int, int): List<User>
+  + updateUser(UserUpdateVO, User): User
+  + addUser(UserRegisterVO): User
+  + getUserByUID(String): User
+}
+class WeighController {
+  - mqttUserService: MqttUserService
+  - scaleService: ScaleService
+  + getScales(int, int): ResponseEntity<ScaleListVO>
+  + addMonitor(String, String): ResponseEntity<String>
+  + addScale(ScaleAddVO): ResponseEntity<ScaleVO>
+  + updateScale(ScaleUpdateVO): ResponseEntity<ScaleVO>
+  + getScale(Long): ResponseEntity<ScaleVO>
+}
+
+MqttUserService  -[#595959,dashed]->  MqttAcl         
+MqttUserService  -[#595959,dashed]->  UserService     
+ScaleService     -[#595959,dashed]->  MqttUserService 
+ScaleService     -[#595959,dashed]->  Scale           
+ScaleService     -[#595959,dashed]->  UserService     
+UserService      -[#595959,dashed]->  User            
+WeighController  -[#595959,dashed]->  MqttUserService 
+WeighController  -[#595959,dashed]->  Scale           
+WeighController  -[#595959,dashed]->  ScaleService    
+@enduml

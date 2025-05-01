@@ -1,0 +1,46 @@
+@startuml
+
+top to bottom direction
+skinparam linetype ortho
+skinparam classAttributeIconSize 0
+skinparam defaultFontSize 30
+
+class ProduceService {
+  - produceRepository: ProduceRepository
+  + getProduce(Long): Produce
+}
+class Work {
+  - createTime: Long
+  - produceId: Long
+  - id: Long
+  - unit: Integer
+  - startTime: Long
+  - status: Integer
+  - endTime: Long
+  - dataValue: BigDecimal
+  - updateTime: Long
+}
+class WorkController {
+  - workService: WorkService
+  + getProduceWorks(long): ResponseEntity<List<WorkVO>>
+  + updateWork(WorkUpdateVO): ResponseEntity<WorkVO>
+  + addWork(WorkAddVO): ResponseEntity<WorkVO>
+  + getWork(long): ResponseEntity<WorkVO>
+  + getWorks(int, int): ResponseEntity<WorkListVO>
+}
+class WorkService {
+  - produceService: ProduceService
+  - workRepository: WorkRepository
+  + getWorks(int, int): List<Work>
+  + getProduceWorks(Long): List<Work>
+  + getWork(Long): Work
+  + addWork(WorkAddVO): Work
+  + updateWork(WorkUpdateVO): Work
+  + getWorkCount(): long
+}
+
+WorkController  -[#595959,dashed]->  Work           
+WorkController  -[#595959,dashed]->  WorkService    
+WorkService     -[#595959,dashed]->  ProduceService 
+WorkService     -[#595959,dashed]->  Work           
+@enduml

@@ -3,6 +3,7 @@
 top to bottom direction
 skinparam linetype ortho
 skinparam classAttributeIconSize 0
+skinparam defaultFontSize 30
 
 class ImageService {
   + serverName: String
@@ -57,11 +58,11 @@ class TodoService {
   + addTodo(RecordAddVO): void
 }
 class UserService {
-  - authenticationManager: AuthenticationManager
+  ' - authenticationManager: AuthenticationManager
   - userRepository: UserRepository
   - encoder: PasswordEncoder
   + authUser(String, String): boolean
-  + loadUserByUsername(String): UserDetails
+  ' + loadUserByUsername(String): UserDetails
   + getUserByID(Long): User
   + getUserByUID(String): User
 }
@@ -74,7 +75,7 @@ class WorkService {
 
 MqttWeighService  -[#595959,dashed]->  RecordService    
 RecordService     -[#595959,dashed]->  ImageService     
-RecordService     -[#595959,dashed]->  PredictService   
+RecordService     -[#595959,dashed]>  PredictService   
 RecordService     -[#595959,dashed]->  ProduceService   
 RecordService     -[#595959,dashed]->  ScaleService     
 RecordService     -[#595959,dashed]->  TodoService      

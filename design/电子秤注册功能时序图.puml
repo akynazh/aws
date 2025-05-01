@@ -1,0 +1,28 @@
+@startuml
+Actor 管理员 as Actor
+Actor -> WeighController : addScale
+activate WeighController
+WeighController -> ScaleService : addScale
+activate ScaleService
+create Scale
+ScaleService -> Scale : new
+activate Scale
+Scale --> ScaleService
+deactivate Scale
+ScaleService -> MqttUserService : createScalePublisher
+activate MqttUserService
+MqttUserService --> ScaleService
+deactivate MqttUserService
+ScaleService --> WeighController
+deactivate ScaleService
+WeighController -> Scale : toScaleVO
+activate Scale
+create ScaleVO
+Scale -> ScaleVO : new
+activate ScaleVO
+ScaleVO --> Scale
+deactivate ScaleVO
+Scale --> WeighController
+deactivate Scale
+return
+@enduml

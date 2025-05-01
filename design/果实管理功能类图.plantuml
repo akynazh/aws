@@ -1,0 +1,52 @@
+@startuml
+
+top to bottom direction
+' left to right direction
+skinparam linetype ortho
+skinparam classAttributeIconSize 0
+skinparam defaultFontSize 30
+
+class Produce {
+  - createTime: Long
+  - status: Integer
+  - name: String
+  - nameEn: String
+  - id: Long
+  - updateTime: Long
+}
+class ProduceController {
+  - workService: WorkService
+  - produceService: ProduceService
+  - recordService: RecordService
+  + getProduceWorkOutput(Long): ResponseEntity<List<ProduceWorkOutputVO>>
+  + getProduceByName(String): ResponseEntity<ProduceVO>
+  + getProduce(Long): ResponseEntity<ProduceVO>
+  + getProduceAnnualOutput(Long): ResponseEntity<List<ProduceAnnualOutputVO>>
+  + getProduces(int, int): ResponseEntity<ProduceListVO>
+  + addProduce(ProduceAddVO): ResponseEntity<ProduceVO>
+  + updateProduce(ProduceUpdateVO): ResponseEntity<ProduceVO>
+}
+class ProduceService {
+  - produceRepository: ProduceRepository
+  + getProduce(Long): Produce
+  + getProduceCount(): long
+  + initProduces(): void
+  - genNextId(): long
+  + getProduceByName(String): Produce
+  + updateProduce(ProduceUpdateVO): Produce
+  + getProduces(int, int): List<Produce>
+  + addProduce(ProduceAddVO): Produce
+}
+class WorkService {
+  - produceService: ProduceService
+  - workRepository: WorkRepository
+  + getProduceWorks(Long): List<Work>
+}
+
+ProduceController  -[#595959,dashed]->  Produce           
+ProduceController  -[#595959,dashed]->  ProduceService    
+ProduceController  -[#595959,dashed]->  WorkService       
+ProduceService     -[#595959,dashed]->  Produce           
+WorkService        -[#595959,dashed]->  Produce           
+WorkService        -[#595959,dashed]->  ProduceService    
+@enduml

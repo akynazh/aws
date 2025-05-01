@@ -1,0 +1,60 @@
+@startuml
+
+top to bottom direction
+' left to right direction
+skinparam linetype ortho
+skinparam classAttributeIconSize 0
+skinparam defaultFontSize 30
+
+class Record {
+  - dataTime: Long
+  - id: Long
+  - dataValue: BigDecimal
+  - workId: Long
+  - produceId: Long
+  - scaleId: Long
+  - image: String
+  - dataErrorMargin: BigDecimal
+  - unit: Integer
+  - employeeId: Long
+}
+class RecordService {
+  - recordRepository: RecordRepository
+  - todoService: TodoService
+  + handleTodo(TodoVO): void
+  + addRecord(RecordAddVO): Record
+  + dropTodo(Long): void
+}
+class Todo {
+  - dataValue: BigDecimal
+  - image: String
+  - employeeId: Long
+  - scaleId: Long
+  - id: Long
+  - dataErrorMargin: BigDecimal
+  - unit: Integer
+  - dataTime: Long
+  - produceId: Long
+  - produceName: String
+}
+class TodoService {
+  - todoRepository: TodoRepository
+  + getTodos(TodosGetVO): TodoListVO
+  + delTodo(Long): void
+  + addTodo(RecordAddVO): void
+}
+class WeighController {
+  - recordService: RecordService
+  - todoService: TodoService
+  + getTodos(TodosGetVO): ResponseEntity<TodoListVO>
+  + handleTodoRecord(TodoVO): ResponseEntity<String>
+  + dropTodoRecord(Long): ResponseEntity<String>
+}
+
+RecordService    -[#595959,dashed]->  Record          
+RecordService    -[#595959,dashed]->  TodoService     
+TodoService      -[#595959,dashed]->  Todo            
+WeighController  -[#595959,dashed]->  Record          
+WeighController  -[#595959,dashed]->  RecordService   
+WeighController  -[#595959,dashed]->  TodoService     
+@enduml
