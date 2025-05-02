@@ -1,0 +1,108 @@
+@startuml
+
+hide circle
+top to bottom direction
+' left to right direction
+skinparam linetype ortho
+skinparam classAttributeIconSize 0
+skinparam defaultFontSize 30
+
+class t_mqtt_acl {
+   id: int <<PK>>
+   --
+   action: varchar(255)
+   permission: varchar(255)
+   qos: int
+   ' retain: int
+   topic: varchar(255)
+   username: varchar(255)
+}
+class t_produce {
+   id: bigint <<PK>>
+   --
+   create_time: bigint
+   name: varchar(255) <<unique>>
+   name_en: varchar(255) <<unique>>
+   status: int
+   update_time: bigint
+}
+class t_record {
+   id: bigint <<PK>>
+   --
+   data_error_margin: decimal(10,2)
+   data_time: bigint
+   data_value: decimal(10,2)
+   employee_id: bigint
+   image: varchar(255)
+   produce_id: bigint
+   scale_id: bigint
+   unit: int
+   work_id: bigint
+}
+class t_scale {
+   id: bigint <<PK>>
+   --
+   create_time: bigint
+   display_interval: int
+   max_capacity: decimal(10,2)
+   min_capacity: decimal(10,2)
+   model: varchar(255)
+   protocol: varchar(255)
+   sid: varchar(255) <<unique>>
+   status: int
+   unit: int
+   unit_dv: int
+   update_time: bigint
+   verification_interval: int
+}
+class t_todo {
+   id: bigint <<PK>>
+   --
+   data_error_margin: decimal(10,2)
+   data_time: bigint
+   data_value: decimal(10,2)
+   employee_id: bigint
+   image: varchar(255)
+   produce_id: bigint
+   produce_name: varchar(255)
+   scale_id: bigint
+   unit: int
+}
+class t_user {
+   id: bigint <<PK>>
+   --
+   create_time: bigint
+   name: varchar(255)
+   password: varchar(255)
+   roles: varchar(255)
+   status: int
+   uid: varchar(255) <<unique>>
+   update_time: bigint
+}
+class t_work {
+   id: bigint <<PK>>
+   --
+   create_time: bigint
+   data_value: decimal(10,2)
+   end_time: bigint
+   produce_id: bigint
+   start_time: bigint
+   status: int
+   unit: int
+   update_time: bigint
+}
+
+t_record }o--|| t_scale
+t_record }o--|| t_user
+t_record }o--|| t_produce
+t_record }o--|| t_work
+
+t_todo }o--|| t_scale
+t_todo }o--|| t_user
+t_todo }o--|| t_produce
+
+t_work }o--|| t_produce
+
+t_mqtt_acl }o--|| t_user
+
+@enduml

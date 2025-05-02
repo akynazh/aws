@@ -1,0 +1,25 @@
+@startuml
+skinparam sequenceMessageAlign center
+skinparam defaultFontSize 18
+Actor 管理员 as Actor
+Actor -> WeighController : handleTodoRecord
+activate WeighController
+WeighController -> RecordService : handleTodo
+activate RecordService
+create RecordAddVO
+RecordService -> RecordAddVO : new
+activate RecordAddVO
+RecordAddVO --> RecordService
+deactivate RecordAddVO
+RecordService -> RecordService : addRecord
+activate RecordService
+RecordService --> RecordService
+deactivate RecordService
+RecordService -> TodoService : delTodo
+activate TodoService
+TodoService --> RecordService
+deactivate TodoService
+RecordService --> WeighController
+deactivate RecordService
+return
+@enduml

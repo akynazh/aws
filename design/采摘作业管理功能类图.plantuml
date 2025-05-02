@@ -1,6 +1,7 @@
 @startuml
 
 top to bottom direction
+' left to right direction
 skinparam linetype ortho
 skinparam classAttributeIconSize 0
 skinparam defaultFontSize 30

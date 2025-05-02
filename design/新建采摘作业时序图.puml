@@ -1,4 +1,6 @@
 @startuml
+skinparam sequenceMessageAlign center
+skinparam defaultFontSize 18
 Actor 管理员 as Actor
 Actor -> WorkController : addWork
 activate WorkController

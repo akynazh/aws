@@ -1,5 +1,8 @@
 @startuml 称重流程时序图
 
+skinparam sequenceMessageAlign center
+skinparam defaultFontSize 18
+
 skinparam Diagram {
   BorderColor black
   BorderThickness 1

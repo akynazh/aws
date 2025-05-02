@@ -6,8 +6,10 @@ skinparam linetype ortho
 skinparam classAttributeIconSize 0
 skinparam defaultFontSize 30
 
-interface AuthenticationManager << interface >> {
-  + authenticate(Authentication): Authentication
+class JwtAuthFilter {
+  - jwtService: JwtService
+  - userService: UserService
+  # doFilterInternal(HttpServletRequest, HttpServletResponse, FilterChain): void
 }
 class JwtService {
   - jwtSecret: String
@@ -22,6 +24,15 @@ class JwtService {
   - getSignKey(): Key
   + extractToken(HttpServletRequest): String
   + generateToken(String): String
+}
+class SecurityConfig {
+  - authFilter: JwtAuthFilter
+  + securityFilterChain(HttpSecurity): SecurityFilterChain
+  + authenticationProvider(): AuthenticationProvider
+  + authenticationManager(AuthenticationConfiguration): AuthenticationManager
+  + corsConfigurationSource(): CorsConfigurationSource
+  + passwordEncoder(): PasswordEncoder
+  + userDetailsService(): UserDetailsService
 }
 class User {
   - updateTime: Long
@@ -52,6 +63,15 @@ class UserDetails {
   + getUsername(): String
   + getAuthorities(): Collection<GrantedAuthority>
 }
+interface UserDetails << interface >> {
+  + getAuthorities(): Collection<GrantedAuthority>
+  + getUsername(): String
+  + isEnabled(): boolean
+  + isAccountNonLocked(): boolean
+  + isAccountNonExpired(): boolean
+  + getPassword(): String
+  + isCredentialsNonExpired(): boolean
+}
 interface UserDetailsService << interface >> {
   + loadUserByUsername(String): UserDetails
 }
@@ -74,11 +94,20 @@ class UserService {
   + getUserByUID(String): User
 }
 
-UserController         -[#595959,dashed]->  JwtService            
-UserController         -[#595959,dashed]->  User                  
-UserController         -[#595959,dashed]->  UserService           
-UserDetails            -[#595959,dashed]->  User                  
-UserService            -[#595959,dashed]->  AuthenticationManager 
-UserService            -[#595959,dashed]->  User                  
-UserDetailsService  ^-[#595959,dashed]-  UserService 
+JwtAuthFilter       -[#595959,dashed]->  JwtService         
+JwtAuthFilter       -[#595959,dashed]->  UserDetails        
+JwtAuthFilter       -[#595959,dashed]->  UserService        
+JwtService          -[#595959,dashed]->  UserDetails        
+SecurityConfig      -[#595959,dashed]->  JwtAuthFilter      
+SecurityConfig      -[#595959,dashed]->  UserDetailsService 
+SecurityConfig      -[#595959,dashed]->  UserService        
+UserController      -[#595959,dashed]->  JwtService         
+UserController      -[#595959,dashed]->  User               
+UserController      -[#595959,dashed]->  UserService        
+UserDetails         -[#595959,dashed]->  User               
+UserDetails         -[#008200,dashed]-^  UserDetails        
+UserDetailsService  -[#595959,dashed]->  UserDetails        
+UserService         -[#595959,dashed]->  User               
+UserService         -[#595959,dashed]->  UserDetails        
+UserService         -[#008200,dashed]-^  UserDetailsService 
 @enduml
