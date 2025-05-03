@@ -8,7 +8,7 @@
 
 Spring 框架主要提供了七大模块的功能，分别是数据访问/集成模块、WEB服务模块、切面模块、工具模块、消息模块、核心模块以及测试模块，如图\ref{fig:Spring}所示；Spring Security 框架则为系统提供了强大的安全保障，确保了用户数据和操作的安全性；Spring Boot 框架提供了简化应用开发和配置的能力，帮助快速构建和部署云端应用。
 
-\begin{figure}[H]
+\begin{figure}
     \centering
     \includegraphics[width=0.8\linewidth]{../design/out/Spring.png}
     \caption{Spring 七大模块}
@@ -19,7 +19,7 @@ Spring 框架中的核心模块提供了 IOC(控制反转)和 DI (依赖注入)�
 
 Spring Security 是 Spring 框架的安全扩展，专门用于解决应用的安全需求，通过与 Spring 的各个模块的集成，提供了一种高度灵活且易于配置的安全方案。Spring Security 提供了强大而灵活的安全过滤器，用于对用户进行认证和授权，其请求过滤流程如图\ref{fig:Spring-Security}所示。
 
-\begin{figure}[H]
+\begin{figure}
     \centering
     \includegraphics[width=0.8\linewidth]{../design/out/Spring-Security.png}
     \caption{Spring Security 请求过滤流程}
@@ -36,13 +36,13 @@ Spring Boot 是一个基于 Spring 的框架，旨在简化应用程序的开发
 
 YOLO(You Only Look Once)目标检测算法是一种高效的目标检测算法，在计算机视觉领域得到了广泛的应用\cite{Lin2019}。在农业果实称重云端软件中，应用 YOLOv8 来训练果实图像检测模型，实现果实种类的检测与识别。YOLOv8 的检测原理可以从图像划分、目标预测、损失函数和后处理四个方面阐述。
 
-1、图像划分：YOLOv8 将输入图像划分成多个网格单元。每个网格单元负责预测中心点落在该单元内的目标。这种划分方式使得算法能够快速定位目标的大致位置，提高检测效率\cite{Liu2023-yolov8}。
+(1)图像划分：YOLOv8 将输入图像划分成多个网格单元。每个网格单元负责预测中心点落在该单元内的目标。这种划分方式使得算法能够快速定位目标的大致位置，提高检测效率\cite{Liu2023-yolov8}。
 
-2、目标预测：对于每个网格单元，YOLOv8 预测多个边界框和对应的类别概率。边界框包含了目标的位置信息，通常用四个坐标值表示。类别概率表示该边界框内目标属于各个类别的可能性\cite{Liu2023-yolov8}。
+(2)目标预测：对于每个网格单元，YOLOv8 预测多个边界框和对应的类别概率。边界框包含了目标的位置信息，通常用四个坐标值表示。类别概率表示该边界框内目标属于各个类别的可能性\cite{Liu2023-yolov8}。
 
-3、损失函数：YOLOv8 采用一种多任务损失函数，综合优化模型参数，涵盖边界框回归、类别分类和物体置信度等多个目标检测任务\cite{Liu2023-yolov8}。损失函数通常由分类损失和回归损失组成。分类损失用于衡量模型对目标类别的预测准确性，回归损失用于衡量模型对目标边界框的预测准确性。
+(3)损失函数：YOLOv8 采用一种多任务损失函数，综合优化模型参数，涵盖边界框回归、类别分类和物体置信度等多个目标检测任务\cite{Liu2023-yolov8}。损失函数通常由分类损失和回归损失组成。分类损失用于衡量模型对目标类别的预测准确性，回归损失用于衡量模型对目标边界框的预测准确性。
 
-4、后处理：在预测完成后，YOLOv8 通常采用一些后处理方法，如非极大值抑制(Non-Maximum Suppression，NMS)或软非极大值抑制(Soft-NMS, Soft Non-Maximum Suppression)\cite{SuperYOLO8}，来去除重复的检测结果，提高检测的准确性。
+(4)后处理：在预测完成后，YOLOv8 通常采用一些后处理方法，如非极大值抑制(Non-Maximum Suppression，NMS)或软非极大值抑制(Soft-NMS, Soft Non-Maximum Suppression)\cite{SuperYOLO8}，来去除重复的检测结果，提高检测的准确性。
 
 \section{基于 GTID 的主从复制技术}\label{sec:gtid}
 
@@ -50,7 +50,7 @@ YOLO(You Only Look Once)目标检测算法是一种高效的目标检测算法�
 
 基于 GTID 的主从复制技术是一种在数据库系统中广泛应用的重要技术，它在提高数据的可用性、可靠性和可扩展性方面发挥着关键作用。GTID 是一个在 MySQL 数据库中用于唯一标识一个事务的标识符。GTID 由服务器 UUID(Universally Unique Identifier, 即全局唯一标识符) 和事务编号组成，通过这种方式可以在不同的数据库服务器之间唯一地标识一个事务。GTID 的引入使得主从复制更加灵活和可靠，同时也简化了复制的配置和管理。其主从复制的流程如图\ref{fig:GTID-Replication}所示。
 
-\begin{figure}[H]
+\begin{figure}
     \centering
     \includegraphics[width=0.8\linewidth]{../design/out/GTID-Replication.png}
     \caption{主从复制流程}
@@ -73,11 +73,11 @@ MQTT(Message Queuing Telemetry Transport)即消息队列遥测传输协议，是
 
 (2)实时性和可靠性：MQTT 协议支持通过 QoS(Quality of Service，服务质量)来控制传输质量。可以根据不同的应用需求，选择不同的消息传输质量级别。在 MQTT 协议中，QoS 有三种级别\cite{Jia2015}，分别是：
 
-1、QoS0 – “最多一次”：消息最多传送一次，不保证消息到达目标。适用于实时性要求非常高，但对消息丢失容忍的场景；
+QoS0 – “最多一次”：消息最多传送一次，不保证消息到达目标。适用于实时性要求非常高，但对消息丢失容忍的场景；
 
-2、QoS1 – “至少一次”：保证消息至少传送一次，但可能会重复。适用于需要消息可靠到达，但不介意重复接收的情况；
+QoS1 – “至少一次”：保证消息至少传送一次，但可能会重复。适用于需要消息可靠到达，但不介意重复接收的情况；
 
-3、QoS2 – “只有一次”：确保每条消息只会传送一次，且无重复。适用于对消息的唯一性和可靠性有较高要求的场景。
+QoS2 – “只有一次”：确保每条消息只会传送一次，且无重复。适用于对消息的唯一性和可靠性有较高要求的场景。
 
 对于需要实时上传称重信息的场景，可以选择 QoS1 或 QoS2 级别，确保消息的可靠传输。同时，MQTT 协议的发布/订阅模式可以实现实时的数据推送，当电子秤上传称重信息后，订阅了该主题的客户端可以立即收到消息，实现实时的数据更新。
 
@@ -89,7 +89,7 @@ MQTT(Message Queuing Telemetry Transport)即消息队列遥测传输协议，是
 
 EMQX 提供了统一的用户层接口和会话/连接管理。各个协议的客户端有独立的认证器和监控器\cite{EMQX-Gateway}。其整体的架构如图\ref{fig:EMQX-Gateway}所示。
 
-\begin{figure}[H]
+\begin{figure}
     \centering
     \includegraphics[width=0.8\linewidth]{../design/out/EMQX-Gateway.png}
     \caption{EMQX 网关框架架构}
