@@ -1,7 +1,7 @@
 @startuml
 
 skinparam sequenceMessageAlign center
-skinparam defaultFontSize 18
+skinparam defaultFontSize 25
 
 actor 用户 as Client
 participant "UserController" as UserController
@@ -11,7 +11,7 @@ participant "AuthorizationFilter" as AuthorizationFilter
 participant "UserService" as UserService
 participant "JwtService" as JwtService
 
-Client -> UserController: 调用 login 接口进行登录
+Client -> UserController: 调用 login 接口\n进行登录
 UserController -> UserService: 认证用户
 UserService -> UserService: 校验用户名和密码
 UserService -> JwtService: 生成 Jwt 令牌
@@ -19,14 +19,14 @@ JwtService -> UserService: 返回 Jwt 令牌
 UserService -> UserController: 用户认证通过，返回 Jwt 令牌
 UserController -> Client: 返回 Jwt 令牌
 Client -> Client: 存储 Jwt 令牌
-Client -> UserController: 携带 Jwt 令牌发起请求
-UserController -> SecurityFilterChain: 请求经过安全过滤链进行处理
+Client -> UserController: 携带 Jwt 令牌\n发起请求
+UserController -> SecurityFilterChain: 请求经过安全过滤链\n进行处理
 SecurityFilterChain -> JwtAuthFilter: 执行 Jwt 认证过滤器\n的过滤方法
 JwtAuthFilter -> JwtService: 校验 Jwt 令牌
 JwtService -> JwtAuthFilter: 校验通过
 JwtAuthFilter -> UserService: 获取用户明细
 UserService -> JwtAuthFilter: 返回用户明细
-JwtAuthFilter -> JwtAuthFilter: 在请求上下文中设置用户明细
+JwtAuthFilter -> JwtAuthFilter: 在请求上下文中\n设置用户明细
 JwtAuthFilter -> SecurityFilterChain: 用户认证通过
 SecurityFilterChain -> AuthorizationFilter: 校验用户权限
 AuthorizationFilter -> AuthorizationFilter: 通过请求上下文中的\n用户角色列表进行权限校验

@@ -46,7 +46,7 @@ class WorkService {
 ProduceController  -[#595959,dashed]->  Produce           
 ProduceController  -[#595959,dashed]->  ProduceService    
 ProduceController  -[#595959,dashed]->  WorkService       
-ProduceService     -[#595959,dashed]->  Produce           
-WorkService        -[#595959,dashed]->  Produce           
+ProduceService     -[#595959,dashed]>  Produce           
+WorkService        -[#595959,dashed]>  Produce           
 WorkService        -[#595959,dashed]->  ProduceService    
 @enduml

@@ -53,7 +53,7 @@ class WeighController {
 
 RecordService    -[#595959,dashed]->  Record          
 RecordService    -[#595959,dashed]->  TodoService     
-TodoService      -[#595959,dashed]->  Todo            
+TodoService      -[#595959,dashed]>  Todo            
 WeighController  -[#595959,dashed]->  Record          
 WeighController  -[#595959,dashed]->  RecordService   
 WeighController  -[#595959,dashed]->  TodoService     

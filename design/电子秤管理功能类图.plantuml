@@ -86,7 +86,7 @@ MqttUserService  -[#595959,dashed]->  UserService
 ScaleService     -[#595959,dashed]->  MqttUserService 
 ScaleService     -[#595959,dashed]->  Scale           
 ScaleService     -[#595959,dashed]->  UserService     
-UserService      -[#595959,dashed]->  User            
+UserService      -[#595959,dashed]>  User            
 WeighController  -[#595959,dashed]->  MqttUserService 
 WeighController  -[#595959,dashed]->  Scale           
 WeighController  -[#595959,dashed]->  ScaleService    

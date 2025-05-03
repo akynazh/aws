@@ -1,6 +1,6 @@
 \chapter{软件设计与实现}
 
-本章将阐述农业果实称重云端软件的软件架构设计、数据库设计、称重数据处理流程设计以及农场数据管理功能设计。
+本章将阐述农业果实称重云端软件的架构设计、数据库设计、称重模块的功能设计与实现、果实模块的功能设计与实现、作业模块的功能设计与实现和用户模块的功能设计与实现。
 
 \section{软件架构设计}\label{sec:architecture}
 
@@ -50,9 +50,9 @@
 
 \section{数据库设计}\label{sec:database}
 
-软件数据库设计分为三个阶段：概念模型设计、逻辑模型设计和物理模型设计，在章节\ref{sec:req1}中完成了数据建模，给出了软件中存在的实体及实体关系，也即完成了数据库的概念模型设计，下面进行数据库的逻辑模型设计和物理模型设计。
+软件数据库设计分为三个阶段：概念模型设计、逻辑模型设计和物理模型设计\cite{苗雪兰2001数据库系统原理及应用教程}。章节\ref{sec:req1}中通过对需求的分析完成了数据建模，给出了软件中存在的实体及实体关系，得出了数据库的概念模型，接下来基于此进行数据库的逻辑模型设计和物理模型设计。
 
-逻辑模型设计是将概念模型中的实体和关系映射到数据库系统中的实际结构，进一步细化数据模型，整体设计情况如ER图\ref{fig:ERD-ALL}所示。
+逻辑模型设计是将概念模型中的实体和关系映射到数据库系统中的实际结构\cite{苗雪兰2001数据库系统原理及应用教程}，进一步细化数据模型，整体设计情况如ER图\ref{fig:ERD-ALL}所示，其中 “<<PK>>” 代表对应字段为主键。
 
 \begin{figure}[H]
     \centering
@@ -86,7 +86,7 @@
     status & int & 非空 & 状态(0禁用/1启用/2已删除) \\
 \end{longtblr}
 
-表\ref{tab:user}中展现了软件中用户实体的具体字段设计，其中 roles 字段定义了用户角色，角色字段包含管理员(ROLE\_ADMIN)、采摘员工(ROLE\_EMPLOYEE)、电子秤(ROLE\_SCALE)以及系统用户(ROLE\_SYS)，如果用户包含多个角色，则使用英文半角逗号隔开。
+用户表\ref{tab:user}中 roles 字段定义了用户角色，角色字段包含管理员(ROLE\_ADMIN)、采摘员工(ROLE\_EMPLOYEE)、电子秤(ROLE\_SCALE)以及系统用户(ROLE\_SYS)，如果用户包含多个角色，则使用英文半角逗号隔开。
 
 % t_produce
 \begin{longtblr}
@@ -101,7 +101,7 @@
         rowhead        = 1,
     }
 字段 & 类型 & 约束 & 说明 \\
-id & bigint & 主键 & 自增主键 \\
+id & bigint & 主键 & 主键 \\
 name & varchar(255) & 非空,唯一 & 果实名称 \\
 name\_en & varchar(255) & 唯一 & 果实英文名称 \\
 create\_time & bigint & 非空 & 创建时间(毫秒级时间戳) \\
@@ -109,7 +109,7 @@ update\_time & bigint & 非空 & 更新时间(毫秒级时间戳) \\
 status & int & 非空 & 状态(0未种植/1在种植/2已删除) \\
 \end{longtblr}
 
-表\ref{tab:produce}中展现了软件中果实实体的具体字段设计。其中对于果实编号，为了更好地进行软件扩展，如果是软件自带的果实，则编号从0开始，如果是用户自行添加的，则编号从1000000开始。
+果实表\ref{tab:produce}中，对于果实编号 id，为了更好地进行软件扩展，如果是软件自带的果实，id从0开始；如果是用户自行添加的，则id从1000000开始。
 
 % t_work
 \begin{longtblr}
@@ -135,7 +135,7 @@ update\_time & bigint & 非空 & 更新时间(毫秒级时间戳) \\
 status & int & 非空 & 状态(0未开始/1进行中/2已结束/3已取消/4已删除) \\
 \end{longtblr}
 
-表\ref{tab:work}中展现了软件中采摘作业实体的具体字段设计。其中通过字段果实编号(produce\_id)关联了果实实体，字段对应果实表\ref{tab:produce}中的 id 字段。
+采摘作业表\ref{tab:work}中通过字段果实编号(produce\_id)关联了果实实体，字段对应果实表中的 id 字段，果实表与采摘作业表为一对多的关系。
 
 % t_scale
 \begin{longtblr}
@@ -165,7 +165,7 @@ update\_time & bigint & 非空 & 更新时间(毫秒级时间戳) \\
 status & int & 非空 & 状态(0禁用/1启用/2已删除) \\
 \end{longtblr}
 
-表\ref{tab:scale}中展现了软件中电子秤实体的具体字段设计。其中通过字段电子秤编号(sid)管理了用户实体，该字段对应于用户表\ref{tab:user}中的用户编号(uid)字段。
+电子秤表\ref{tab:scale}中通过字段电子秤编号(sid)关联了用户实体，该字段对应于用户表\ref{tab:user}中的用户编号(uid)字段，电子秤表与用户表为一对一关系。
 
 % t_record
 \begin{longtblr}
@@ -192,12 +192,12 @@ unit & int & 非空 & 称重单位(0mg/1g/2kg/3t/4lb/5oz/6ct) \\
 data\_time & bigint & 非空 & 称重时间(毫秒级时间戳) \\
 \end{longtblr}
 
-表\ref{tab:record}中展现了软件中称重记录实体的具体字段设计。通过字段果实编号(produce\_id)关联了果实实体，对应果实表\ref{tab:produce}中的 id 字段；通过字段采摘作业编号(work\_id)关联了作业实体，对应作业表\ref{tab:work}中的 id 字段；通过字段员工编号(employee\_id)关联了员工实体，对应用户表\ref{tab:user}中的 id 字段；通过字段电子秤编号(scale\_id)关联了电子秤实体，对应电子秤表\ref{tab:scale}中的 id 字段。
+称重记录表\ref{tab:record}中通过字段果实编号(produce\_id)关联了果实实体，对应果实表\ref{tab:produce}中的 id 字段，果实表与称重记录表为一对多关系；通过字段采摘作业编号(work\_id)关联了采摘作业实体，对应采摘作业表\ref{tab:work}中的 id 字段，采摘作业表与称重记录表为一对多关系；通过字段员工编号(employee\_id)关联了员工实体，对应用户表\ref{tab:user}中的 id 字段，用户表与称重记录表为一对多关系；通过字段电子秤编号(scale\_id)关联了电子秤实体，对应电子秤表\ref{tab:scale}中的 id 字段，电子秤表与称重记录表为一对多关系。
 
 % t_todo
 \begin{longtblr}
     [
-    caption        = {待处理称重记录表 (t\_todo)},
+    caption        = {待办记录表 (t\_todo)},
     label          = {tab:todo}
     ]
     {
@@ -219,7 +219,7 @@ unit & int & 非空 & 称重单位(0mg/1g/2kg/3t/4lb/5oz/6ct) \\
 data\_time & bigint & 非空 & 称重时间(毫秒级时间戳) \\
 \end{longtblr}
 
-表\ref{tab:todo}中展现了软件中待办记录实体的具体字段设计。通过字段果实编号(produce\_id)关联了果实实体，对应果实表\ref{tab:produce}中的 id 字段；通过字段员工编号(employee\_id)关联了员工实体，对应用户表\ref{tab:user}中的 id 字段；通过字段电子秤编号(scale\_id)关联了电子秤实体，对应电子秤表\ref{tab:scale}中的 id 字段。
+待办记录表\ref{tab:todo}中通过字段果实编号(produce\_id)关联了果实实体，对应果实表\ref{tab:produce}中的 id 字段，果实表与待办记录表为一对多关系；通过字段员工编号(employee\_id)关联了员工实体，对应用户表\ref{tab:user}中的 id 字段，用户表与待办记录表为一对多关系；通过字段电子秤编号(scale\_id)关联了电子秤实体，对应电子秤表\ref{tab:scale}中的 id 字段，电子秤表与待办记录表为一对多关系。
 
 % t_mqtt_acl
 \begin{longtblr}
@@ -243,13 +243,11 @@ qos & int & - & 消息 QoS 级别(0,1,2) \\
 retain & int & - & 是否支持发布保留消息(0否/1是) \\
 \end{longtblr}
 
-表\ref{tab:mqttacl}中展现了软件中 MQTT 服务的访问控制条目的具体字段设计。通过字段 MQTT 认证用户名(username)管理了用户实体，对应用户表\ref{tab:user}中的 uid 字段。
+MQTT 访问控制表\ref{tab:mqttacl}通过字段 MQTT 认证用户名(username)关联了用户实体，对应用户表\ref{tab:user}中的 uid 字段，用户表与 MQTT 访问控制表为一对多关系。
 
 数据库中每个表的设计都遵循规范化原则，以确保数据的一致性、完整性和高效性。字段的定义包括主键、唯一约束、非空约束等，考虑到更新数据的效率问题，取消了外键的设置，在后台服务中做相关数据更新的限制以确保数据一致性。
 
-基于上述数据库的逻辑模型设计，下面继续完成物理模型的设计。
-
-软件使用 MySQL 作为数据库管理系统，采用 InnoDB 存储引擎，将事务隔离级别设置为可重复读，以确保数据的一致性和可靠性。下面从索引设计、数据存储与分布、数据访问控制和事务日志与恢复策略四个方面阐述物理模型设计。
+软件使用 MySQL 作为数据库管理系统，采用 InnoDB 存储引擎，将事务隔离级别设置为可重复读，以确保数据的一致性和可靠性。基于上述数据库的逻辑模型设计，下面从索引设计、数据存储与分布、数据访问控制和事务日志与恢复策略四个方面阐述物理模型设计。
 
 索引设计方面：针对实际业务场景，基于逻辑模型设计中的表信息，设置了相关索引以提高查询更新效率，如表\ref{tab:index}所示。
 
@@ -319,7 +317,7 @@ t\_work & produce\_id & 高效查找果实对应的采摘作业 \\
 
 \begin{figure}[H]
     \centering
-    \includegraphics[width=0.9\linewidth]{../design/out/远端称重数据处理流程活动图.png}
+    \includegraphics[height=0.5\textheight]{../design/out/远端称重数据处理流程活动图.png}
     \caption{远端称重数据处理流程活动图}
     \label{fig:远端称重数据处理流程活动图}
 \end{figure}
@@ -338,33 +336,40 @@ t\_work & produce\_id & 高效查找果实对应的采摘作业 \\
 
 6、处理过程中发生异常，为防止数据丢失，将称重消息写入待办并发布处理失败的消息到 MQTT Broker。在管理后台待办界面中，由管理员人工完成异常称重数据的处理。
 
-在上述称重数据的处理流程中，存在两个需要注意的问题：
-
-（1）关于 MQTT 消息的配置问题：边端和远端称重消息在 MQTT Broker 进行发布和订阅时，需要考虑 MQTT 消息的配置问题。对于消息主题的设置，发布/订阅称重消息和发布/订阅称重数据处理结果消息应该属于两个不同主题；对于传输质量级别的设置，需要确保消息有且仅被消费一次。根据\ref{sec:mqtt}中提到的三种 QoS 级别，这里应该选择 QoS2 级别，确保称重数据的可靠传输。
-
-（2）关于边端对象存储的问题：由于称重数据中的果实图片往往占用较多空间，因此需要尤其注意图片数据的存储。在称重流程中，果实图片首先临时存储在边端对象存储库，远端读取称重消息时，将果实图片下载至本地进行持久化。其中由于边端可能存在存储受限的问题，所以设置自动化程序，每隔一段时间进行图片数据的清理，当存储空间超过 80\% 且称重消息已经全部消费完成，则触发数据清理。清理过程中禁止新的对象写入，防止出现数据不一致的问题。
-
-\begin{figure}
+\begin{figure}[H]
     \centering
     \includegraphics[width=0.9\linewidth]{../design/out/称重数据处理功能类图.png}
     \caption{称重数据处理功能类图}
     \label{fig:称重数据处理功能类图}
 \end{figure}
 
+在上述称重数据的处理流程中，存在两个需要注意的问题：
+
+（1）关于 MQTT 消息的配置问题：边端和远端发布和订阅 MQTT 消息时，需要通过合理设置传输质量级别确保消息有且仅被消费一次。根据\ref{sec:mqtt}中提到的三种 QoS 级别，这里应该选择 QoS2 级别。
+
+（2）关于边端对象存储的问题：在称重流程中，果实图片首先临时存储在边端对象存储库，远端读取称重消息时，将果实图片下载至本地进行持久化。由于边端可能存在存储受限的问题，所以设置定时自动化程序，如果存储空间超过 80\% 且称重消息已经全部消费完成，则触发数据清理。清理过程中禁止新的对象写入，防止出现数据不一致的问题。
+
 通过以上对称重数据处理功能的设计，可以进一步得到称重数据处理功能的具体类图实现，如图\ref{fig:称重数据处理功能类图}所示。其中 MqttWeighService 是 Mqtt 消息订阅和发布服务类，通过 mqttGateway 发布称重结果消息，通过 handleMessage 订阅称重消息，依赖 RecordService 类进行称重数据处理。RecordService 是称重数据处理核心类，依赖 PredictService 进行果实种类的预测，依赖 ImageService 进行果实图像的读取和存储，依赖 TodoService 进行待办记录的存储和处理，依赖 ProduceService 进行果实信息的读取，依赖 WorkService 进行采摘作业的读取和更新，依赖 ScaleService 进行电子秤信息的读取，依赖 UserService 进行称重人员信息的检查和比对。
 
-各个类对象处理称重数据的时序图如\ref{fig:称重数据处理功能类时序图}所示。首先 RecordService 通过 isDuplicateRecord 方法确认称重记录是否重复提交，然后调用 ImageService 进行果实图片的处理，完成图片下载和存储操作，接着通过 getProduceId 调用 PredictService 和 ProduceService 获取果实信息，然后调用 WorkService 获取果实对应采摘作业，调用 ScaleService 获取记录对应的电子秤，最后调用 UserService 获取记录对应的称重人员，如果信息无误且状态正常，则发起事务，调用 updateWorkOutput 更新采摘作业产量，然后调用 saveRecord 保存称重记录，保存成功后完成事务提交并将持久化的称重记录返回。
+各个类对象处理称重数据的时序图如\ref{fig:称重数据处理功能时序图}所示。首先 RecordService 通过 isDuplicateRecord 方法确认称重记录是否重复提交，然后调用 ImageService 进行果实图片的处理，完成图片下载和存储操作，接着通过 getProduceId 调用 PredictService 和 ProduceService 获取果实信息，然后调用 WorkService 获取果实对应采摘作业，调用 ScaleService 获取记录对应的电子秤，最后调用 UserService 获取记录对应的称重人员，如果信息无误且状态正常，则发起事务，调用 updateWorkOutput 更新采摘作业产量，然后调用 saveRecord 保存称重记录，保存成功后完成事务提交并将持久化的称重记录返回。
 
-\begin{figure}
+\begin{figure}[H]
     \centering
-    \includegraphics[width=0.9\linewidth]{../design/out/称重数据处理功能类时序图.png}
-    \caption{称重数据处理功能类时序图}
-    \label{fig:称重数据处理功能类时序图}
+    \includegraphics[width=0.9\linewidth]{../design/out/称重数据处理功能时序图.png}
+    \caption{称重数据处理功能时序图}
+    \label{fig:称重数据处理功能时序图}
 \end{figure}
 
 对于待办数据管理功能，软件对待办数据提供基本的增删查操作。待办数据是后台程序处理失败，需要人工进行处理的称重数据，管理员可以在后台管理中的待办管理模块，完成待办数据的提交或丢弃。
 
 此外，为提高数据处理的效率，提供了批量提交和丢弃功能。对于批量提交功能，管理员可以在待办列表中同时选中多个相同种类果实的称重数据，然后点击批量提交，一次完成多条数据的处理。
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[height=0.5\textheight]{../design/out/待办记录处理流程图.png}
+    \caption{待办记录处理流程图}
+    \label{fig:待办记录处理流程图}
+\end{figure}
 
 对于待办记录的处理，遵循如图\ref{fig:待办记录处理流程图}的流程：
 
@@ -384,13 +389,6 @@ t\_work & produce\_id & 高效查找果实对应的采摘作业 \\
 
 (8) 处理失败，抛出异常，结束流程。
 
-\begin{figure}
-    \centering
-    \includegraphics[width=0.9\linewidth]{../design/out/待办记录处理流程图.png}
-    \caption{待办记录处理流程图}
-    \label{fig:待办记录处理流程图}
-\end{figure}
-
 具体实现如时序图\ref{fig:待办数据处理时序图}所示。管理员调用 handleTodoRecord 接口提交待办数据，然后 WeighController 调用 RecordService 完成称重记录处理和待办记录的删除，最后返回操作结果给前端。
 
 \begin{figure}[H]
@@ -402,13 +400,6 @@ t\_work & produce\_id & 高效查找果实对应的采摘作业 \\
 
 待办数据管理功能的类图如图\ref{fig:待办数据管理功能类图}所示。WeighController 作为服务入口，调用 RecordService 和 TodoService 进行待办记录 Todo 的处理操作。
 
-\begin{figure}
-    \centering
-    \includegraphics[width=0.9\linewidth]{../design/out/待办数据管理功能类图.png}
-    \caption{待办数据管理功能类图}
-    \label{fig:待办数据管理功能类图}
-\end{figure}
-
 对于电子秤管理功能，软件对其提供基本的增删改查操作，除此之外还提供对每个电子秤历史称重数据的查询和导出。对于电子秤接入云端软件的注册流程，这里进行具体的阐述。电子秤的注册流程如下：
 
 (1) 管理员登入后台管理系统-电子秤管理模块；
@@ -419,18 +410,21 @@ t\_work & produce\_id & 高效查找果实对应的采摘作业 \\
 
 (4) 至此电子秤接入完成，可以开始进行称重数据的提交。
 
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.9\linewidth]{../design/out/待办数据管理功能类图.png}
+    \caption{待办数据管理功能类图}
+    \label{fig:待办数据管理功能类图}
+\end{figure}
+
 具体实现如时序图\ref{fig:电子秤注册功能时序图}所示。管理员在后台调用 addScale 接口提交电子秤信息，WeighController 接收请求并调用 ScaleService 新建电子秤对象，然后调用 MqttUserService 新建 MQTT 消息发布用户，接着创建 ScaleVO 对象返回给前端进行渲染。
 
-\begin{figure}
+\begin{figure}[H]
     \centering
     \includegraphics[width=0.9\linewidth]{../design/out/电子秤注册功能时序图.png}
     \caption{电子秤注册功能时序图}
     \label{fig:电子秤注册功能时序图}
 \end{figure}
-
-电子秤的管理功能类图如图\ref{fig:电子秤管理功能类图}所示。WeighController 为服务的入口，通过 ScaleService 进行对电子秤 Scale 的增删改查操作，通过 MqttUserService 和 UserService 进行对电子秤用户的注册，其中 MqttAcl 是电子秤权限信息，User 是电子秤用户认证信息。
-
-至此，完成对称重模块的设计与实现。本节主要阐述了称重模块的三个核心功能的设计与实现情况，称重模块也是软件中的核心模块，为实现一个良好的称重软件奠定了坚实的基础。
 
 \begin{figure}[H]
     \centering
@@ -439,19 +433,15 @@ t\_work & produce\_id & 高效查找果实对应的采摘作业 \\
     \label{fig:电子秤管理功能类图}
 \end{figure}
 
-\section{果实模块功能设计与实现}
+电子秤的管理功能类图如图\ref{fig:电子秤管理功能类图}所示。WeighController 为服务的入口，通过 ScaleService 进行对电子秤 Scale 的增删改查操作，通过 MqttUserService 和 UserService 进行对电子秤用户的注册，其中 MqttAcl 是电子秤权限信息，User 是电子秤用户认证信息。
+
+至此，完成对称重模块的设计与实现。本节主要阐述了称重模块的三个核心功能的设计与实现情况，称重模块也是软件中的核心模块，为实现一个良好的称重软件奠定了坚实的基础。
+
+\section{果实模块功能设计与实现}\label{sec:produce-mode}
 
 果实模块主要提供两个方面的功能，果实管理和果实识别。下面对这两项功能的设计与实现情况进行阐述。
 
-软件对其果实提供基本的增删改查操作，除此之外还提供对每种果实年产量数据、分批次采摘量数据的可视化和导出功能。软件内置了超二十种果实种类，通过读取果实图像识别模型的训练配置文件，在数据库果实表初始化了支持识别的果实，管理员可以根据农场实际情况，修改果实状态为种植中或未种植。如果需要添加新的果实，具体操作流程如下：
-
-(1) 准备新果实数据集，基于原模型继续训练模型；
-
-(2) 模型训练完成后，重启果实识别服务；
-
-(3) 读取训练配置文件，自动完成新种类果实的写入；
-
-(4) 管理员在管理后台根据农场实际情况，更新果实种植状态。
+软件对其果实提供基本的增删改查操作，除此之外还提供对每种果实年产量数据、分批次采摘量数据的可视化和导出功能。软件内置了超二十种果实种类，通过读取果实图像识别模型的训练配置文件，在数据库果实表初始化了支持识别的果实，管理员可以根据农场实际情况，修改果实状态为种植中或未种植。
 
 果实的管理功能类图如图\ref{fig:果实管理功能类图}所示。ProduceController 为服务的入口，通过 ProduceService 进行对果实 Produce 的增删改查操作，通过 WorkService 进行对果实相关采摘作业的查询操作。
 
@@ -464,20 +454,30 @@ t\_work & produce\_id & 高效查找果实对应的采摘作业 \\
 
 对于果实识别功能，软件基于 YOLOv8 实现果实图像识别功能，训练数据集来源于 Kaggle 平台上的已经完成数据标注的 Fruits-360 数据集，从该数据集中挑选了来自 22 种不同果实的近两千张照片，将 70\%的数据作为训练集，20\%的数据作为验证集，10\%的数据作为测试集，使用 yolov8m 预训练模型作为基础，在单个 GPU P100 上训练 50 个 epoch(训练轮次)。训练完成后，将模型分别部署在远端和边端，提供给电子秤和后台服务进行使用。
 
-\section{作业模块功能设计与实现}
+如果需要添加新的果实，具体操作流程如下：
+
+(1) 准备新果实数据集，基于原模型继续训练模型；
+
+(2) 模型训练完成后，重启果实识别服务；
+
+(3) 读取训练配置文件，自动完成新种类果实的写入；
+
+(4) 管理员在管理后台根据农场实际情况，更新果实种植状态。
+
+\section{作业模块功能设计与实现}\label{sec:work-mode}
 
 作业模块主要提供了对采摘作业的管理功能。软件对采摘作业提供基本的增删改查操作，除此之外还提供导出所有采摘作业数据的功能。
 
-采摘作业的状态包含未开始、进行中、已结束、已取消和已删除，采用 Spring 定时任务的功能，每 5 秒检查在未开始和进行中状态作业，根据当前时间更新作业状态为进行中或已结束状态。此外，对采摘作业的提交，其处理流程如图\ref{fig:新建采摘作业流程图}所示。
-
 \begin{figure}[H]
     \centering
-    \includegraphics[width=0.9\linewidth]{../design/out/新建采摘作业流程图.png}
+    \includegraphics[height=0.5\textheight]{../design/out/新建采摘作业流程图.png}
     \caption{新建采摘作业流程图}
     \label{fig:新建采摘作业流程图}
 \end{figure}
 
-图\ref{fig:新建采摘作业流程图}显示的新建采摘作业具体流程是：
+采摘作业的状态包含未开始、进行中、已结束、已取消和已删除，采用 Spring 定时任务的功能，每 5 秒检查在未开始和进行中状态作业，根据当前时间更新作业状态为进行中或已结束状态。
+
+对于采摘作业的提交，其处理流程如图\ref{fig:新建采摘作业流程图}所示。具体流程是：
 
 (1) 管理员点击新建采摘作业，完成编辑和提交；
 
@@ -491,14 +491,14 @@ t\_work & produce\_id & 高效查找果实对应的采摘作业 \\
 
 (6) 将采摘作业写入数据库，结束流程。
 
-新建采摘作业具体实现如时序图\ref{fig:新建采摘作业时序图}所示。管理员在后台调用 addWork 接口提交采摘作业信息，WorkController 调用 WorkService 的 addWork 方法新建采摘作业，WorkService 调用 ProduceService 获取果实信息进行校验，调用 getProduceWorks 方法检查要采摘的果实是否已经存在进行中的采摘作业，接着完成采摘作业创建，最后创建 WorkVO 对象返回给前端进行渲染。
-
-\begin{figure}
+\begin{figure}[H]
     \centering
     \includegraphics[width=0.9\linewidth]{../design/out/新建采摘作业时序图.png}
     \caption{新建采摘作业时序图}
     \label{fig:新建采摘作业时序图}
 \end{figure}
+
+新建采摘作业具体实现如时序图\ref{fig:新建采摘作业时序图}所示。管理员在后台调用 addWork 接口提交采摘作业信息，WorkController 调用 WorkService 的 addWork 方法新建采摘作业，WorkService 调用 ProduceService 获取果实信息进行校验，调用 getProduceWorks 方法检查要采摘的果实是否已经存在进行中的采摘作业，接着完成采摘作业创建，最后创建 WorkVO 对象返回给前端进行渲染。
 
 采摘作业的管理功能类图如图\ref{fig:采摘作业管理功能类图}所示。WorkController 为服务入口，通过 WorkService 进行采摘作业 Work 的增删改查操作，WorkService 依赖 ProduceService 进行采摘作业相关果实信息的查询操作。
 
@@ -509,7 +509,7 @@ t\_work & produce\_id & 高效查找果实对应的采摘作业 \\
     \label{fig:采摘作业管理功能类图}
 \end{figure}
 
-\section{用户模块功能设计与实现}
+\section{用户模块功能设计与实现}\label{sec:user-mode}
 
 用户模块主要提供用户管理和用户认证两个方面的功能。软件对用户提供基本的增删改查操作，除此之外提供对于采摘员工的分批采摘量数据和称重历史数据的统计和导出功能。
 
@@ -522,9 +522,9 @@ t\_work & produce\_id & 高效查找果实对应的采摘作业 \\
     \label{fig:用户模块类图}
 \end{figure}
 
-对于用户模块，其类图如\ref{fig:用户模块类图}所示。UserController 为服务入口，其通过 JwtService 管理用户认证令牌，通过 UserService 管理用户的信息。其中 UserService 实现了 SpringSecurity 提供的 UserDetailsService 接口，重写 loadUserByUsername 来获取用户认证详细信息 UserDetails，而 UserDetails 实现了 SpringSecurity 提供的 UserDetails 接口，通过重写方法 getAuthorities、getPassword 和 getUsername 来指定用户权限信息和认证信息。SecurityConfig 实现对安全认证功能的配置，通过 JwtAuthFilter 进行相关路由的过滤。
+对于用户模块，其类图如\ref{fig:用户模块类图}所示。UserController 为服务入口，其通过 JwtService 管理用户认证令牌，通过 UserService 管理用户的信息。其中 UserService 实现了 SpringSecurity 提供的 UserDetailsService 接口，重写 loadUserByUsername 来获取用户认证详细信息 UserDetails，而 UserDetails 实现了 SpringSecurity 提供的 UserDetails 接口，通过重写方法 getAuthorities、getPassword 和 getUsername 来指定用户权限信息和认证信息。
 
-软件通过 SpringConfig 配置的用户认证功能流程如时序图\ref{fig:用户认证功能时序图}，具体流程是：
+用户认证功能流程如时序图\ref{fig:用户认证功能时序图}所示，具体流程是：
 
 （1）用户通过携带用户名和密码，通过调用 login 接口进行登录，UserController 接收到请求，调用 UserService 认证用户，UserService 调用 JwtService 生成 Jwt 令牌，将其返回给用户端进行存储；
 
@@ -536,20 +536,20 @@ t\_work & produce\_id & 高效查找果实对应的采摘作业 \\
 
 \begin{figure}[H]
     \centering
-    \includegraphics[width=0.9\linewidth]{../design/out/用户认证功能时序图.png}
+    \includegraphics[width=0.95\linewidth]{../design/out/用户认证功能时序图.png}
     \caption{用户认证功能时序图}
     \label{fig:用户认证功能时序图}
 \end{figure}
 
 \section{本章小结}
 
-本章阐述了农业果实称重云端软件的架构设计、数据库设计、数据处理流程以及农场数据管理功能。通过软件架构设计，确保了系统的高效性和扩展性；数据库设计优化了数据存储和检索性能；数据处理流程设计保证了称重数据的准确性和实时性；农场数据管理功能则提高了农场运营的智能化和数据化管理水平。总体而言，本章为实现农业智能称重与数据管理提供了系统的技术框架。
+本章围绕农业果实称重云端软件的设计与实现展开，从架构、数据库及核心功能模块等方面进行了详细阐述。在软件架构设计上，采用边端与远端协同模式，通过部署架构图与分层架构图，明确了数据通信流程与功能层级划分，实现了两端数据处理的独立性，提升了数据处理效率与网络受限场景下的适应性。
 
+数据库设计遵循概念模型、逻辑模型和物理模型的设计阶段，通过ER图构建实体关系，设计各数据库表结构，并从索引、存储分布、访问控制及事务日志等方面完成物理模型设计，确保数据的一致性、完整性与高效性。
 
+功能模块设计与实现部分，对称重、果实、作业和用户四大核心模块进行了深入分析。称重模块实现了称重数据处理、待办数据管理及电子秤管理功能，通过远边协同处理流程与类图、时序图设计，保障数据准确处理与异常处理；果实模块提供果实管理与基于YOLOv8的识别功能，支持果实信息管理与模型扩展；作业模块实现采摘作业全生命周期管理，利用定时任务与校验流程确保作业状态准确；用户模块涵盖用户管理与认证功能，基于SpringSecurity实现用户权限控制与认证流程。
 
-
-
-
+本章内容为农业果实称重云端软件的开发提供了完整的设计方案与实现思路，各模块相互协作，共同支撑起软件的核心业务功能，为后续软件开发、优化及实际应用奠定了坚实基础。
 
 % \section{服务接口设计}
 

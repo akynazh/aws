@@ -9,7 +9,7 @@ skinparam defaultFontSize 30
 class JwtAuthFilter {
   - jwtService: JwtService
   - userService: UserService
-  # doFilterInternal(HttpServletRequest, HttpServletResponse, FilterChain): void
+  # doFilterInternal(HttpServletRequest, \n HttpServletResponse, FilterChain): void
 }
 class JwtService {
   - jwtSecret: String
@@ -25,15 +25,15 @@ class JwtService {
   + extractToken(HttpServletRequest): String
   + generateToken(String): String
 }
-class SecurityConfig {
-  - authFilter: JwtAuthFilter
-  + securityFilterChain(HttpSecurity): SecurityFilterChain
-  + authenticationProvider(): AuthenticationProvider
-  + authenticationManager(AuthenticationConfiguration): AuthenticationManager
-  + corsConfigurationSource(): CorsConfigurationSource
-  + passwordEncoder(): PasswordEncoder
-  + userDetailsService(): UserDetailsService
-}
+' class SecurityConfig {
+'   - authFilter: JwtAuthFilter
+'   + securityFilterChain(HttpSecurity): SecurityFilterChain
+'   + authenticationProvider(): AuthenticationProvider
+'   + authenticationManager(AuthenticationConfiguration): AuthenticationManager
+'   + corsConfigurationSource(): CorsConfigurationSource
+'   + passwordEncoder(): PasswordEncoder
+'   + userDetailsService(): UserDetailsService
+' }
 class User {
   - updateTime: Long
   - uid: String
@@ -50,7 +50,7 @@ class UserController {
   + login(UserLoginVO): ResponseEntity<String>
   + getUsers(int, int): ResponseEntity<UserListVO>
   + addUser(UserRegisterVO): ResponseEntity<UserVO>
-  + updateMe(UserUpdateMeVO, HttpServletRequest): ResponseEntity<UserVO>
+  + updateMe(UserUpdateMeVO, HttpServletRequest): \nResponseEntity<UserVO>
   + updateUser(UserUpdateVO): ResponseEntity<UserVO>
   + getMe(HttpServletRequest): ResponseEntity<UserVO>
   + getEmployee(String): ResponseEntity<UserVO>
@@ -98,13 +98,13 @@ JwtAuthFilter       -[#595959,dashed]->  JwtService
 JwtAuthFilter       -[#595959,dashed]->  UserDetails        
 JwtAuthFilter       -[#595959,dashed]->  UserService        
 JwtService          -[#595959,dashed]->  UserDetails        
-SecurityConfig      -[#595959,dashed]->  JwtAuthFilter      
-SecurityConfig      -[#595959,dashed]->  UserDetailsService 
-SecurityConfig      -[#595959,dashed]->  UserService        
+' SecurityConfig      -[#595959,dashed]->  JwtAuthFilter      
+' SecurityConfig      -[#595959,dashed]->  UserDetailsService 
+' SecurityConfig      -[#595959,dashed]->  UserService        
 UserController      -[#595959,dashed]->  JwtService         
 UserController      -[#595959,dashed]->  User               
 UserController      -[#595959,dashed]->  UserService        
-UserDetails         -[#595959,dashed]->  User               
+UserDetails         -[#595959,dashed]>  User               
 UserDetails         -[#008200,dashed]-^  UserDetails        
 UserDetailsService  -[#595959,dashed]->  UserDetails        
 UserService         -[#595959,dashed]->  User               
