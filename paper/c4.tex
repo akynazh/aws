@@ -6,7 +6,7 @@
 
 农业果实称重云端软件的整体架构采用边端+远端协同的模式进行设计，将靠近农场端的服务称为边端服务，远离农场端的服务称为远端服务，其中边端服务一般部署在农场局域网内，在网络受限的情况下，确保称重流程的正常进行。整体软件部署架构图如图\ref{fig:软件部署架构图}所示。
 
-\begin{figure}[H]
+\begin{figure}
     \centering
     \includegraphics[width=0.9\linewidth]{../design/out/软件部署架构图.png}
     \caption{软件部署架构图}
@@ -15,19 +15,19 @@
 
 软件存在远边两端，其中边端可以代表某一个农场，可以有多个农场边端同时连接到远端服务器。下面根据该部署架构，描述电子秤提交称重数据的通信流程：
 
-1、首先由电子秤拍摄果实图片，然后果实识别模块对果实种类进行识别并将果实图片存储至边端 MinIO 对象存储库，最后电子秤通过自身所支持的通信协议向网关提交称重数据；
+(1)首先由电子秤拍摄果实图片，然后果实识别模块对果实种类进行识别并将果实图片存储至边端 MinIO 对象存储库，最后电子秤通过自身所支持的通信协议向网关提交称重数据；
 
-2、网关处理电子秤的发出的请求，通过 EMQX 协议转换技术完成协议转换，通过读取 MySQL 从库数据完成电子秤信息认证和授权，最后将数据以 MQTT 协议的格式发送至 MQTT Broker 集群；
+(2)网关处理电子秤的发出的请求，通过 EMQX 协议转换技术完成协议转换，通过读取 MySQL 从库数据完成电子秤信息认证和授权，最后将数据以 MQTT 协议的格式发送至 MQTT Broker 集群；
 
-3、MQTT Broker 接收到 MQTT 消息后，该集群内任一节点都可以处理请求并将消息持久化；
+(3)MQTT Broker 接收到 MQTT 消息后，该集群内任一节点都可以处理请求并将消息持久化；
 
-4、远端服务订阅 MQTT Broker 集群中所有节点的消息，收到消息后进行消息解析，通过边端 MinIO 对象存储读取果实图片并持久化至本地 MinIO 对象存储。如果果实种类未知，则通过果实识别服务根据果实图像识别出果实种类。最后将称重处理的结果写入 MySQL 主库。
+(4)远端服务订阅 MQTT Broker 集群中所有节点的消息，收到消息后进行消息解析，通过边端 MinIO 对象存储读取果实图片并持久化至本地 MinIO 对象存储。如果果实种类未知，则通过果实识别服务根据果实图像识别出果实种类。最后将称重处理的结果写入 MySQL 主库。
 
-5、至此已经完成称重数据的处理。此外，在后台管理界面，员工可以查看历史称重记录，管理员可以在待办界面处理待办，手动填写并提交处理失败的称重数据。
+(5)至此已经完成称重数据的处理。此外，在后台管理界面，员工可以查看历史称重记录，管理员可以在待办界面处理待办，手动填写并提交处理失败的称重数据。
 
 该架构主要的优势是实现了两端数据处理的独立性，对于边端，不管是提交称重数据还是存储果实图片，都只需在边端完成，不仅提高了数据处理速度，而且在网络受限的情况下也不会影响称重数据的处理。对于远端，则只需要订阅称重消息进行处理即可。下面进一步分析软件架构的特点，可以得到软件的分层架构图，如图\ref{fig:软件分层架构图}所示。
 
-\begin{figure}[H]
+\begin{figure}
     \centering
     \includegraphics[width=0.9\linewidth]{../design/out/软件分层架构图.png}
     \caption{软件分层架构图}
@@ -54,7 +54,7 @@
 
 逻辑模型设计是将概念模型中的实体和关系映射到数据库系统中的实际结构\cite{苗雪兰2001数据库系统原理及应用教程}，进一步细化数据模型，整体设计情况如ER图\ref{fig:ERD-ALL}所示，其中 “<<PK>>” 代表对应字段为主键。
 
-\begin{figure}[H]
+\begin{figure}
     \centering
     \includegraphics[width=0.9\linewidth]{../design/out/ERD-ALL.png}
     \caption{实体关系图}
@@ -64,11 +64,11 @@
 下面对图\ref{fig:ERD-ALL}所展现的各个数据库表进行解释，具体描述数据库中各个表的结构及其字段定义，涵盖了表之间的关系、字段的数据类型及约束条件，如表\ref{tab:user}，表\ref{tab:produce}，表\ref{tab:work}，表\ref{tab:scale}，表\ref{tab:record}，表\ref{tab:todo}，表\ref{tab:mqttacl}所示。
 
 % t_user
-\begin{longtblr}
-    [
-    caption        = {用户表 (t\_user)},
-    label          = {tab:user}
-    ]
+\begin{table}
+    \caption{用户表 (t\_user)}
+    \label{tab:user}
+    \centering
+\begin{tblr}
     {
         colspec={Q[c,m]X[c,m]},
         hlines,vlines,cell{2-Z}{1}={},
@@ -84,16 +84,17 @@
     create\_time & bigint & 非空 & 创建时间(毫秒级时间戳) \\
     update\_time & bigint & 非空 & 更新时间(毫秒级时间戳) \\
     status & int & 非空 & 状态(0禁用/1启用/2已删除) \\
-\end{longtblr}
+\end{tblr}
+\end{table}
 
 用户表\ref{tab:user}中 roles 字段定义了用户角色，角色字段包含管理员(ROLE\_ADMIN)、采摘员工(ROLE\_EMPLOYEE)、电子秤(ROLE\_SCALE)以及系统用户(ROLE\_SYS)，如果用户包含多个角色，则使用英文半角逗号隔开。
 
 % t_produce
-\begin{longtblr}
-    [
-    caption        = {果实表 (t\_produce)},
-    label          = {tab:produce}
-    ]
+\begin{table}
+    \caption{果实表 (t\_produce)}
+    \label{tab:produce}
+    \centering
+\begin{tblr}
     {
         colspec={Q[c,m]X[c,m]},
         hlines,vlines,cell{2-Z}{1}={},
@@ -107,12 +108,17 @@ name\_en & varchar(255) & 唯一 & 果实英文名称 \\
 create\_time & bigint & 非空 & 创建时间(毫秒级时间戳) \\
 update\_time & bigint & 非空 & 更新时间(毫秒级时间戳) \\
 status & int & 非空 & 状态(0未种植/1在种植/2已删除) \\
-\end{longtblr}
+\end{tblr}
+\end{table}
 
 果实表\ref{tab:produce}中，对于果实编号 id，为了更好地进行软件扩展，如果是软件自带的果实，id从0开始；如果是用户自行添加的，则id从1000000开始。
 
 % t_work
-\begin{longtblr}
+\begin{table}
+    \caption{采摘作业表 (t\_work)}
+    \label{tab:work}
+    \centering
+\begin{tblr}
     [
     caption        = {采摘作业表 (t\_work)},
     label          = {tab:work}
@@ -133,16 +139,17 @@ unit & int & - & 称重单位(0mg/1g/2kg/3t/4lb/5oz/6ct) \\
 create\_time & bigint & 非空 & 创建时间(毫秒级时间戳) \\
 update\_time & bigint & 非空 & 更新时间(毫秒级时间戳) \\
 status & int & 非空 & 状态(0未开始/1进行中/2已结束/3已取消/4已删除) \\
-\end{longtblr}
+\end{tblr}
+\end{table}
 
 采摘作业表\ref{tab:work}中通过字段果实编号(produce\_id)关联了果实实体，字段对应果实表中的 id 字段，果实表与采摘作业表为一对多的关系。
 
 % t_scale
-\begin{longtblr}
-    [
-    caption        = {电子秤表 (t\_scale)},
-    label          = {tab:scale}
-    ]
+\begin{table}
+    \caption{电子秤表 (t\_scale)}
+    \label{tab:scale}
+    \centering
+\begin{tblr}
     {
         colspec={Q[c,m]X[c,m]},
         hlines,vlines,cell{2-Z}{1}={},
@@ -163,16 +170,17 @@ protocol & varchar(255) & - & 协议(小写,逗号分隔) \\
 create\_time & bigint & 非空 & 创建时间(毫秒级时间戳) \\
 update\_time & bigint & 非空 & 更新时间(毫秒级时间戳) \\
 status & int & 非空 & 状态(0禁用/1启用/2已删除) \\
-\end{longtblr}
+\end{tblr}
+\end{table}
 
 电子秤表\ref{tab:scale}中通过字段电子秤编号(sid)关联了用户实体，该字段对应于用户表\ref{tab:user}中的用户编号(uid)字段，电子秤表与用户表为一对一关系。
 
 % t_record
-\begin{longtblr}
-    [
-    caption        = {称重记录表 (t\_record)},
-    label          = {tab:record}
-    ]
+\begin{table}
+    \caption{称重记录表 (t\_record)}
+    \label{tab:record}
+    \centering
+\begin{tblr}
     {
         colspec={Q[c,m]X[c,m]},
         hlines,vlines,cell{2-Z}{1}={},
@@ -190,16 +198,17 @@ data\_value & decimal(10,2) & 非空 & 称重结果 \\
 data\_error\_margin & decimal(10,2) & - & 称量结果误差范围 \\
 unit & int & 非空 & 称重单位(0mg/1g/2kg/3t/4lb/5oz/6ct) \\
 data\_time & bigint & 非空 & 称重时间(毫秒级时间戳) \\
-\end{longtblr}
+\end{tblr}
+\end{table}
 
 称重记录表\ref{tab:record}中通过字段果实编号(produce\_id)关联了果实实体，对应果实表\ref{tab:produce}中的 id 字段，果实表与称重记录表为一对多关系；通过字段采摘作业编号(work\_id)关联了采摘作业实体，对应采摘作业表\ref{tab:work}中的 id 字段，采摘作业表与称重记录表为一对多关系；通过字段员工编号(employee\_id)关联了员工实体，对应用户表\ref{tab:user}中的 id 字段，用户表与称重记录表为一对多关系；通过字段电子秤编号(scale\_id)关联了电子秤实体，对应电子秤表\ref{tab:scale}中的 id 字段，电子秤表与称重记录表为一对多关系。
 
 % t_todo
-\begin{longtblr}
-    [
-    caption        = {待办记录表 (t\_todo)},
-    label          = {tab:todo}
-    ]
+\begin{table}
+    \caption{待办记录表 (t\_todo)}
+    \label{tab:todo}
+    \centering
+\begin{tblr}
     {
         colspec={Q[c,m]X[c,m]},
         hlines,vlines,cell{2-Z}{1}={},
@@ -217,16 +226,17 @@ data\_value & decimal(10,2) & 非空 & 称重结果 \\
 data\_error\_margin & decimal(10,2) & - & 称量结果误差范围 \\
 unit & int & 非空 & 称重单位(0mg/1g/2kg/3t/4lb/5oz/6ct) \\
 data\_time & bigint & 非空 & 称重时间(毫秒级时间戳) \\
-\end{longtblr}
+\end{tblr}
+\end{table}
 
 待办记录表\ref{tab:todo}中通过字段果实编号(produce\_id)关联了果实实体，对应果实表\ref{tab:produce}中的 id 字段，果实表与待办记录表为一对多关系；通过字段员工编号(employee\_id)关联了员工实体，对应用户表\ref{tab:user}中的 id 字段，用户表与待办记录表为一对多关系；通过字段电子秤编号(scale\_id)关联了电子秤实体，对应电子秤表\ref{tab:scale}中的 id 字段，电子秤表与待办记录表为一对多关系。
 
 % t_mqtt_acl
-\begin{longtblr}
-    [
-    caption        = {MQTT 访问控制表 (t\_mqtt\_acl)},
-    label          = {tab:mqttacl}
-    ]
+\begin{table}
+    \caption{MQTT 访问控制表 (t\_mqtt\_acl)}
+    \label{tab:mqttacl}
+    \centering
+\begin{tblr}
     {
         colspec={Q[c,m]X[c,m]},
         hlines,vlines,cell{2-Z}{1}={},
@@ -241,7 +251,8 @@ action & varchar(255) & 非空 & 操作类型(publish/subscribe/all，即发布/
 topic & varchar(255) & 非空 & 适用主题 \\
 qos & int & - & 消息 QoS 级别(0,1,2) \\
 retain & int & - & 是否支持发布保留消息(0否/1是) \\
-\end{longtblr}
+\end{tblr}
+\end{table}
 
 MQTT 访问控制表\ref{tab:mqttacl}通过字段 MQTT 认证用户名(username)关联了用户实体，对应用户表\ref{tab:user}中的 uid 字段，用户表与 MQTT 访问控制表为一对多关系。
 
@@ -252,11 +263,11 @@ MQTT 访问控制表\ref{tab:mqttacl}通过字段 MQTT 认证用户名(username)
 索引设计方面：针对实际业务场景，基于逻辑模型设计中的表信息，设置了相关索引以提高查询更新效率，如表\ref{tab:index}所示。
 
 % INDEX
-\begin{longtblr}
-    [
-    caption        = {索引设计表 (INDEX)},
-    label          = {tab:index}
-    ]
+\begin{table}
+    \caption{索引设计表 (INDEX)}
+    \label{tab:index}
+    \centering
+\begin{tblr}
     {
         colspec={Q[c,m]X[c,m]},
         hlines,vlines,cell{2-Z}{1}={},
@@ -274,7 +285,8 @@ t\_record & employee\_id, work\_id & 高效查找员工各采摘作业批次历�
 t\_record & work\_id & 高效查找各采摘作业批次历史称重记录 \\
 
 t\_work & produce\_id & 高效查找果实对应的采摘作业 \\
-\end{longtblr}
+\end{tblr}
+\end{table}
 
 数据存储与分布方面：采用主从架构，在靠近农场边端部署从库，在远端服务器部署主库，主从库采用\ref{sec:gtid}中提到的基于 GTID 的主从复制技术完成数据实时同步。
 
@@ -288,7 +300,7 @@ t\_work & produce\_id & 高效查找果实对应的采摘作业 \\
 
 首先阐述称重数据处理功能的设计与实现。根据架构图\ref{fig:软件部署架构图}，软件采用远边协同的方式来处理称重数据，称重数据先在边端（即离电子秤较近的一端）完成提交，然后远端通过订阅的模式完成后续的数据处理和持久化，下面将介绍具体的数据处理流程设计和实现情况。首先对边端数据处理流程的设计进行阐述，如图\ref{fig:边端称重数据处理流程活动图}所示。
 
-\begin{figure}[H]
+\begin{figure}
     \centering
     \includegraphics[width=0.9\linewidth]{../design/out/边端称重数据处理流程活动图.png}
     \caption{边端称重数据处理流程活动图}
@@ -297,25 +309,25 @@ t\_work & produce\_id & 高效查找果实对应的采摘作业 \\
 
 图\ref{fig:边端称重数据处理流程活动图}展现了以采摘员工、电子秤和边端服务为参与对象的活动泳道，描述了称重数据在边端向 MQTT Broker 的提交流程。其具体流程是：
 
-1、采摘员工放置果实在电子秤上，然后刷员工卡；
+(1)采摘员工放置果实在电子秤上，然后刷员工卡；
 
-2、电子秤对果实完成称重操作获取到称重结果，同时完成员工卡数据的读取，读取失败则返回错误信息，员工需要确认电子秤状态或者员工卡信息是否异常，然后选择重试或取消称重；
+(2)电子秤对果实完成称重操作获取到称重结果，同时完成员工卡数据的读取，读取失败则返回错误信息，员工需要确认电子秤状态或者员工卡信息是否异常，然后选择重试或取消称重；
 
-3、电子秤成功读取卡和称重数据后，拍摄并识别果实，然后储存果实图片，接着生成称重信息，开始尝试提交到边端服务的网关处；
+(3)电子秤成功读取卡和称重数据后，拍摄并识别果实，然后储存果实图片，接着生成称重信息，开始尝试提交到边端服务的网关处；
 
-4、边端服务的网关收到电子秤消息，首先完成协议转换，转换失败则返回错误信息，跳转到第 7 步；
+(4)边端服务的网关收到电子秤消息，首先完成协议转换，转换失败则返回错误信息，跳转到第 7 步；
 
-5、转换成功后，进行认证授权操作。先进行认证，通过电子秤编号和密码完成认证，接着根据电子秤编号查询 MQTT 用户授权信息，确认电子秤是否有相关主题的发布功能。认证授权失败则返回错误信息，跳转到第 7 步；
+(5)转换成功后，进行认证授权操作。先进行认证，通过电子秤编号和密码完成认证，接着根据电子秤编号查询 MQTT 用户授权信息，确认电子秤是否有相关主题的发布功能。认证授权失败则返回错误信息，跳转到第 7 步；
 
-6、认证授权成功后，即发布消息到 MQTT Broker，根据发布结果返回成功或失败信息；
+(6)认证授权成功后，即发布消息到 MQTT Broker，根据发布结果返回成功或失败信息；
 
-7、如果提交成功或者重试次数超过电子秤设置的重试次数阈值，则退出第 3 步到第 7 步到循环，显示称重结果；
+(7)如果提交成功或者重试次数超过电子秤设置的重试次数阈值，则退出第 3 步到第 7 步到循环，显示称重结果；
 
-8、判断称重是否成功，如果成功则完成果实入库，否则返回第 1 步。
+(8)判断称重是否成功，如果成功则完成果实入库，否则返回第 1 步。
 
 称重数据在边端完成提交并且称重消息在 MQTT Broker 处完成持久化后，便视为称重完成。接下来由监控 Broker 的远端服务对称重数据进一步处理，如远端称重数据处理流程活动图\ref{fig:远端称重数据处理流程活动图}所示。
 
-\begin{figure}[H]
+\begin{figure}
     \centering
     \includegraphics[height=0.5\textheight]{../design/out/远端称重数据处理流程活动图.png}
     \caption{远端称重数据处理流程活动图}
@@ -324,19 +336,19 @@ t\_work & produce\_id & 高效查找果实对应的采摘作业 \\
 
 如图\ref{fig:远端称重数据处理流程活动图}所示，显示了远端接收相关称重消息后，称重消息在后台服务中的处理控制流程。具体步骤是：
 
-1、远端服务的 MQTT 客户端接收到消息后，首先检查数据中员工和电子秤状态是否处于启用状态，如果不是则进入第 6 步；
+(1)远端服务的 MQTT 客户端接收到消息后，首先检查数据中员工和电子秤状态是否处于启用状态，如果不是则进入第 6 步；
 
-2、根据图片识别果实，如果识别失败则进入第 6 步；
+(2)根据图片识别果实，如果识别失败则进入第 6 步；
 
-3、查询果实对应的采摘作业，如果不存在，则进入第 6 步；
+(3)查询果实对应的采摘作业，如果不存在，则进入第 6 步；
 
-4、检查作业和果实状态是否处于启用状态，如果不是则进入第 6 步；
+(4)检查作业和果实状态是否处于启用状态，如果不是则进入第 6 步；
 
-5、前面步骤中没有发生异常，则持久化称重信息并发布处理成功的消息到 MQTT Broker，数据处理完成；
+(5)前面步骤中没有发生异常，则持久化称重信息并发布处理成功的消息到 MQTT Broker，数据处理完成；
 
-6、处理过程中发生异常，为防止数据丢失，将称重消息写入待办并发布处理失败的消息到 MQTT Broker。在管理后台待办界面中，由管理员人工完成异常称重数据的处理。
+(6)处理过程中发生异常，为防止数据丢失，将称重消息写入待办并发布处理失败的消息到 MQTT Broker。在管理后台待办界面中，由管理员人工完成异常称重数据的处理。
 
-\begin{figure}[H]
+\begin{figure}
     \centering
     \includegraphics[width=0.9\linewidth]{../design/out/称重数据处理功能类图.png}
     \caption{称重数据处理功能类图}
@@ -353,7 +365,7 @@ t\_work & produce\_id & 高效查找果实对应的采摘作业 \\
 
 各个类对象处理称重数据的时序图如\ref{fig:称重数据处理功能时序图}所示。首先 RecordService 通过 isDuplicateRecord 方法确认称重记录是否重复提交，然后调用 ImageService 进行果实图片的处理，完成图片下载和存储操作，接着通过 getProduceId 调用 PredictService 和 ProduceService 获取果实信息，然后调用 WorkService 获取果实对应采摘作业，调用 ScaleService 获取记录对应的电子秤，最后调用 UserService 获取记录对应的称重人员，如果信息无误且状态正常，则发起事务，调用 updateWorkOutput 更新采摘作业产量，然后调用 saveRecord 保存称重记录，保存成功后完成事务提交并将持久化的称重记录返回。
 
-\begin{figure}[H]
+\begin{figure}
     \centering
     \includegraphics[width=0.9\linewidth]{../design/out/称重数据处理功能时序图.png}
     \caption{称重数据处理功能时序图}
@@ -364,7 +376,7 @@ t\_work & produce\_id & 高效查找果实对应的采摘作业 \\
 
 此外，为提高数据处理的效率，提供了批量提交和丢弃功能。对于批量提交功能，管理员可以在待办列表中同时选中多个相同种类果实的称重数据，然后点击批量提交，一次完成多条数据的处理。
 
-\begin{figure}[H]
+\begin{figure}
     \centering
     \includegraphics[height=0.5\textheight]{../design/out/待办记录处理流程图.png}
     \caption{待办记录处理流程图}
@@ -391,14 +403,14 @@ t\_work & produce\_id & 高效查找果实对应的采摘作业 \\
 
 具体实现如时序图\ref{fig:待办数据处理时序图}所示。管理员调用 handleTodoRecord 接口提交待办数据，然后 WeighController 调用 RecordService 完成称重记录处理和待办记录的删除，最后返回操作结果给前端。
 
-\begin{figure}[H]
+\begin{figure}
     \centering
     \includegraphics[width=0.9\linewidth]{../design/out/待办数据处理时序图.png}
     \caption{待办数据处理时序图}
     \label{fig:待办数据处理时序图}
 \end{figure}
 
-待办数据管理功能的类图如图\ref{fig:待办数据管理功能类图}所示。WeighController 作为服务入口，调用 RecordService 和 TodoService 进行待办记录 Todo 的处理操作。
+待办数据管理功能的类图如图\ref{fig:待办数据管理功能类图}所示。WeighController 作为服务入口，调用 RecordService 和 TodoService 进行待办记录 Todo 的处理操作。RecordService 通过 RecordRepository 进行数据库操作，TodoService 通过 TodoRepository 进行数据库操作。
 
 对于电子秤管理功能，软件对其提供基本的增删改查操作，除此之外还提供对每个电子秤历史称重数据的查询和导出。对于电子秤接入云端软件的注册流程，这里进行具体的阐述。电子秤的注册流程如下：
 
@@ -410,7 +422,7 @@ t\_work & produce\_id & 高效查找果实对应的采摘作业 \\
 
 (4) 至此电子秤接入完成，可以开始进行称重数据的提交。
 
-\begin{figure}[H]
+\begin{figure}
     \centering
     \includegraphics[width=0.9\linewidth]{../design/out/待办数据管理功能类图.png}
     \caption{待办数据管理功能类图}
@@ -419,14 +431,14 @@ t\_work & produce\_id & 高效查找果实对应的采摘作业 \\
 
 具体实现如时序图\ref{fig:电子秤注册功能时序图}所示。管理员在后台调用 addScale 接口提交电子秤信息，WeighController 接收请求并调用 ScaleService 新建电子秤对象，然后调用 MqttUserService 新建 MQTT 消息发布用户，接着创建 ScaleVO 对象返回给前端进行渲染。
 
-\begin{figure}[H]
+\begin{figure}
     \centering
     \includegraphics[width=0.9\linewidth]{../design/out/电子秤注册功能时序图.png}
     \caption{电子秤注册功能时序图}
     \label{fig:电子秤注册功能时序图}
 \end{figure}
 
-\begin{figure}[H]
+\begin{figure}
     \centering
     \includegraphics[width=0.9\linewidth]{../design/out/电子秤管理功能类图.png}
     \caption{电子秤管理功能类图}
@@ -434,8 +446,6 @@ t\_work & produce\_id & 高效查找果实对应的采摘作业 \\
 \end{figure}
 
 电子秤的管理功能类图如图\ref{fig:电子秤管理功能类图}所示。WeighController 为服务的入口，通过 ScaleService 进行对电子秤 Scale 的增删改查操作，通过 MqttUserService 和 UserService 进行对电子秤用户的注册，其中 MqttAcl 是电子秤权限信息，User 是电子秤用户认证信息。
-
-至此，完成对称重模块的设计与实现。本节主要阐述了称重模块的三个核心功能的设计与实现情况，称重模块也是软件中的核心模块，为实现一个良好的称重软件奠定了坚实的基础。
 
 \section{果实模块功能设计与实现}\label{sec:produce-mode}
 
@@ -445,7 +455,7 @@ t\_work & produce\_id & 高效查找果实对应的采摘作业 \\
 
 果实的管理功能类图如图\ref{fig:果实管理功能类图}所示。ProduceController 为服务的入口，通过 ProduceService 进行对果实 Produce 的增删改查操作，通过 WorkService 进行对果实相关采摘作业的查询操作。
 
-\begin{figure}[H]
+\begin{figure}
     \centering
     \includegraphics[width=0.9\linewidth]{../design/out/果实管理功能类图.png}
     \caption{果实管理功能类图}
@@ -468,7 +478,7 @@ t\_work & produce\_id & 高效查找果实对应的采摘作业 \\
 
 作业模块主要提供了对采摘作业的管理功能。软件对采摘作业提供基本的增删改查操作，除此之外还提供导出所有采摘作业数据的功能。
 
-\begin{figure}[H]
+\begin{figure}
     \centering
     \includegraphics[height=0.5\textheight]{../design/out/新建采摘作业流程图.png}
     \caption{新建采摘作业流程图}
@@ -491,7 +501,7 @@ t\_work & produce\_id & 高效查找果实对应的采摘作业 \\
 
 (6) 将采摘作业写入数据库，结束流程。
 
-\begin{figure}[H]
+\begin{figure}
     \centering
     \includegraphics[width=0.9\linewidth]{../design/out/新建采摘作业时序图.png}
     \caption{新建采摘作业时序图}
@@ -500,9 +510,9 @@ t\_work & produce\_id & 高效查找果实对应的采摘作业 \\
 
 新建采摘作业具体实现如时序图\ref{fig:新建采摘作业时序图}所示。管理员在后台调用 addWork 接口提交采摘作业信息，WorkController 调用 WorkService 的 addWork 方法新建采摘作业，WorkService 调用 ProduceService 获取果实信息进行校验，调用 getProduceWorks 方法检查要采摘的果实是否已经存在进行中的采摘作业，接着完成采摘作业创建，最后创建 WorkVO 对象返回给前端进行渲染。
 
-采摘作业的管理功能类图如图\ref{fig:采摘作业管理功能类图}所示。WorkController 为服务入口，通过 WorkService 进行采摘作业 Work 的增删改查操作，WorkService 依赖 ProduceService 进行采摘作业相关果实信息的查询操作。
+采摘作业的管理功能类图如图\ref{fig:采摘作业管理功能类图}所示。WorkController 为服务入口，通过 WorkService 进行采摘作业 Work 的增删改查操作，WorkService 依赖 ProduceService 进行采摘作业相关果实信息的查询操作。WorkService 通过 WorkRepository 进行数据库操作，ProduceService 通过 ProduceRepository 进行数据库操作。
 
-\begin{figure}[H]
+\begin{figure}
     \centering
     \includegraphics[width=0.9\linewidth]{../design/out/采摘作业管理功能类图.png}
     \caption{采摘作业管理功能类图}
@@ -515,7 +525,7 @@ t\_work & produce\_id & 高效查找果实对应的采摘作业 \\
 
 软件中包含了四类用户，分别是采摘员工、管理员、电子秤和系统用户，每个用户可以有多个角色。其中电子秤用户不可登入后台管理界面，系统用户则作为一种特殊的用户，用于订阅称重主题相关的消息并进行处理，为软件自带的用户。
 
-\begin{figure}[H]
+\begin{figure}
     \centering
     \includegraphics[width=0.9\linewidth]{../design/out/用户模块类图.png}
     \caption{用户模块类图}
@@ -534,7 +544,7 @@ t\_work & produce\_id & 高效查找果实对应的采摘作业 \\
 
 （4）最后执行请求相关操作，将请求结果返回给用户端。
 
-\begin{figure}[H]
+\begin{figure}
     \centering
     \includegraphics[width=0.95\linewidth]{../design/out/用户认证功能时序图.png}
     \caption{用户认证功能时序图}
