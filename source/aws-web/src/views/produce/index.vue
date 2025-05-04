@@ -154,7 +154,7 @@
         </el-dialog>
 
         <!-- 分批产量对话框 -->
-        <el-dialog title="分批产量数据" v-model="workOutputDialogVisible" width="600px">
+        <el-dialog title="分批产量数据" v-model="workOutputDialogVisible" width="700px">
             <template #header>
                 <div class="dialog-header">
                     <span>分批产量 - {{ currentProduce?.name }}</span>
