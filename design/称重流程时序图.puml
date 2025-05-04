@@ -1,19 +1,16 @@
-@startuml 称重流程时序图
+@startuml
 
 skinparam sequenceMessageAlign center
 skinparam defaultFontSize 18
 
-skinparam Diagram {
-  BorderColor black
-  BorderThickness 1
-}
-
-title 称重流程时序图
+' skinparam Diagram {
+'   BorderColor black
+'   BorderThickness 1
+' }
 
 actor 采摘人员 as staff
 entity 电子秤 as scale
 participant 云端软件 as server
-
 activate staff
 activate scale
 staff->scale: 放置果实
@@ -24,8 +21,8 @@ scale->scale: 拍摄并存储果实图片
 scale->scale: 识别果实种类(可选)
 activate server
 scale->server: 生成并提交称重信息
-server->server: 识别果实种类(可选)
-server->server: 对称重信息进行存储\n或转存为待办
+server->server: 识别果实\n种类(可选)
+server->server: 存储称重信息\n或转存为待办
 server->scale: 返回提交结果
 deactivate server
 scale->staff: 显示提交结果
