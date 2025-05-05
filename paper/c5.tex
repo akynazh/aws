@@ -78,7 +78,7 @@ rowhead        = 1,
 
 实际界面的测试结果如图\ref{fig:scale-simulator}所示。图中显示的是电子秤模拟器界面，包含9个输入框、4个操作按钮和1个结果显示区。其中输入框包含通信协议（MQTT、HTTP、STOMP、CoAP）、电子秤编号、员工编号、果实编号、果实名称、果实图片、重量值、误差值和单位；提交按钮包含识别果实按钮、生成数据按钮、提交数据按钮和清除结果按钮；结果显示区包含记录编号、通信协议、作业编号、果实编号和提交结果。
 
-\begin{table}
+\begin{table}[H]
     \centering
     \caption{提交称重数据用例测试}
     \label{tab:uc-weigh-submit-test}
@@ -126,7 +126,9 @@ rowhead        = 1,
 
 对处理待办记录需求用例\ref{tab:uc-todo-handle}设计测试用例并进行测试，如表\ref{tab:uc-todo-handle-test}所示，测试用例包括提交正常数据和异常数据（如不存在的果实或未启用的果实）。测试步骤涵盖点击提交待办、选择果实种类并完成待办的操作。预期结果与实际结果一致，正常数据提交返回“成功”，而异常数据提交则返回“失败”。
 
-实际界面的测试情况如图\ref{fig:web-todo}和图\ref{fig:form-todo-handle}所示。图\ref{fig:web-todo}展现了软件管理后台中的待办管理界面，其中包含操作面板、待办列表和分页块。操作面板包含四个操作按钮，分别是提交、丢弃、批量提交和批量丢弃。待办列表表头包含编号、果实编号、果实名称、果实图像、员工编号、电子秤编号、称重数据、误差、称重时间和支持的操作项，其中操作项包含提交和丢弃。对某个待办项，点击提交按钮后，显示表单如图\ref{fig:form-todo-handle}所示，包含2个操作按钮和9个表单项，其中操作按钮包含取消和确认按钮；表单项包含选择果实、果实名称、果实编号、果实图像、员工编号、电子秤编号、称重数据、误差、称重时间，其中只能编辑果实，从选择果实项的下滑表单中选择果实后，果实名称和果实编号项将会随之变化。
+实际界面的测试情况如图\ref{fig:web-todo}和图\ref{fig:form-todo-handle}所示。图\ref{fig:web-todo}展现了软件管理后台中的待办管理界面，其中包含操作面板、待办列表和分页块。操作面板包含四个操作按钮，分别是提交、丢弃、批量提交和批量丢弃。待办列表表头包含编号、果实编号、果实名称、果实图像、员工编号、电子秤编号、称重数据、误差、称重时间和支持的操作项，其中操作项包含提交和丢弃。
+
+对某个待办项，点击提交按钮后，显示表单如图\ref{fig:form-todo-handle}所示，包含2个操作按钮和9个表单项，其中操作按钮包含取消和确认按钮；表单项包含选择果实、果实名称、果实编号、果实图像、员工编号、电子秤编号、称重数据、误差、称重时间，其中只能编辑果实，从选择果实项的下滑表单中选择果实后，果实名称和果实编号项将会随之变化。
 
 \begin{table}
     \centering
@@ -163,14 +165,14 @@ rowhead        = 1,
 \begin{figure}
     \centering
     \includegraphics[width=0.9\linewidth]{../result/web-todo.png}
-    \caption{处理待办记录用例测试}
+    \caption{待办管理界面}
     \label{fig:web-todo}
 \end{figure}
 
 \begin{figure}
     \centering
     \includegraphics[height=0.5\textheight]{../result/form-todo-handle.png}
-    \caption{处理待办记录用例测试}
+    \caption{提交待办表单}
     \label{fig:form-todo-handle}
 \end{figure}
 
@@ -219,18 +221,16 @@ rowhead        = 1,
     \label{fig:web-produce}
 \end{figure}
 
-在果实管理界面中，对果实列表中的苹果条目，点击年产量操作按钮，得到如图\ref{fig:chart-apple-year}所示的苹果年产量，折线图中横坐标为年份，纵坐标为产量(kg)。
-
-\begin{figure}
+\begin{figure}[H]
     \centering
     \includegraphics[width=0.9\linewidth]{../result/chart-apple-year.png}
     \caption{苹果年产量折线图}
     \label{fig:chart-apple-year}
 \end{figure}
 
-在果实管理界面中，对果实列表中的苹果条目，点击分批产量操作按钮，得到如图\ref{fig:chart-apple-works}所示的苹果分批产量，折线图中横坐标为作业编号，纵坐标为产量(kg)。
+在果实管理界面中，对果实列表中的苹果条目，点击年产量操作按钮，得到如图\ref{fig:chart-apple-year}所示的苹果年产量，折线图中横坐标为年份，纵坐标为产量(kg)；点击分批产量操作按钮，得到如图\ref{fig:chart-apple-works}所示的苹果分批产量，折线图中横坐标为作业编号，纵坐标为产量(kg)。
 
-\begin{figure}
+\begin{figure}[H]
     \centering
     \includegraphics[width=0.9\linewidth]{../result/chart-apple-works.png}
     \caption{苹果分批产量折线图}
@@ -239,14 +239,23 @@ rowhead        = 1,
 
 访问个人中心界面，得到如图\ref{fig:web-me}的结果。个人中心界面包含了操作面板和个人信息。操作面板包含三个操作按钮，分别是编辑个人信息、查看个人称重历史和查看个人分批次采摘量。个人信息中包含了员工编号、身份证号、名称、角色和入职时间。
 
-\begin{figure}
+\begin{figure}[H]
     \centering
     \includegraphics[width=0.9\linewidth]{../result/web-me.png}
     \caption{个人中心界面}
     \label{fig:web-me}
 \end{figure}
 
-在个人中心界面中，点击查看个人分批次采摘量按钮，得到如图\ref{fig:chart-user-works}所示的员工分批采摘量，其中表头包含作业编号、果实名称和采摘量。
+访问用户管理界面，得到如图\ref{fig:web-user}的结果。用户管理界面包含了操作面板、用户列表和分页块。操作面板包含两个操作按钮，分别是添加用户按钮和查询用户按钮。用户列表表头从左到右分别是编号、身份证号、姓名、角色、状态、创建时间和支持的操作项，操作项包含查看称重历史、查看分批采摘量以及编辑操作。
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.9\linewidth]{../result/web-user.png}
+    \caption{用户管理界面}
+    \label{fig:web-user}
+\end{figure}
+
+在个人中心界面或用户管理界面中，点击查看分批次采摘量按钮，得到如图\ref{fig:chart-user-works}所示的员工分批采摘量，其中表头包含作业编号、果实名称和采摘量。
 
 \begin{figure}
     \centering
@@ -257,17 +266,67 @@ rowhead        = 1,
 
 每个可视化图表都支持导出，点击图表右上方的导出按钮即可将统计结果导出为 Excel，图\ref{fig:chart-excels}展现了前面三个图表导出的结果，从左至右分别展现了果实的年产量表格、果实的分批产量表格和员工的分批采摘量表格。
 
-\begin{figure}
+\begin{figure}[H]
     \centering
     \includegraphics[width=0.9\linewidth]{../result/chart-excels.png}
     \caption{Excel 导出结果}
     \label{fig:chart-excels}
 \end{figure}
 
+对配置电子秤需求用例\ref{tab:uc-config-scale}设计测试用例并进行测试，如表\ref{tab:uc-config-scale-test}所示，测试用例包括提交完整信息的电子秤和缺少关键信息的电子秤。预期结果与实际结果一致，成功提交完整信息的电子秤时返回”成功”，缺失信息时返回”失败”。
 
-% TODO BELOW
+实际界面的测试结果如图\ref{fig:web-scale}和图\ref{fig:form-new-scale}所示。图\ref{fig:web-scale}展现了软件管理后台中的电子秤管理界面，其中包含操作面板、电子秤列表和分页块。操作面板包含两个操作按钮，分别是添加电子秤和查询电子秤。电子秤列表中表头从左到右分别是编号、客户端号、型号、量程、显示分度值、检定分度值、状态、创建时间和支持的操作项，支持的操作项包含查看称重记录和编辑操作。
 
-对用户认证和授权需求用例\ref{tab:uc-user-auth}设计测试用例并进行测试，如表\ref{tab:uc-user-auth-test}所示。实际界面的测试情况如图\ref{fig:user-auth-admin}和\ref{fig:user-auth-emp}所示。图\ref{fig:user-auth-admin}展现了管理员调用接口的结果。首先调用用户登录接口获取到认证令牌；接着通过令牌调用查看个人信息接口，返回个人信息，其中用户角色显示为管理员(ROLE\_ADMIN)，状态码为 200；最后调用查看用户列表接口，返回用户列表，状态码为200。结果符合预期，测试通过。图\ref{fig:user-auth-admin}展现了采摘员工调用接口的结果。首先调用用户登录接口获取到认证令牌；接着通过令牌调用查看个人信息接口，返回个人信息，其中用户角色显示为采摘员工(ROLE\_EMPLOYEE)，状态码为 200；最后调用查看用户列表接口，返回 Access Denied(访问拒绝)，状态码为 403。结果符合预期，测试通过。
+点击操作面板中的添加电子秤按钮，得到如图\ref{fig:form-new-scale}所显示的配置表单，表单项包含密钥、型号、最小最大量程及其单位、检定和显示分度值及其单位。
+
+\begin{table}
+    \centering
+    \caption{配置电子秤用例测试}
+    \label{tab:uc-config-scale-test}
+\begin{tblr}
+    {
+        colspec={Q[c,m]X[c,m]},
+        hlines,vlines,cell{2-Z}{1}={},
+        cell{1-Z}{1}={font=\bfseries},
+        cell{1-Z}{2}={halign=l}
+    }
+
+用例名称 & 配置电子秤 \\
+
+用例描述 & 在管理后台界面配置并添加电子秤，将电子秤接入云端 \\
+
+用例入口 & 后台管理界面中的电子秤管理模块 \\
+
+测试步骤 & 步骤1. 管理员访问电子秤管理界面 \newline
+步骤2. 管理员点击添加电子秤按钮 \newline
+步骤3. 管理员编辑电子秤配置并提交 \\
+
+测试用例 & 用例1：提交信息完整的电子秤 \newline
+用例2： 提交信息有遗漏的电子秤(缺失密钥/型号) \\
+
+预期结果与实际结果 & 用例1：预期返回"成功"，实际结果一致 \newline
+用例2：预期返回"失败"，实际结果一致 \\
+
+\end{tblr}
+\end{table}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.9\linewidth]{../result/web-scale.png}
+    \caption{电子秤管理界面}
+    \label{fig:web-scale}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.9\linewidth]{../result/form-new-scale.png}
+    \caption{电子秤配置表单}
+    \label{fig:form-new-scale}
+\end{figure}
+
+对用户认证和授权需求用例\ref{tab:uc-user-auth}设计测试用例并进行测试，如表\ref{tab:uc-user-auth-test}所示，采摘员工和管理员分别访问个人信息与用户列表接口，验证权限控制是否生效。普通用户访问被限制接口时返回 403，管理员访问全部接口均返回 200，结果符合预期。
+
+实际界面的测试情况如图\ref{fig:rest-user-auth-admin}和\ref{fig:rest-user-auth-emp}所示。图\ref{fig:rest-user-auth-admin}展现了管理员调用接口的结果。首先调用用户登录接口获取到认证令牌；接着通过令牌调用查看个人信息接口，返回个人信息，其中用户角色显示为管理员(ROLE\_ADMIN)，状态码为 200；最后调用查看用户列表接口，返回用户列表，状态码为200。结果符合预期，测试通过。图\ref{fig:rest-user-auth-emp}展现了采摘员工调用接口的结果。首先调用用户登录接口获取到认证令牌；接着通过令牌调用查看个人信息接口，返回个人信息，其中用户角色显示为采摘员工(ROLE\_EMPLOYEE)，状态码为 200；最后调用查看用户列表接口，返回 Access Denied(访问拒绝)，状态码为 403。结果符合预期，测试通过。
 
 \begin{table}
     \centering
@@ -305,20 +364,21 @@ rowhead        = 1,
 
 \begin{figure}
     \centering
-    \includegraphics[width=0.9\linewidth]{../result/user-auth-admin.png}
-    \caption{管理员认证和授权用例测试}
-    \label{fig:user-auth-admin}
+    \includegraphics[width=0.9\linewidth]{../result/rest-user-auth-admin.png}
+    \caption{管理员认证和授权接口测试}
+    \label{fig:rest-user-auth-admin}
 \end{figure}
 
 \begin{figure}
     \centering
-    \includegraphics[width=0.9\linewidth]{../result/user-auth-emp.png}
-    \caption{采摘员工认证和授权用例测试}
-    \label{fig:user-auth-emp}
+    \includegraphics[width=0.9\linewidth]{../result/rest-user-auth-emp.png}
+    \caption{采摘员工认证和授权接口测试}
+    \label{fig:rest-user-auth-emp}
 \end{figure}
 
-\newpage
-对果实图像识别需求用例\ref{tab:uc-produce-predict}设计测试用例并进行测试，如表\ref{tab:uc-produce-predict-test}所示。实际界面的测试情况如图\ref{fig:produce-predict}所示。如图\ref{fig:produce-predict}所示，图中上方请求提交了苹果图片，返回结果中得到预测置信度排名第一位的果实为苹果，置信度为 0.93563，符合预期；下方请求显示提交了火龙果图片，返回结果为空，预测失败，符合预期。
+对果实图像识别需求用例\ref{tab:uc-produce-predict}设计测试用例并进行测试，如表\ref{tab:uc-produce-predict-test}所示，提交支持的果实图像（如苹果）时，模型成功识别且结果正确；提交不支持的果实图像（如火龙果）时，预测失败，预期与实际一致。
+
+实际界面的测试情况如图\ref{fig:rest-produce-predict}所示，图中上方请求提交了苹果图片，返回结果中得到预测置信度排名第一位的果实为苹果，置信度为 0.93563，符合预期；下方请求显示提交了火龙果图片，返回结果为空，预测失败，符合预期。
 
 \begin{table}
     \centering
@@ -343,24 +403,26 @@ rowhead        = 1,
 测试用例 & 用例1：提交模型支持的果实图片（苹果） \newline
 用例2： 提交模型不支持的果实图片(火龙果) \\
 
-预期结果与实际结果 & 用例1：预期为成功预测果实种类为苹果且置信度高于 0.8，实际结果一致 \newline
-用例2：预期为错误预测果实种类且置信度低于 0.8，实际结果一致 \\
+预期结果与实际结果 & 用例1：预期为成功预测果实种类为苹果，实际结果一致 \newline
+用例2：预期为预测失败，实际结果一致 \\
 
 \end{tblr}
 \end{table}
 
 \begin{figure}
     \centering
-    \includegraphics[width=0.9\linewidth]{../result/produce-predict.png}
-    \caption{果实图像识别用例测试}
-    \label{fig:produce-predict}
+    \includegraphics[width=0.9\linewidth]{../result/rest-produce-predict.png}
+    \caption{果实图像识别接口测试}
+    \label{fig:rest-produce-predict}
 \end{figure}
 
-对新建采摘作业需求用例\ref{tab:uc-work-new}设计测试用例并进行测试，如表\ref{tab:uc-work-new-test}所示。实际界面的测试情况如图\ref{fig:work-new-result-1}和图\ref{fig:work-new-result-2}所示。如图\ref{fig:work-new-result-1}所示，展现了软件管理后台中的作业管理界面，其中包含作业列表、4个操作按钮和分页块，其中作业列表表头包含编号、采摘产品、开始时间、结束时间、采摘量、状态和操作；操作按钮包含添加作业、查询作业、导出作业数据和编辑。点击添加作业按钮后，显示表单如图\ref{fig:work-new-result-2}所示。图\ref{fig:work-new-result-2}展现了作业项的提交表单，包含2个操作按钮和3个表单项，其中操作按钮包含取消和确认按钮；表单项包含选择采摘产品、开始时间和结束时间，采摘产品在下滑表单中选择，开始时间和结束时间点击后在日历组件中选择。
+对新建采摘作业需求用例\ref{tab:uc-work-new}设计测试用例并进行测试，如表\ref{tab:uc-work-new-test}所示，选择启用的果实（如苹果）时创建成功；选择未启用的果实（如香蕉）或已有作业的果实时创建失败，实际结果与预期一致。
+
+实际界面的测试情况如图\ref{fig:web-work}和图\ref{fig:form-new-work}所示。图\ref{fig:web-work}展现了软件管理后台中的作业管理界面，其中包含作业列表、4个操作按钮和分页块，其中作业列表表头包含编号、采摘产品、开始时间、结束时间、采摘量、状态和操作；操作按钮包含添加作业、查询作业、导出作业数据和编辑。点击添加作业按钮后，显示表单如图\ref{fig:form-new-work}所示。图\ref{fig:form-new-work}展现了作业项的提交表单，包含2个操作按钮和3个表单项，其中操作按钮包含取消和确认按钮；表单项包含选择采摘产品、开始时间和结束时间，采摘产品在下滑表单中选择，开始时间和结束时间点击后在日历组件中选择。
 
 \begin{table}
     \centering
-    \caption{新建采摘作业用例测试}
+    \caption{新建采摘作业接口测试}
     \label{tab:uc-work-new-test}
 \begin{tblr}
     {
@@ -395,20 +457,20 @@ rowhead        = 1,
 \begin{figure}
     \centering
     \includegraphics[width=0.9\linewidth]{../result/web-work.png}
-    \caption{新建采摘作业用例测试}
-    \label{fig:work-new-result-1}
+    \caption{采摘作业管理界面}
+    \label{fig:web-work}
 \end{figure}
 
 \begin{figure}
     \centering
     \includegraphics[width=0.9\linewidth]{../result/form-new-work.png}
-    \caption{新建采摘作业用例测试}
-    \label{fig:work-new-result-2}
+    \caption{新建采摘作业表单}
+    \label{fig:form-new-work}
 \end{figure}
 
 \section{软件性能测试}
 
-根据非功能需求汇总表\ref{tab:n-req-summary}中提到的功能，给出对应的实现结果，如表\ref{tab:test-n-req-summary}所示。
+根据非功能需求汇总表\ref{tab:n-req-summary}中提到的功能，给出对应的实现结果，如表\ref{tab:test-n-req-summary}所示。本节针对提供高性能服务这个非功能需求，下面给出软件具体的性能测试和分析结果。首先给出对果实图像识别服务的性能测试，然后再给出称重数据提交服务的性能测试。
 
 \begin{table}
     \centering
@@ -432,8 +494,6 @@ rowhead        = 1,
 提供安全性保障 & 数据库加密敏感字段，所有接口提供认证授权保护 & 验证通过 \\
 \end{tblr}
 \end{table}
-
-针对提供高性能服务这个非功能需求，下面给出具体的测试和分析结果。首先给出对果实图像识别服务的性能测试，然后再给出称重数据提交服务的性能测试。
 
 下面对训练出来的果实图像识别模型进行性能测试。
 
