@@ -362,24 +362,42 @@ rowhead        = 1,
 \end{tblr}
 \end{table}
 
-实际界面的测试情况如图\ref{fig:rest-user-auth-admin}和\ref{fig:rest-user-auth-emp}所示。
+实际界面的测试情况如图\ref{fig:rest-test-user-login-admin}，图\ref{fig:rest-test-user-list-admin}、图\ref{fig:rest-test-user-login-emp}、图\ref{fig:rest-test-user-list-emp}所示。
 
-图\ref{fig:rest-user-auth-admin}展现了管理员调用接口的结果。首先调用用户登录接口获取到认证令牌；接着通过令牌调用查看个人信息接口，返回个人信息，其中用户角色显示为管理员(ROLE\_ADMIN)，状态码为 200；最后调用查看用户列表接口，返回用户列表，状态码为200。结果符合预期，测试通过。
+图\ref{fig:rest-test-user-login-admin}展现了管理员调用查看个人信息接口的结果。首先调用用户登录接口，在请求体内指定用户编号和密码，完成登录后获取到认证令牌；接着将认证令牌放在请求头中的 Authorization，调用查看个人信息接口，返回个人信息，其中可以看到用户角色显示为管理员(ROLE\_ADMIN)，状态码为 200。结果符合预期，测试通过。
 
 \begin{figure}[H]
     \centering
-    \includegraphics[width=0.9\linewidth]{../result/rest-user-auth-admin.png}
-    \caption{管理员认证和授权接口测试}
-    \label{fig:rest-user-auth-admin}
+    \includegraphics[width=0.9\linewidth]{../result/rest-test-user-login-admin.png}
+    \caption{管理员查看个人信息接口测试}
+    \label{fig:rest-test-user-login-admin}
 \end{figure}
 
-图\ref{fig:rest-user-auth-emp}展现了采摘员工调用接口的结果。首先调用用户登录接口获取到认证令牌；接着通过令牌调用查看个人信息接口，返回个人信息，其中用户角色显示为采摘员工(ROLE\_EMPLOYEE)，状态码为 200；最后调用查看用户列表接口，返回 Access Denied(访问拒绝)，状态码为 403。结果符合预期，测试通过。
+图\ref{fig:rest-test-user-list-admin}展现了管理员调用查看用户列表接口的结果。将\ref{fig:rest-test-user-login-admin}中登录得到的认证令牌放在请求头中的 Authorization，请求接口后返回用户列表，状态码为200。结果符合预期，测试通过。
 
 \begin{figure}[H]
     \centering
-    \includegraphics[width=0.9\linewidth]{../result/rest-user-auth-emp.png}
-    \caption{采摘员工认证和授权接口测试}
-    \label{fig:rest-user-auth-emp}
+    \includegraphics[width=0.9\linewidth]{../result/rest-test-user-list-admin.png}
+    \caption{管理员查看用户列表接口测试}
+    \label{fig:rest-test-user-list-admin}
+\end{figure}
+
+图\ref{fig:rest-test-user-login-emp}展现了采摘员工调用查看个人信息接口的结果。首先调用用户登录接口，在请求体内指定用户编号和密码，完成登录后获取到认证令牌；接着将认证令牌放在请求头中的 Authorization，调用查看个人信息接口，返回个人信息，其中用户角色显示为采摘员工(ROLE\_EMPLOYEE)，状态码为 200。结果符合预期，测试通过。
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.9\linewidth]{../result/rest-test-user-login-emp.png}
+    \caption{采摘员工查看个人信息接口测试}
+    \label{fig:rest-test-user-login-emp}
+\end{figure}
+
+图\ref{fig:rest-test-user-list-emp}展现了采摘员工调用查看用户列表接口的结果。将\ref{fig:rest-test-user-login-emp}中登录得到的认证令牌放在请求头中的 Authorization，请求接口后返回 Access Denied(访问拒绝)，状态码为 403。结果符合预期，测试通过。
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.9\linewidth]{../result/rest-test-user-list-emp.png}
+    \caption{采摘员工查看用户列表接口测试}
+    \label{fig:rest-test-user-list-emp}
 \end{figure}
 
 对果实图像识别需求用例\ref{tab:uc-produce-predict}设计测试用例并进行测试，如表\ref{tab:uc-produce-predict-test}所示，提交支持的果实图像（如苹果）时，模型成功识别且结果正确；提交不支持的果实图像（如火龙果）时，预测失败，预期与实际一致。
@@ -413,13 +431,24 @@ rowhead        = 1,
 \end{tblr}
 \end{table}
 
-实际界面的测试情况如图\ref{fig:rest-produce-predict}所示，图中上方请求提交了苹果图片，返回结果中得到预测置信度排名第一位的果实为苹果，置信度为 0.93563，符合预期；下方请求显示提交了火龙果图片，返回结果为空，预测失败，符合预期。
+实际界面的测试情况如图\ref{fig:rest-test-predict-apple}和图\ref{fig:rest-test-predict-pitaya}所示。
+
+图\ref{fig:rest-test-predict-apple}中调用模型推理接口进行果实种类预测，在请求体的 image 字段指定了果实图片地址，提交的图片中果实为苹果，返回结果中得到预测置信度排名第一位的果实为苹果，果实编号为 0，置信度为 0.93563，符合预期。
 
 \begin{figure}[H]
     \centering
-    \includegraphics[width=0.9\linewidth]{../result/rest-produce-predict.png}
-    \caption{果实图像识别接口测试}
-    \label{fig:rest-produce-predict}
+    \includegraphics[width=0.9\linewidth]{../result/rest-test-predict-apple.png}
+    \caption{果实图像识别接口测试一}
+    \label{fig:rest-test-predict-apple}
+\end{figure}
+
+图\ref{fig:rest-test-predict-pitaya}调用模型推理接口进行果实种类预测，在请求体的 image 字段指定了果实图片地址，提交的图片中果实为火龙果，返回结果为空，预测失败，符合预期。
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.9\linewidth]{../result/rest-test-predict-pitaya.png}
+    \caption{果实图像识别接口测试二}
+    \label{fig:rest-test-predict-pitaya}
 \end{figure}
 
 对新建采摘作业需求用例\ref{tab:uc-work-new}设计测试用例并进行测试，如表\ref{tab:uc-work-new-test}所示，选择启用的果实（如苹果）时创建成功；选择未启用的果实（如香蕉）或已有作业的果实时创建失败，实际结果与预期一致。
@@ -477,6 +506,8 @@ rowhead        = 1,
     \caption{新建采摘作业表单}
     \label{fig:form-new-work}
 \end{figure}
+
+至此，完成对\ref{sec:req1}中给出的核心需求用例的全部测试。
 
 \section{软件性能测试}
 
