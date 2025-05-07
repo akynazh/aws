@@ -1,26 +1,26 @@
 <mxfile host="65bd71144e" scale="3" border="0">
     <diagram id="6GudbwvYK7HLZ3b36CMI" name="Page-1">
-        <mxGraphModel dx="1066" dy="627" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" math="0" shadow="0">
+        <mxGraphModel dx="793" dy="566" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" math="0" shadow="0">
             <root>
                 <mxCell id="0"/>
                 <mxCell id="1" parent="0"/>
                 <mxCell id="21" value="" style="rounded=0;whiteSpace=wrap;html=1;dashed=1;fontFamily=Songti SC;fontSize=14;" parent="1" vertex="1">
-                    <mxGeometry x="285" y="100" width="245" height="330" as="geometry"/>
+                    <mxGeometry x="285" y="100" width="245" height="300" as="geometry"/>
                 </mxCell>
                 <mxCell id="20" value="" style="rounded=0;whiteSpace=wrap;html=1;dashed=1;fontFamily=Songti SC;fontSize=14;" parent="1" vertex="1">
-                    <mxGeometry x="120" y="100" width="150" height="330" as="geometry"/>
+                    <mxGeometry x="120" y="100" width="150" height="300" as="geometry"/>
                 </mxCell>
                 <mxCell id="2" value="" style="shape=datastore;whiteSpace=wrap;html=1;fontFamily=Songti SC;fontSize=14;" parent="1" vertex="1">
-                    <mxGeometry x="170" y="140" width="60" height="70" as="geometry"/>
+                    <mxGeometry x="170" y="140" width="60" height="60" as="geometry"/>
                 </mxCell>
                 <mxCell id="3" value="" style="shape=datastore;whiteSpace=wrap;html=1;fontFamily=Songti SC;fontSize=14;" parent="1" vertex="1">
-                    <mxGeometry x="370" y="140" width="60" height="70" as="geometry"/>
+                    <mxGeometry x="370" y="140" width="60" height="60" as="geometry"/>
                 </mxCell>
                 <mxCell id="4" value="二进制日志" style="shape=note;whiteSpace=wrap;html=1;backgroundOutline=1;darkOpacity=0.05;fontFamily=Songti SC;fontSize=14;" parent="1" vertex="1">
-                    <mxGeometry x="160" y="300" width="80" height="100" as="geometry"/>
+                    <mxGeometry x="160" y="300" width="80" height="80" as="geometry"/>
                 </mxCell>
                 <mxCell id="5" value="中继日志" style="shape=note;whiteSpace=wrap;html=1;backgroundOutline=1;darkOpacity=0.05;fontFamily=Songti SC;fontSize=14;" parent="1" vertex="1">
-                    <mxGeometry x="360" y="300" width="80" height="100" as="geometry"/>
+                    <mxGeometry x="360" y="300" width="80" height="80" as="geometry"/>
                 </mxCell>
                 <mxCell id="12" style="edgeStyle=none;html=1;entryX=0;entryY=0;entryDx=65;entryDy=15;entryPerimeter=0;fontFamily=Songti SC;fontSize=14;" parent="1" source="6" target="4" edge="1">
                     <mxGeometry relative="1" as="geometry">
@@ -28,13 +28,13 @@
                     </mxGeometry>
                 </mxCell>
                 <mxCell id="6" value="IO 线程" style="ellipse;whiteSpace=wrap;html=1;aspect=fixed;fontFamily=Songti SC;fontSize=14;" parent="1" vertex="1">
-                    <mxGeometry x="290" y="180" width="70" height="70" as="geometry"/>
+                    <mxGeometry x="290" y="190" width="60" height="60" as="geometry"/>
                 </mxCell>
                 <mxCell id="18" style="edgeStyle=none;html=1;entryX=1;entryY=0.7;entryDx=0;entryDy=0;fontFamily=Songti SC;fontSize=14;" parent="1" source="7" target="3" edge="1">
                     <mxGeometry relative="1" as="geometry"/>
                 </mxCell>
                 <mxCell id="7" value="SQL 线程" style="ellipse;whiteSpace=wrap;html=1;aspect=fixed;fontFamily=Songti SC;fontSize=14;" parent="1" vertex="1">
-                    <mxGeometry x="450" y="220" width="70" height="70" as="geometry"/>
+                    <mxGeometry x="450" y="220" width="60" height="60" as="geometry"/>
                 </mxCell>
                 <mxCell id="8" style="edgeStyle=none;html=1;entryX=0.5;entryY=0;entryDx=0;entryDy=0;entryPerimeter=0;fontFamily=Songti SC;fontSize=14;" parent="1" source="2" target="4" edge="1">
                     <mxGeometry relative="1" as="geometry"/>
@@ -64,7 +64,7 @@
                     <mxGeometry x="175" y="100" width="60" height="30" as="geometry"/>
                 </mxCell>
                 <mxCell id="23" value="从库" style="text;html=1;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontFamily=Songti SC;fontSize=14;" parent="1" vertex="1">
-                    <mxGeometry x="360" y="100" width="60" height="30" as="geometry"/>
+                    <mxGeometry x="370" y="100" width="60" height="30" as="geometry"/>
                 </mxCell>
             </root>
         </mxGraphModel>
