@@ -29,7 +29,7 @@
 \NeedsTeXFormat{LaTeX2e}
 \RequirePackage{expl3}
 \ProvidesExplClass{xduugthesis}
-  {2025/01/12}{6.2.3.1}
+  {2025/05/04}{6.2.9.0}
   {Xidian University Undergraduate Thesis document class}
 \RequirePackage { xparse, l3keys2e }
 \PassOptionsToPackage { no-math } { fontspec }
@@ -1708,7 +1708,7 @@
     \group_begin:
       \rmfamily \zihao { -4 } \bfseries \__xdu_bold_math: \par
       \__xdu_typeout_keywords:nNn
-        { Keywords： } { \l__xdu_keywords_en_clist } { \__xdu_keywords_space: }
+        { Keywords:~ } { \l__xdu_keywords_en_clist } { \__xdu_keywords_space: }
     \group_end:
     \cleardoublepage
     \setcounter { tocdepth } { 5 }

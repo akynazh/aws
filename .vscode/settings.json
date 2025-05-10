@@ -5,11 +5,11 @@
         // ".git": true,
 
         "thesis/xdufont.sty": true,
-        "thesis/xduts.dtx": true,
+        // "thesis/xduts.dtx": true,
         "thesis/xduts.ins": true,
         "thesis/xdulogo.pdf": true,
         "thesis/xdupgthesis.cls": true,
-        "thesis/xduugthesis.cls": true,
+        // "thesis/xduugthesis.cls": true,
         "thesis/xduugtp.cls": true,
         "thesis/build.lua": true,
 

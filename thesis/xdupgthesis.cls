@@ -29,7 +29,7 @@
 \NeedsTeXFormat{LaTeX2e}
 \RequirePackage{expl3}
 \ProvidesExplClass{xdupgthesis}
-  {2025/01/12}{6.2.3.1}
+  {2025/05/04}{6.2.9.0}
   {Xidian University Postgraduate Thesis document class}
 \RequirePackage { xparse, l3keys2e }
 \PassOptionsToPackage { no-math } { fontspec }
@@ -2256,6 +2256,7 @@
     \vbox_to_ht:nn { 120pt }
       {
         \rmfamily \zihao { -4 }
+        \xeCJKsetup { CJKglue = { \hskip 0pt } }
         \dim_set:Nn \parindent { 2em }
         \dim_set:Nn \baselineskip { 20pt }
         秉承学校严谨的学风和优良的科学道德，本人声明所呈交的论文是我个人在导师指
@@ -2288,7 +2289,7 @@
       }
     \clist_if_empty:NF \l__xdu_statement_sign_clist
       { \skip_vertical:n { 20pt } }
-    \vbox_to_ht:nn { 39.5pt }
+    \vbox_to_ht:nn { 60pt }
       {
         \rmfamily \zihao { 4 } \bfseries \centering
         \dim_set:Nn \baselineskip { 20pt }
@@ -2298,6 +2299,7 @@
     \vbox_to_ht:nn { 160pt }
       {
         \rmfamily \zihao { -4 }
+        \xeCJKsetup { CJKglue = { \hskip 0pt } }
         \dim_set:Nn \parindent { 2em }
         \dim_set:Nn \baselineskip { 20pt }
         本人完全了解西安电子科技大学有关保留和使用学位论文的规定，即：研究生在校
@@ -2344,7 +2346,9 @@
   }
 \cs_new:Npn \__xdu_zh_abstract_keywords:
   {
-    \__xdu_n_chapter_head_toc:nn { 摘要 } { 摘 { \quad } 要 }
+    \__xdu_n_chapter_head_toc:nn
+      { 摘要 }
+      { \__xdu_sf_family: \mdseries 摘 { \quad } 要 }
     \__xdu_lang_switch:nn { } { \__xdu_add_zh_toc:nn { chapter } { 摘要 } }
     \group_begin:
       \dim_set:Nn \parindent { 2 \ccwd }
@@ -2483,7 +2487,12 @@
       { \__xdu_lang_switch:nn { 符号对照表 } { List~of~Symbols } }
     \__xdu_lang_switch:nn { } { \__xdu_add_zh_toc:nn { chapter } { 符号对照表 } }
     \bool_if:NTF \l__xdu_customize_los_bool
-      { \file_if_exist_input:n { \l__xdu_los_str } }
+      {
+        \group_begin:
+        \zihao { -4 }
+        \file_if_exist_input:n { \l__xdu_los_str }
+        \group_end:
+      }
       {
         \tl_new:N \l__xdu_los_head_tl
         \__xdu_lang_switch:nn
@@ -2534,7 +2543,12 @@
       { \__xdu_lang_switch:nn { 缩略语对照表 } { List~of~Abbreviations } }
     \__xdu_lang_switch:nn { } { \__xdu_add_zh_toc:nn { chapter } { 缩略语对照表 } }
     \bool_if:NTF \l__xdu_customize_loa_bool
-      { \file_if_exist_input:n { \l__xdu_loa_str } }
+      {
+        \group_begin:
+        \zihao { -4 }
+        \file_if_exist_input:n { \l__xdu_loa_str }
+        \group_end:
+      }
       {
         \tl_new:N \l__xdu_loa_head_tl
         \__xdu_lang_switch:nn
@@ -2667,7 +2681,9 @@
         \__xdu_lang_switch:nn { }
           {
             \setcounter { tocdepth } { 2 }
-            \__xdu_n_chapter_head:nn { 目录 } { \__xdu_sf_family: 目 { \quad } 录 }
+            \__xdu_n_chapter_head:nn
+              { 目录 }
+              { \__xdu_sf_family: \mdseries 目 { \quad } 录 }
             \@starttoc { zh.toc }
             \cleardoublepage
           }

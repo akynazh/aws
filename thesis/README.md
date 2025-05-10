@@ -1,4 +1,4 @@
-# Paper
+# Thesis
 
 ## PREPARE
 
@@ -6,6 +6,16 @@
 2. Config environment variable: `export PATH="$PATH:/usr/local/texlive/2024basic/bin/universal-darwin"`
 3. Install packages: `sudo tlmgr install scheme-full && sudo tlmgr update --all --self`
 4. Get and build xduts: `git clone https://github.com/note286/xduts && cd xduts && xetex xduts.ins && l3build doc`
+
+## UPDATE
+
+- Update xduts by git-pull: `cd thesis(xduts) && git pull && xetex xduts.ins`
+- Update xduts by git-download:
+  - `git clone https://github.com/note286/xduts`
+  - check update files
+  - only xduts.dtx: `mv xduts/xduts.dtx thesis/xduts.dtx`
+  - more changed files: `mv xduts/xxx thesis/xxx`
+  - `cd thesis(xduts) && xetex xduts.ins`
 
 ## WRITE
 
