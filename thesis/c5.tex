@@ -10,7 +10,7 @@
 
 (2)测试流程：首先针对\ref{sec:req1}给出的核心需求用例，设计相应的测试用例；接着按照图\ref{fig:软件部署架构图}中的部署架构，使用 Docker Compose 技术组织各个应用容器并完成软件部署，如表\ref{tab:docker-compose}所示；最后通过 Web 界面、RestClient 接口测试工具和电子秤模拟器对各个功能进行测试并给出结论。
 
-\begin{table}[H]
+\begin{table}
     \centering
     \caption{Docker Compose 应用容器组织情况}
     \label{tab:docker-compose}
@@ -249,7 +249,7 @@ aws-web & 云端 Vue 后台管理界面  \\
     \label{fig:chart-excels}
 \end{figure}
 
-对配置电子秤需求用例\ref{tab:uc-config-scale}设计测试用例并进行测试，如表\ref{tab:uc-config-scale-test}所示，测试用例包括提交完整信息的电子秤和缺少关键信息的电子秤。预期结果与实际结果一致，成功提交完整信息的电子秤时返回”成功”，缺失信息时返回”失败”。
+对配置电子秤需求用例\ref{tab:uc-config-scale}设计测试用例并进行测试，如表\ref{tab:uc-config-scale-test}所示，测试用例包括提交完整信息的电子秤和缺少关键信息的电子秤。预期结果与实际结果一致，成功提交完整信息的电子秤时返回“成功”，缺失信息时返回“失败”。
 
 \begin{table}
     \centering
