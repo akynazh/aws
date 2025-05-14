@@ -1,19 +1,52 @@
 # aws-web
 
-## INIT
+## Init
+
+项目初始化：
 
 ```sh
+# vite 项目模版初始化: Vue 3 + TypeScript + Vite
 pnpm create vite
+# 安装依赖
 pnpm install
+
+# UI 相关
+pnpm i element-plus
+pnpm i @element-plus/icons-vue
+# src 别名配置
+pnpm install @types/node
+# sass
+pnpm install sass sas-loader
+# mock
+pnpm install -D vite-plugin-mock@2.9.6 mockjs
+# axios
+pnpm i axios
+# 路由
+pnpm install vue-router@4.1.6
+# 仓库
+pnpm i pinia
+# 进度条
+pnpm i nprogress
 ```
 
-## START
+重要插件：
+
+1. Vue VSCode Snippets: v3ts 快速生成组合式页面模版
+2. Volar: 为 Vue 开发提供智能提示、类型检查、代码跳转、错误提示等完整的开发体验
+
+依赖基本使用：
+
+1. 在 vite.config.ts 中配置打包、插件、别名等行为
+2. 在 src/main.ts 中引入相关依赖包名
+3. 在 tsconfig.json 中进行编译相关配置
+
+## Start
 
 ```sh
 pnpm run dev
 ```
 
-## PUBLISH
+## Publish
 
 ```sh
 pnpm run build
@@ -21,17 +54,7 @@ pnpm run build
 serve dist -p 80
 ```
 
-## NOTE
-
-### Template
-
-Vue 3 + TypeScript + Vite
-
-This template should help get you started developing with Vue 3 and TypeScript in Vite. The template uses Vue 3 `<script setup>` SFCs, check out the [script setup docs](https://v3.vuejs.org/api/sfc-script-setup.html#sfc-script-setup) to learn more.
-
-Learn more about the recommended Project Setup and IDE Support in the [Vue Docs TypeScript Guide](https://vuejs.org/guide/typescript/overview.html#project-setup).
-
-## AI DEV
+## AI
 
 ### models
 
