@@ -44,7 +44,7 @@ YOLO（You Only Look Once）是一种高效的目标检测算法，因其速度�
 
 \section{基于 GTID 的主从复制技术}\label{sec:gtid}
 
-在农业果实称重云端软件中，使用了 MySQL 数据库来存储大量数据，数据存储分为主库存储和从库存储。主库完成数据的读写，而从库只进行数据的读取。为实现主从库数据的一致性，采用了基于全局事务标识符 (GTID, Global Transaction Identifier) 的主从复制技术来完成数据同步操作。GTID 由服务器 UUID(Universally Unique Identifier, 即全局唯一标识符) 和事务编号组成，是一个在 MySQL 数据库中用于唯一标识一个事务的标识符。
+在农业果实称重云端软件中，使用了 MySQL 数据库来存储大量数据，数据存储分为主库存储和从库存储。主库完成数据的读写，而从库只进行数据的读取。为实现主从库数据的一致性，采用了基于全局事务标识符 (GTID, Global Transaction Identifier) 的主从复制技术来完成数据同步操作。GTID 由服务器全局唯一标识符(UUID, Universally Unique Identifier) 和事务编号组成，是一个在 MySQL 数据库中用于唯一标识一个事务的标识符。
 
 \begin{figure}[H]
     \centering
