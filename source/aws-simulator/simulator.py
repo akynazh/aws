@@ -1,3 +1,4 @@
+# cd $code/aws/source/aws-simulator && pythonv simulator.py
 from PyQt5.QtWidgets import (
     QApplication,
     QMainWindow,

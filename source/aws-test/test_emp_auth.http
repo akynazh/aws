@@ -11,10 +11,10 @@ content-type: application/json
 
 GET http://localhost:8080/user
 content-type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiI2NTk4MjIiLCJpYXQiOjE3NDUzMTA1NzYsImV4cCI6MTc0NTM5Njk3Nn0.coBUkGTjVNNkKj_5mcIAS9Gkige8XhWky_ogUN6pNDk
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiI2NTk4MjIiLCJpYXQiOjE3NDc3MzUyOTUsImV4cCI6MTc0NzgyMTY5NX0.YwbpoZgfzJNUe9ac3SRgsTFU5EvfYOUrXesWG13Ibe4
 
 ### 获取用户列表
 
 GET http://localhost:8080/user/list
 content-type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiI2NTk4MjIiLCJpYXQiOjE3NDUzMTA1NzYsImV4cCI6MTc0NTM5Njk3Nn0.coBUkGTjVNNkKj_5mcIAS9Gkige8XhWky_ogUN6pNDk
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiI2NTk4MjIiLCJpYXQiOjE3NDc3MzUyOTUsImV4cCI6MTc0NzgyMTY5NX0.YwbpoZgfzJNUe9ac3SRgsTFU5EvfYOUrXesWG13Ibe4

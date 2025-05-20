@@ -63,7 +63,7 @@ def predict(image_local="", image_url="", image_base64=""):
 
 
 if __name__ == "__main__":
-    predictions = predict(image_local="./sample/pineapple.jpeg")
+    predictions = predict(image_local="./sample/banana.png")
     print(predictions)
 
     # predictions = predict(
