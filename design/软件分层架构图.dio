@@ -1,6 +1,6 @@
 <mxfile host="65bd71144e" scale="3" border="0">
     <diagram id="GkhBZIhsdIewnCVaJ9AP" name="Page-1">
-        <mxGraphModel dx="-84" dy="1766" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="0" pageScale="1" pageWidth="827" pageHeight="1169" math="0" shadow="0">
+        <mxGraphModel dx="-207" dy="1766" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="0" pageScale="1" pageWidth="827" pageHeight="1169" math="0" shadow="0">
             <root>
                 <mxCell id="0"/>
                 <mxCell id="1" parent="0"/>
@@ -19,7 +19,7 @@
                 <mxCell id="6" value="电子秤" style="rounded=1;whiteSpace=wrap;html=1;fontFamily=Songti SC;aspect=fixed;fontSize=16;" parent="1" vertex="1">
                     <mxGeometry x="1340" y="-960" width="100" height="35" as="geometry"/>
                 </mxCell>
-                <mxCell id="7" value="前台网页端" style="rounded=1;whiteSpace=wrap;html=1;fontFamily=Songti SC;aspect=fixed;fontSize=16;" parent="1" vertex="1">
+                <mxCell id="7" value="管理平台" style="rounded=1;whiteSpace=wrap;html=1;fontFamily=Songti SC;aspect=fixed;fontSize=16;" parent="1" vertex="1">
                     <mxGeometry x="1190" y="-960" width="100" height="35" as="geometry"/>
                 </mxCell>
                 <mxCell id="8" value="通信层" style="rounded=0;whiteSpace=wrap;html=1;fontFamily=Songti SC;fontSize=16;" parent="1" vertex="1">

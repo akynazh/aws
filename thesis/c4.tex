@@ -36,9 +36,9 @@
 
 软件可以抽象出五个层级，分别是表现层、通信层、网关层、服务层、数据层。各层作用如下：
 
-表现层：该层可以理解为接口调用者，包含前台网页端和电子秤，两者都通过调用后台提供的接口来完成数据的处理或展示；
+表现层：该层可以理解为接口调用者，包含管理平台和电子秤，两者都通过调用后台提供的接口来完成数据的处理或展示；
 
-通信层：该层负责协调表现层与网关层之间的通信流程。软件所支持的通信协议有四种，分别是 HTTP/HTTPS、MQTT、CoAP 和 STOMP。其中前台网页端可以通过 HTTP/HTTPS 调用后台接口，而电子秤可以通过四种协议中任一一种来提交称重数据；
+通信层：该层负责协调表现层与网关层之间的通信流程。软件所支持的通信协议有四种，分别是 HTTP/HTTPS、MQTT、CoAP 和 STOMP。其中管理平台可以通过 HTTP/HTTPS 调用后台接口，而电子秤可以通过四种协议中任一一种来提交称重数据；
 
 网关层：该层提供了接口路由和协议转换功能。表现层发来的请求根据接口路由导向服务层中对应的服务，协议转换功能则服务于电子秤，将不同协议统一转为 MQTT 协议，以 MQTT 协议继续进行后续通信；
 
@@ -401,7 +401,7 @@ t\_work & produce\_id & 高效查找果实对应的采摘作业 \\
 
 (8) 处理失败，抛出异常，结束流程。
 
-具体实现如时序图\ref{fig:待办数据处理时序图}所示。管理员调用 handleTodoRecord 接口提交待办数据，然后 WeighController 调用 RecordService 完成称重记录处理和待办记录的删除，最后返回操作结果给前端。
+具体实现如时序图\ref{fig:待办数据处理时序图}所示。管理员调用 handleTodoRecord 接口提交待办数据，然后 WeighController 调用 RecordService 完成称重记录处理和待办记录的删除，最后返回操作结果。
 
 \begin{figure}
     \centering
@@ -429,7 +429,7 @@ t\_work & produce\_id & 高效查找果实对应的采摘作业 \\
     \label{fig:待办数据管理功能类图}
 \end{figure}
 
-具体实现如时序图\ref{fig:电子秤注册功能时序图}所示。管理员在后台调用 addScale 接口提交电子秤信息，WeighController 接收请求并调用 ScaleService 新建电子秤对象，然后调用 MqttUserService 新建 MQTT 消息发布用户，接着创建 ScaleVO 对象返回给前端进行渲染。
+具体实现如时序图\ref{fig:电子秤注册功能时序图}所示。管理员在后台调用 addScale 接口提交电子秤信息，WeighController 接收请求并调用 ScaleService 新建电子秤对象，然后调用 MqttUserService 新建 MQTT 消息发布用户，最后创建 ScaleVO 对象并返回结果。
 
 \begin{figure}
     \centering
@@ -508,7 +508,7 @@ t\_work & produce\_id & 高效查找果实对应的采摘作业 \\
     \label{fig:新建采摘作业时序图}
 \end{figure}
 
-新建采摘作业具体实现如时序图\ref{fig:新建采摘作业时序图}所示。管理员在后台调用 addWork 接口提交采摘作业信息，WorkController 调用 WorkService 的 addWork 方法新建采摘作业，WorkService 调用 ProduceService 获取果实信息进行校验，调用 getProduceWorks 方法检查要采摘的果实是否已经存在进行中的采摘作业，接着完成采摘作业创建，最后创建 WorkVO 对象返回给前端进行渲染。
+新建采摘作业具体实现如时序图\ref{fig:新建采摘作业时序图}所示。管理员在后台调用 addWork 接口提交采摘作业信息，WorkController 调用 WorkService 的 addWork 方法新建采摘作业，WorkService 调用 ProduceService 获取果实信息进行校验，调用 getProduceWorks 方法检查要采摘的果实是否已经存在进行中的采摘作业，接着完成采摘作业创建，最后创建 WorkVO 对象并返回结果。
 
 采摘作业的管理功能类图如图\ref{fig:采摘作业管理功能类图}所示。WorkController 为服务入口，通过 WorkService 进行采摘作业 Work 的增删改查操作，WorkService 依赖 ProduceService 进行采摘作业相关果实信息的查询操作。WorkService 通过 WorkRepository 进行数据库操作，ProduceService 通过 ProduceRepository 进行数据库操作。
 
