@@ -52,6 +52,10 @@ mqtt:
   server:
     username: aws-server
     password: 123456
+    in:
+      clientId: aws-server-in
+    out:
+      clientId: aws-server-out
   edge:
     username: aws-edge
     password: 123456

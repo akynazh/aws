@@ -5,7 +5,6 @@ import cn.edu.xidian.aws.pojo.bo.MqttResult;
 import cn.edu.xidian.aws.pojo.vo.record.RecordAddVO;
 import cn.edu.xidian.aws.service.MqttUserService;
 import cn.edu.xidian.aws.service.MqttWeighService;
-import cn.edu.xidian.aws.service.RecordService;
 import cn.edu.xidian.aws.service.TodoService;
 import com.alibaba.fastjson.JSON;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -32,10 +31,6 @@ import org.springframework.retry.backoff.ExponentialBackOffPolicy;
 import org.springframework.retry.policy.SimpleRetryPolicy;
 import org.springframework.retry.support.RetryTemplate;
 
-import java.util.Arrays;
-import java.util.List;
-import java.util.UUID;
-
 /**
  * @author akynazh@gmail.com
  * @date 1/31/25
@@ -50,6 +45,10 @@ public class MqttConfig {
     private String username;
     @Value("${mqtt.server.password}")
     private String password;
+    @Value("${mqtt.server.in.clientId}")
+    private String inClientId;
+    @Value("${mqtt.server.out.clientId}")
+    private String OutClientId;
     @Value("${mqtt.edge.username}")
     private String usernameEdge;
     @Value("${mqtt.edge.password}")
@@ -79,6 +78,7 @@ public class MqttConfig {
         options.setUserName(username);
         options.setPassword(password.toCharArray());
         options.setAutomaticReconnect(true);
+        options.setCleanSession(false);
         factory.setConnectionOptions(options);
         return factory;
     }
@@ -92,7 +92,7 @@ public class MqttConfig {
     public MessageProducer mqttInbound(MqttPahoClientFactory factory,
                                        @Qualifier("mqttInboundChannel") MessageChannel channel) {
         MqttPahoMessageDrivenChannelAdapter adapter =
-                new MqttPahoMessageDrivenChannelAdapter(UUID.randomUUID().toString(), factory, Mqtt.TOPIC_SCALE);
+                new MqttPahoMessageDrivenChannelAdapter(inClientId, factory, Mqtt.TOPIC_SCALE);
         adapter.setCompletionTimeout(5000);
         adapter.setConverter(new DefaultPahoMessageConverter());
         adapter.setQos(Mqtt.QOS_EXACTLY_ONCE);
@@ -158,7 +158,7 @@ public class MqttConfig {
     @ServiceActivator(inputChannel = "mqttOutboundChannel")
     public MessageHandler mqttOutbound(MqttPahoClientFactory factory) {
         MqttPahoMessageHandler messageHandler =
-                new MqttPahoMessageHandler(UUID.randomUUID().toString(), factory);
+                new MqttPahoMessageHandler(OutClientId, factory);
         messageHandler.setAsync(true);
         messageHandler.setDefaultTopic(Mqtt.TOPIC_RESULT);
         messageHandler.setDefaultQos(Mqtt.QOS_AT_LEAST_ONCE);
