@@ -6,10 +6,32 @@ y1 = 24 * 3600 * 1000 * 365 * 1
 m1 = 24 * 3600 * 1000 * 30 * 1
 
 
+def gen(id) -> str:
+    t = int(time.time() * 1000)
+    data = {
+        "id": id,
+        "image": "",
+        "produceId": "",
+        "produceName": random.choice(["香蕉", "苹果", "西瓜"]),
+        "employeeId": random.choice([3, 7, 8, 18, 19, 20, 21]),
+        "scaleId": random.choice([2, 3, 4, 5]),
+        "dataValue": float(random.randint(1, 5)),
+        "dataErrorMargin": 0.1,
+        "unit": 2,
+        "dataTime": t,
+    }
+    return json.dumps(
+        data,
+        separators=(",", ": "),
+        indent=4,
+        ensure_ascii=False,
+    )
+
+
 def gen() -> str:
     t = int(time.time() * 1000)
     data1 = {
-        "image": "6",
+        "image": "",
         "produceId": "",
         "produceName": random.choice(["香蕉", "苹果", "西瓜"]),
         "employeeId": random.choice([3, 7, 8, 18, 19, 20, 21]),
@@ -48,8 +70,7 @@ def gen() -> str:
         "dataTime": t,
     }
     return json.dumps(
-        # random.choice([data1, data2, data3]),
-        random.choice([data1]),
+        random.choice([data1, data2, data3]),
         separators=(",", ": "),
         indent=4,
         ensure_ascii=False,

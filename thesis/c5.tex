@@ -44,11 +44,19 @@ aws-web & 云端 Vue 后台管理界面  \\
 
 (2)测试流程：使用 Ultralytics 提供的性能测试库对训练出来的果实图像识别最佳模型 best.pt 进行测试，测试数据则采用训练集数据。
 
-对称重数据提交功能的性能测试中，其测试环境和测试方法如下：
+对称重数据提交功能的性能测试中，分别对其并发性能和断连场景下的消息处理能力进行测试。
+
+对称重数据提交功能的并发性能进行测试。其测试环境和测试方法如下：
 
 (1)测试环境：8 核 CPU, 8GB 内存 的 Docker 容器。
 
 (2)测试流程：根据软件压力测试的方法\cite{Zhu2017}来对称重数据提交接口进行性能测试，通过测试软件 JMeter 模拟 HTTP 并发请求来统计各项性能指标。首先启动称重相关服务，包含 Spring 应用服务、EMQX 集群以及MySQL 数据库服务，分别以并发数 100、200 和 500 对提交称重数据接口进行测试，Ramp-up Time(负载增长时间) 设为 30s，Hold Time(稳定负载时间)设为 35s。
+
+对称重数据提交功能在断连场景下的消息处理能力进行测试。由于在实际部署中，边缘设备与云端服务可能因网络故障、容器重启等原因造成 MQTT 通信中断，本测试评估软件在断连恢复后，是否能迅速重建连接、重新订阅主题、补收断连期间消息，以此验证软件的容错性、恢复性能与可用性保障能力。其测试环境和测试方法如下：
+
+(1)测试环境：一台 8G 内存、8核 CPU 的 MacOS 系统。
+
+(2)测试流程：按照图\ref{fig:软件部署架构图}中的部署架构，使用 Docker Compose 技术组织各个应用容器并完成软件部署，如表\ref{tab:docker-compose}所示；手动停止云端服务，持续一分钟以上；期间边端设备持续向 MQTT Broker 发布 500 条称重消息；最后启动云端服务，在 MQTT Broker 监控中心读取数据处理情况，确认是否成功处理 500 条称重消息。
 
 \section{软件功能测试}\label{sec:test-func}
 
@@ -441,19 +449,64 @@ aws-web & 云端 Vue 后台管理界面  \\
 
 综上所述，训练出来的果实图像识别模型在精度与推理速度之间达到平衡，模型在多数类别上的识别效果表现良好。
 
-接着对称重数据提交服务接口进行性能测试，测试结果如图\ref{fig:jmeter-test-result}所示，从上至下显示了并发数为 100、200 和 500 下的压力测试结果表格，每个表格从左至右显示的条目分别是测试标题、样本数、失败数、错误率、平均响应时间、最小响应时间、最大响应时间、响应时间中位数、90\%响应时间、95\%响应时间、99\%响应时间、吞吐量、网络接收数据量、网络发送数据量。
+接着对称重数据提交服务接口进行并发性能测试，测试结果如图\ref{fig:jmeter-test-result-100}、图\ref{fig:jmeter-test-result-200}、图\ref{fig:jmeter-test-result-500}所示，分别显示了并发数为 100、200 和 500 下的压力测试结果表格，每个表格从左至右显示的条目分别是测试标题、样本数、失败数、错误率、平均响应时间、最小响应时间、最大响应时间、响应时间中位数、90\%响应时间、95\%响应时间、99\%响应时间、吞吐量、网络接收数据量、网络发送数据量。
 
 \begin{figure}[H]
     \centering
-    \includegraphics[width=0.95\linewidth]{../source/aws-test/jmeter-test-result.png}
-    \caption{核心接口的压力测试结果}
-    \label{fig:jmeter-test-result}
+    \includegraphics[width=0.95\linewidth]{../source/aws-test/jmeter-test-result-100.png}
+    \caption{核心接口的压力测试结果(100并发)}
+    \label{fig:jmeter-test-result-100}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.95\linewidth]{../source/aws-test/jmeter-test-result-200.png}
+    \caption{核心接口的压力测试结果(200并发)}
+    \label{fig:jmeter-test-result-200}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.95\linewidth]{../source/aws-test/jmeter-test-result-500.png}
+    \caption{核心接口的压力测试结果(500并发)}
+    \label{fig:jmeter-test-result-500}
 \end{figure}
 
 在 100 并发下，软件性能表现较好，响应时间在 1 秒内，大部分请求能够在合理时间内完成，吞吐量也较为稳定。此时软件能够处理较高的负载；在 200 并发下，响应时间明显增加，超过了 2 秒，并且最大响应时间接近 9 秒。吞吐量略有下降，软件开始在中等负载下显现出性能下降的迹象。虽然软件能够处理较高并发，但开始显示出压力；在 500 并发下，性能显著下降，平均响应时间超过了 5 秒，最大响应时间接近 16 秒，90\% 的请求响应时间超过 10 秒。吞吐量保持不变或略微下降，说明软件在高负载下的性能有严重瓶颈，无法有效处理 500 并发请求。此时软件可能面临资源瓶颈。
 
 从上述分析可以知道，在 8 核 CPU, 8GB 内存的硬件条件下，软件可以高效地处理超过 200 台电子秤的并发请求，适合于中小型农场的部署使用。如果将并发数提高到 500，可以考虑升级硬件资源。
 
+最后对称重数据提交功能在断连场景下的消息处理能力进行测试，测试结果如图\ref{fig:net-stop-test-mqtt-broker-msg-produce}、图\ref{fig:net-stop-test-mqtt-broker-msg-consume}、图\ref{fig:net-stop-test-result}所示。
+
+图\ref{fig:net-stop-test-mqtt-broker-msg-produce}显示了称重消息生产情况，横坐标为时间，纵坐标为称重消息的条数。边端在15:00-15:01之间一共发布了500条称重消息，期间云端和边端已处于断开连接的状态。
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.95\linewidth]{../source/aws-test/net-stop-test-mqtt-broker-msg-produce.png}
+    \caption{称重消息生产时间序列图}
+    \label{fig:net-stop-test-mqtt-broker-msg-produce}
+\end{figure}
+
+图\ref{fig:net-stop-test-mqtt-broker-msg-consume}显示了称重消息消费情况，横坐标为时间，纵坐标为称重消息的条数。从图中可以看出，云端在15:00-15:01之间没有任何反应，在15:02重新启动云端服务，恢复与边端的连接，云端在15:02-15:12内陆续处理完所有的消息。
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.95\linewidth]{../source/aws-test/net-stop-test-mqtt-broker-msg-consume.png}
+    \caption{称重消息消费时间序列图}
+    \label{fig:net-stop-test-mqtt-broker-msg-consume}
+\end{figure}
+
+图\ref{fig:net-stop-test-result}显示了云端称重消息处理的结果，可以看到成功处理了500条称重消息，消息全部成功接收，未发生丢弃，表明云端服务接收功能正常，可靠性高；无过期、队列满、消息过大的异常提示，表明软件状态平稳。
+
+从上述分析可以知道，软件在断连恢复后能迅速重建连接、重新订阅主题并补收断连期间发布的所有称重消息。因此，在云端和边端断连场景下，软件具备一定的容错性、恢复性能与可用性保障能力。
+
+\begin{figure}
+    \centering
+    \includegraphics[width=0.8\linewidth]{../source/aws-test/net-stop-test-result.png}
+    \caption{称重消息处理结果表}
+    \label{fig:net-stop-test-result}
+\end{figure}
+
 \section{本章小结}
 
-本章详细介绍了软件测试与分析的过程和结果。首先给出了软件的测试方法，包括软件的测试环境和测试流程。在功能测试部分，针对需求分析阶段定义的核心功能用例进行了全面测试，包括电子秤管理、果实管理、作业管理、用户管理、称重记录处理、统计分析等模块，所有功能均通过测试并展示了相关界面截图和测试数据。性能测试部分重点评估了果实图像识别模型和称重数据提交接口的性能表现：YOLOv8模型在测试集上达到了0.5823的mAP50-95指标，推理速度为51.49FPS；称重数据接口在200并发下保持稳定，吞吐量达到预期水平。测试结果表明，软件各项功能和非功能需求均已实现，在精度和性能方面达到了设计目标，能够满足中小型农场的使用需求。
+本章详细介绍了软件测试与分析的过程和结果。首先给出了软件的测试方法，包括软件的测试环境和测试流程。在功能测试部分，针对需求分析阶段定义的核心功能用例进行了全面测试，包括电子秤管理、果实管理、作业管理、用户管理、称重记录处理、统计分析等模块，所有功能均通过测试并展示了相关界面截图和测试数据。性能测试部分重点评估了果实图像识别模型和称重数据提交功能的性能表现：YOLOv8模型在测试集上达到了0.5823的mAP50-95指标，推理速度为51.49FPS；称重数据接口在200并发下保持稳定，吞吐量达到预期水平；软件在断连恢复后能迅速重建连接、重新订阅主题并补收断连期间发布的所有称重消息，具备一定的容错性、恢复性能与可用性保障能力。测试结果表明，软件各项功能和非功能需求均已实现，在精度和性能方面达到了设计目标，能够满足中小型农场的使用需求。
