@@ -147,7 +147,7 @@ aws-web & 云端 Vue 后台管理界面  \\
 
 \begin{figure}
     \centering
-    \includegraphics[width=0.9\linewidth]{../result/web-todo.png}
+    \includegraphics[width=\linewidth]{../result/web-todo.png}
     \caption{待办管理界面}
     \label{fig:web-todo}
 \end{figure}
@@ -159,7 +159,7 @@ aws-web & 云端 Vue 后台管理界面  \\
     \label{fig:form-todo-handle}
 \end{figure}
 
-对称重记录统计分析需求用例\ref{tab:uc-record-analysis}设计测试用例并进行测试，如表\ref{tab:uc-record-analysis-test}所示，测试用例涉及查看苹果的年产量、分批产量以及查看特定用户的分批产量，并导出为Excel。预期结果和实际结果一致，分别得到了折线图、统计结果表格以及对应的Excel表格。实际界面的测试情况如图\ref{fig:web-produce}、图\ref{fig:chart-apple}、图\ref{fig:web-me}、图\ref{fig:chart-user-works}、图\ref{fig:chart-excels}所示。
+对称重记录统计分析需求用例\ref{tab:uc-record-analysis}设计测试用例并进行测试，如表\ref{tab:uc-record-analysis-test}所示，测试用例涉及查看苹果的年产量、分批产量以及查看特定用户的分批产量，并导出为Excel。预期结果和实际结果一致，分别得到了折线图、统计结果表格以及对应的Excel表格。实际界面的测试情况如图\ref{fig:web-produce}、图\ref{fig:chart-apple-year}、图\ref{fig:chart-apple-works}、图\ref{fig:web-me}、图\ref{fig:chart-user-works}、图\ref{fig:chart-excels}所示。
 
 \begin{table}
     \centering
@@ -191,48 +191,55 @@ aws-web & 云端 Vue 后台管理界面  \\
 \end{tblr}
 \end{table}
 
-访问果实管理界面，得到如图\ref{fig:web-produce}的结果，果实管理界面包含了操作面板、果实列表和分页块。在果实管理界面中，对果实列表中的苹果条目，点击查看年产量和分批产量，得到如图\ref{fig:chart-apple}所示的结果，左侧折线图为苹果年产量，横坐标为年份，纵坐标为产量(kg)；右侧折线图为苹果分批产量，横坐标为作业编号，纵坐标为产量(kg)。
+访问果实管理界面，得到如图\ref{fig:web-produce}的结果，果实管理界面包含了操作面板、果实列表和分页块。在果实管理界面中，对果实列表中的苹果条目，点击查看年产量和分批产量，得到如图\ref{fig:chart-apple-year}和\ref{fig:chart-apple-works}所示的结果，年产量折线图中横坐标为年份，纵坐标为产量(kg)；分批产量折线图中横坐标为作业编号，纵坐标为产量(kg)。
 
 \begin{figure}
     \centering
-    \includegraphics[width=0.9\linewidth]{../result/web-produce.png}
+    \includegraphics[width=\linewidth]{../result/web-produce.png}
     \caption{果实管理界面}
     \label{fig:web-produce}
 \end{figure}
 
 \begin{figure}
     \centering
-    \includegraphics[width=0.95\linewidth]{../result/chart-apple.png}
-    \caption{苹果年产量和分批产量折线图}
-    \label{fig:chart-apple}
+    \includegraphics[width=\linewidth]{../result/chart-apple-year.png}
+    \caption{苹果年产量折线图}
+    \label{fig:chart-apple-year}
+\end{figure}
+
+\begin{figure}
+    \centering
+    \includegraphics[width=\linewidth]{../result/chart-apple-works.png}
+    \caption{苹果分批产量折线图}
+    \label{fig:chart-apple-works}
 \end{figure}
 
 访问个人中心界面，得到如图\ref{fig:web-me}的结果。个人中心界面包含了操作面板和个人信息。访问用户管理界面，得到如图\ref{fig:web-user}的结果。用户管理界面包含了操作面板、用户列表和分页块。在个人中心界面或用户管理界面中，点击查看分批次采摘量按钮，得到如图\ref{fig:chart-user-works}所示的员工分批采摘量，其中表头包含作业编号、果实名称和采摘量。每个可视化图表都支持导出，点击图表右上方的导出按钮即可将统计结果导出为 Excel，图\ref{fig:chart-excels}展现了前面三个图表导出的结果，从左至右分别展现了果实的年产量表格、果实的分批产量表格和员工的分批采摘量表格。
 
 \begin{figure}
     \centering
-    \includegraphics[width=0.9\linewidth]{../result/web-me.png}
+    \includegraphics[width=\linewidth]{../result/web-me.png}
     \caption{个人中心界面}
     \label{fig:web-me}
 \end{figure}
 
 \begin{figure}
     \centering
-    \includegraphics[width=0.9\linewidth]{../result/web-user.png}
+    \includegraphics[width=\linewidth]{../result/web-user.png}
     \caption{用户管理界面}
     \label{fig:web-user}
 \end{figure}
 
 \begin{figure}
     \centering
-    \includegraphics[width=0.9\linewidth]{../result/chart-user-works.png}
+    \includegraphics[width=\linewidth]{../result/chart-user-works.png}
     \caption{员工分批采摘量表格}
     \label{fig:chart-user-works}
 \end{figure}
 
 \begin{figure}
     \centering
-    \includegraphics[width=0.9\linewidth]{../result/chart-excels.png}
+    \includegraphics[width=\linewidth]{../result/chart-excels.png}
     \caption{Excel 导出结果}
     \label{fig:chart-excels}
 \end{figure}
@@ -273,7 +280,7 @@ aws-web & 云端 Vue 后台管理界面  \\
 
 \begin{figure}
     \centering
-    \includegraphics[width=0.9\linewidth]{../result/web-scale.png}
+    \includegraphics[width=\linewidth]{../result/web-scale.png}
     \caption{电子秤管理界面}
     \label{fig:web-scale}
 \end{figure}
@@ -411,14 +418,14 @@ aws-web & 云端 Vue 后台管理界面  \\
 
 \begin{figure}
     \centering
-    \includegraphics[width=0.9\linewidth]{../result/web-work.png}
+    \includegraphics[width=\linewidth]{../result/web-work.png}
     \caption{采摘作业管理界面}
     \label{fig:web-work}
 \end{figure}
 
 \begin{figure}
     \centering
-    \includegraphics[width=0.8\linewidth]{../result/form-new-work.png}
+    \includegraphics[width=\linewidth]{../result/form-new-work.png}
     \caption{新建采摘作业表单}
     \label{fig:form-new-work}
 \end{figure}
@@ -433,7 +440,7 @@ aws-web & 云端 Vue 后台管理界面  \\
 
 \begin{figure}
     \centering
-    \includegraphics[width=0.95\linewidth]{../source/aws-img/yolov8/benchmark.png}
+    \includegraphics[width=\linewidth]{../source/aws-img/yolov8/benchmark.png}
     \caption{果实图像识别模型性能测试结果}
     \label{fig:model-benchmark}
 \end{figure}
@@ -442,7 +449,7 @@ aws-web & 云端 Vue 后台管理界面  \\
 
 \begin{figure}
     \centering
-    \includegraphics[width=0.95\linewidth]{../source/aws-img/yolov8/out/image/confusion_matrix_normalized.png}
+    \includegraphics[width=\linewidth]{../source/aws-img/yolov8/out/image/confusion_matrix_normalized.png}
     \caption{果实图像识别模型训练结果-标准化混淆矩阵图}
     \label{fig:confusion_matrix_normalized}
 \end{figure}
@@ -451,23 +458,23 @@ aws-web & 云端 Vue 后台管理界面  \\
 
 接着对称重数据提交服务接口进行并发性能测试，测试结果如图\ref{fig:jmeter-test-result-100}、图\ref{fig:jmeter-test-result-200}、图\ref{fig:jmeter-test-result-500}所示，分别显示了并发数为 100、200 和 500 下的压力测试结果表格，每个表格从左至右显示的条目分别是测试标题、样本数、失败数、错误率、平均响应时间、最小响应时间、最大响应时间、响应时间中位数、90\%响应时间、95\%响应时间、99\%响应时间、吞吐量、网络接收数据量、网络发送数据量。
 
-\begin{figure}[H]
+\begin{figure}
     \centering
-    \includegraphics[width=0.95\linewidth]{../source/aws-test/jmeter-test-result-100.png}
+    \includegraphics[width=\linewidth]{../source/aws-test/jmeter-test-result-100.png}
     \caption{核心接口的压力测试结果(100并发)}
     \label{fig:jmeter-test-result-100}
 \end{figure}
 
-\begin{figure}[H]
+\begin{figure}
     \centering
-    \includegraphics[width=0.95\linewidth]{../source/aws-test/jmeter-test-result-200.png}
+    \includegraphics[width=\linewidth]{../source/aws-test/jmeter-test-result-200.png}
     \caption{核心接口的压力测试结果(200并发)}
     \label{fig:jmeter-test-result-200}
 \end{figure}
 
-\begin{figure}[H]
+\begin{figure}
     \centering
-    \includegraphics[width=0.95\linewidth]{../source/aws-test/jmeter-test-result-500.png}
+    \includegraphics[width=\linewidth]{../source/aws-test/jmeter-test-result-500.png}
     \caption{核心接口的压力测试结果(500并发)}
     \label{fig:jmeter-test-result-500}
 \end{figure}
@@ -480,18 +487,18 @@ aws-web & 云端 Vue 后台管理界面  \\
 
 图\ref{fig:net-stop-test-mqtt-broker-msg-produce}显示了称重消息生产情况，横坐标为时间，纵坐标为称重消息的条数。边端在15:00-15:01之间一共发布了500条称重消息，期间云端和边端已处于断开连接的状态。
 
-\begin{figure}[H]
+\begin{figure}
     \centering
-    \includegraphics[width=0.95\linewidth]{../source/aws-test/net-stop-test-mqtt-broker-msg-produce.png}
+    \includegraphics[width=\linewidth]{../source/aws-test/net-stop-test-mqtt-broker-msg-produce.png}
     \caption{称重消息生产时间序列图}
     \label{fig:net-stop-test-mqtt-broker-msg-produce}
 \end{figure}
 
 图\ref{fig:net-stop-test-mqtt-broker-msg-consume}显示了称重消息消费情况，横坐标为时间，纵坐标为称重消息的条数。从图中可以看出，云端在15:00-15:01之间没有任何反应，在15:02重新启动云端服务，恢复与边端的连接，云端在15:02-15:12内陆续处理完所有的消息。
 
-\begin{figure}[H]
+\begin{figure}
     \centering
-    \includegraphics[width=0.95\linewidth]{../source/aws-test/net-stop-test-mqtt-broker-msg-consume.png}
+    \includegraphics[width=\linewidth]{../source/aws-test/net-stop-test-mqtt-broker-msg-consume.png}
     \caption{称重消息消费时间序列图}
     \label{fig:net-stop-test-mqtt-broker-msg-consume}
 \end{figure}
@@ -500,7 +507,7 @@ aws-web & 云端 Vue 后台管理界面  \\
 
 从上述分析可以知道，软件在断连恢复后能迅速重建连接、重新订阅主题并补收断连期间发布的所有称重消息。因此，在云端和边端断连场景下，软件具备一定的容错性、恢复性能与可用性保障能力。
 
-\begin{figure}
+\begin{figure}[H]
     \centering
     \includegraphics[width=0.8\linewidth]{../source/aws-test/net-stop-test-result.png}
     \caption{称重消息处理结果表}
